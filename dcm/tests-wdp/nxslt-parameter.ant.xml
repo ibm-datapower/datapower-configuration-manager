@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<project name="nxslt-parameter" basedir="." default="nxslt-parameter">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="nxslt-parameter">
+        
+        <local name="stylesheet"/>
+        <property name="stylesheet" location="nxslt-parameter.xsl"/>
+        
+        <nxslt outprop="bitbucket" xsl="${stylesheet}">
+            <param ant="hostname" xsl="param1"/>
+            <param ant="abc" xsl="param2"/>
+        </nxslt>
+        
+    </target>
+    
+</project>

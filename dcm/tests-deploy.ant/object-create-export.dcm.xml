@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Create an object based on an export.
+-->
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <dcm:object-create export="../imports/simple-loopback.v1.3.8.1.7.zip"
+    class="Matching" existing-name="loopback" new-name="loopback_copy">
+    <Url>Bob</Url>
+    <HttpValue>xyzzy</HttpValue>
+  </dcm:object-create>
+
+  
+</dcm:definition>

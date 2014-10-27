@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Import a WSP into a domain, updating the FSH port using a deployment policy,
+  and replacing any WSDLs present in the WSP with new WSDLs.
+-->
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <dcm:object-name match="basicwsp" replace-with="fedcba"/>
+  <dcm:object-name match="acceptAnything" replace-with="fedcba"/>
+  
+  <dcm:wsdl href="wsdls_xsds/xml-mgmt.wsdl" source="local:///xml-mgmt.wsdl"/>
+  <dcm:backend-url wsdl="wsdls_xsds/xml-mgmt.wsdl" url="https://127.0.0.1:5550/service/mgmt/current"/>
+  <dcm:wsdl href="wsdls_xsds/app-mgmt-protocol-v2.wsdl" source="local:///app-mgmt-protocol-v2.wsdl"/>
+  <dcm:backend-url wsdl="wsdls_xsds/app-mgmt-protocol-v2.wsdl" url="https://127.0.0.1:5550/service/mgmt/amp/2.0"/>
+  
+  <dcm:deployment-policy>
+    <modify-property name="fedcba-http" prop-name="LocalPort" new-prop-value="15011"/>
+    <modify-property name="fedcba-http" prop-name="MaxQueryStringLen" new-prop-value="512"/>
+  </dcm:deployment-policy>
+  
+</dcm:definition>

@@ -1,0 +1,912 @@
+<?xml version='1.0' encoding='utf-8'?>
+
+<!--
+  Copyright (c) 2005 DataPower Technology, Inc.
+  All Rights Reserved.
+-->
+<!--
+  Licensed Materials - Property of IBM
+  IBM WebSphere DataPower Appliances
+  Copyright IBM Corporation 2007,2009,2010. All Rights Reserved.
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+
+<xsd:schema xmlns:xsd='http://www.w3.org/2001/XMLSchema'
+            xmlns:tns='http://www.datapower.com/schemas/appliance/management/2.0'            
+            elementFormDefault='qualified'
+            targetNamespace='http://www.datapower.com/schemas/appliance/management/2.0'>
+
+  <!--
+  TYPE DEFINITIONS
+  -->
+
+  <xsd:simpleType name="fault">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="Authentication failure"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="subscription-id">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="subscription-state">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="active"/>
+        <xsd:enumeration value="none"/>
+        <xsd:enumeration value="duplicate"/>
+        <xsd:enumeration value="fault"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="subscription-state-url">
+    <xsd:simpleContent>
+      <xsd:extension base="tns:subscription-state">
+          <!-- to return the subscription url in case of duplicate -->
+          <xsd:attribute name="URL" type="xsd:string" use="optional"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  <xsd:simpleType name="subscription-topic">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="*"/>
+        <xsd:enumeration value="firmware"/>
+        <xsd:enumeration value="operational"/>
+        <xsd:enumeration value="configuration"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="device-id">
+    <!-- i.e. 9002-XA35-00 -->
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="device-type">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="XA35"/>
+        <xsd:enumeration value="XS40"/>
+        <xsd:enumeration value="XI50"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="device-feature">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="MQ"/>
+        <xsd:enumeration value="TAM"/>
+        <xsd:enumeration value="HSM"/>
+        <xsd:enumeration value="DataGlue"/>
+        <xsd:enumeration value="JAXP-API"/>
+        <xsd:enumeration value="PKCS7-SMIME"/>
+        <xsd:enumeration value="SQL-ODBC"/>
+        <xsd:enumeration value="Tibco-EMS"/>
+        <xsd:enumeration value="Tibco-RV"/>
+        <xsd:enumeration value="WebSphere-JMS"/>
+        <xsd:enumeration value="XG4"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="management-type">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="web-mgmt"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  
+  <xsd:complexType name="management-interface">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name='type' type='tns:management-type' use='required'/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  <xsd:simpleType name="reboot-mode">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="reboot"/>
+        <xsd:enumeration value="reload"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="status">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="ok"/>
+        <xsd:enumeration value="error"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="domain-name">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="op-state">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="up"/>
+        <xsd:enumeration value="down"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="config-state">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="saved"/>
+        <xsd:enumeration value="modified"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="quiesce-state">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value=""/>
+        <xsd:enumeration value="quiescing"/>
+        <xsd:enumeration value="quiesced"/>
+        <xsd:enumeration value="unquiescing"/>
+        <xsd:enumeration value="error"/>
+        <xsd:enumeration value="unknown quiesce state"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="debug-state">
+    <xsd:restriction base="xsd:boolean"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="cur-cmd">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="crypto-location">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="cert:"/>
+        <xsd:enumeration value="sharedcert:"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="crypto-file-name">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name='location' type='tns:crypto-location' use='required'/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="firmware">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:base64Binary"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="export">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:base64Binary"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="backup">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:base64Binary">
+          <xsd:attribute name="domain" type="xsd:string" use="required"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  <xsd:complexType name="SecureBackup">
+      <xsd:sequence>
+          <xsd:element name="SecureBackupFile" minOccurs="1" maxOccurs="unbounded">
+              <xsd:complexType>
+                  <xsd:simpleContent>
+                      <xsd:extension base="xsd:string">
+                          <xsd:attribute name="name" type="xsd:string" use="required"/>
+                      </xsd:extension>
+                  </xsd:simpleContent>
+              </xsd:complexType>
+          </xsd:element>
+      </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="resource-uri">
+    <xsd:restriction base="xsd:string"/>                                                                        
+  </xsd:simpleType>                                                                                             
+
+  <xsd:simpleType name="policy-type">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="add" />
+        <xsd:enumeration value="delete" />
+        <xsd:enumeration value="change" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="deployment-policy">
+    <xsd:sequence>
+        <xsd:element name="AcceptedConfig" type="tns:resource-uri" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element name="FilteredConfig" type="tns:resource-uri" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element name="ModifiedConfig" minOccurs="0" maxOccurs="unbounded">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="Match" type="tns:resource-uri" minOccurs="1" maxOccurs="1" />
+                    <xsd:element name="Type" type="tns:policy-type" minOccurs="1" maxOccurs="1"/>
+                    <xsd:element name="Property" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                    <xsd:element name="Value" type="xsd:string" minOccurs="0" maxOccurs="1" />
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+  
+  <xsd:complexType name="deployment-policy-configuration">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:base64Binary">
+          <!-- policy-domain-name is the name of the domain in the backup that contains the policy-object -->
+          <xsd:attribute name="policy-domain-name" type="xsd:string" use="optional" />
+          <!-- policy-object-name is the name of the policy-object -->
+          <xsd:attribute name="policy-object-name" type="xsd:string" use="required"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="file">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:base64Binary">
+          <xsd:attribute name="domain" type="xsd:string" use="required"/>
+          <xsd:attribute name="location" type="xsd:string" use="required"/>
+          <xsd:attribute name="name" type="xsd:string" use="required"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  <xsd:simpleType name="compare-result">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="identical"/>
+        <xsd:enumeration value="different"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="token-type">
+    <xsd:restriction base="xsd:string">
+        <xsd:enumeration value="login/web-mgmt"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="token">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+
+  <!--
+  OPERATION DEFINITIONS
+  -->
+
+  <xsd:element name='Fault' type="tns:fault"/>
+  
+  <xsd:element name='PingRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='SubscriptionID' type='tns:subscription-id'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='PingResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='SubscriptionState' type='tns:subscription-state'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='RebootRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Mode' type='tns:reboot-mode'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='RebootResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SetFirmwareRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Firmware' type='tns:firmware'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SetFirmwareResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='ReinitializeRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Firmware' type='tns:firmware'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='ReinitializeResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SecureBackupRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='DoNotIncludeiSCSI' minOccurs='0' maxOccurs='1'/> <!-- omitted=include iSCSI -->
+        <xsd:element name='DoNotIncludeRAID' minOccurs='0' maxOccurs='1'/> <!-- omitted=include RAID -->
+        <xsd:choice>
+          <xsd:element name='CryptoCertificateName' type="xsd:string"/>
+          <xsd:element name="CryptoCertificate" type="xsd:base64Binary"/>
+        </xsd:choice>
+        <xsd:element name='SecureBackupDestination' type="tns:resource-uri" minOccurs='0' maxOccurs='1'/> <!-- if omitted, backup returned in response -->
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SecureBackupResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+        <xsd:element name="SecureBackup" type="tns:SecureBackup" minOccurs='0' maxOccurs='1'/> <!-- occurs if SecureBackupDestination not in SecureBackupRequest -->
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SecureRestoreRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Validate' minOccurs='0' maxOccurs='1'/>
+        <xsd:element name='CryptoCredentialName' type="xsd:string"/>
+        <xsd:choice>
+          <xsd:element name='SecureBackupSource' type='tns:resource-uri'/>
+          <xsd:element name="SecureBackup" type="tns:SecureBackup"/>
+        </xsd:choice>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SecureRestoreResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+<!-- Request the last time that something that would be contained in a
+     SecureBackup changed on the device.  The response can be compared to
+     the date of the SecureBackup to determine if the SecureBackup is still
+     valid.  WhenDeviceLastChangedRequest IS NOT CURRENTLY SUPPORTED AND WILL
+     RESULT IN AN ERROR -->
+  <xsd:element name='WhenDeviceLastChangedRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='DoNotIncludeiSCSI' minOccurs='0' maxOccurs='1'/> <!-- omitted=include iSCSI in the evaluation of what has changed -->
+        <xsd:element name='DoNotIncludeRAID' minOccurs='0' maxOccurs='1'/> <!-- omitted=include RAID in the evaluation of what has changed-->
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='WhenDeviceLastChangedResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+        <xsd:element name='DeviceLastChanged' type='xsd:dateTime'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='QuiesceRequest'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Device' minOccurs="0" maxOccurs="1">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="Timeout" type="xsd:unsignedShort"/>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:element name='Domain' minOccurs="0" maxOccurs="1">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name='Name' type='tns:domain-name' minOccurs='1' maxOccurs='1'/>
+                <xsd:element name="Timeout" type="xsd:unsignedShort"/>
+              </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='QuiesceResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='UnquiesceRequest'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Device' minOccurs="0" maxOccurs="1"/>
+        <xsd:element name='Domain' minOccurs="0" maxOccurs="1">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name='Name' type='tns:domain-name' minOccurs='1' maxOccurs='1'/>
+              </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='UnquiesceResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetDeviceInfoRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:sequence/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetDeviceInfoResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:sequence>
+            <xsd:element name='DeviceName' type='xsd:string'/>
+            <xsd:element name='DeviceSerialNo' type='xsd:string'/>
+            <xsd:element name='DeviceID' type='tns:device-id'/>
+            <xsd:element name='DeviceType' type='tns:device-type'/>
+            <xsd:element name='FirmwareVersion' type='xsd:string'/>
+            <xsd:element name='FailureDetected' type='xsd:boolean'/>
+            <xsd:element name='CurrentAMPVersion' type='xsd:string' minOccurs='0' maxOccurs='1'/>
+            <xsd:element name='ManagementInterface' type='tns:management-interface' minOccurs='0' maxOccurs='unbounded'/>
+            <xsd:element name='DeviceFeature' type='tns:device-feature' minOccurs='0' maxOccurs='unbounded'/>
+        </xsd:sequence>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetDeviceSettingsRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:sequence/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetDeviceSettingsResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+        <xsd:element name='Settings' type='tns:export'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SetDeviceSettingsRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Settings' type='tns:export'/>
+        <xsd:element name='Policy' type='tns:deployment-policy' minOccurs='0' maxOccurs='1'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SetDeviceSettingsResponse'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Status' type='tns:status'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetErrorReportRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:sequence/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetErrorReportResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+        <xsd:element name='ErrorReport' type='tns:file'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SubscribeRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Subscription'>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name='URL' type='xsd:string'/>
+                <xsd:element name='Topics'>
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name='Topic' type='tns:subscription-topic' minOccurs='1' maxOccurs='unbounded'/>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+              </xsd:sequence>
+              <xsd:attribute name='id' type='tns:subscription-id' use='required'/>
+            </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SubscribeResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='SubscriptionState' type='tns:subscription-state-url'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='UnsubscribeRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Subscription'>
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name='Topics'>
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name='Topic' type='tns:subscription-topic' minOccurs='1' maxOccurs='unbounded'/>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+              </xsd:sequence>
+              <xsd:attribute name='id' type='tns:subscription-id' use='required'/>
+            </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='UnsubscribeResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='SubscriptionState' type='tns:subscription-state'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetDomainListRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:sequence/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetDomainListResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Domain' type='tns:domain-name' minOccurs='0' maxOccurs='unbounded'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetDomainStatusRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Domain' type='tns:domain-name'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetDomainStatusResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+        <xsd:element name='Domain'>
+            <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name='OpState' type='tns:op-state'/>
+                  <xsd:element name='ConfigState' type='tns:config-state'/>
+                  <xsd:element name='DebugState' type='tns:debug-state'/>
+                  <xsd:element name='CurrentCommand' type='tns:cur-cmd'/>
+                  <xsd:element name='QuiesceState' type='tns:quiesce-state'/>
+                </xsd:sequence>
+                <xsd:attribute name='name' type='tns:domain-name' use='required'/>
+            </xsd:complexType>
+        </xsd:element>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetDomainExportRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Domain' type='tns:domain-name'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetDomainExportResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+        <xsd:element name='Config' type='tns:backup'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SetDomainExportRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Reset-Domain' type='xsd:boolean' minOccurs='0' maxOccurs='1'/>
+        <xsd:element name='Config' type='tns:backup'/>
+        <xsd:choice>
+            <!-- inlined policy rules -->
+            <xsd:element name='Policy' type='tns:deployment-policy' minOccurs='0' maxOccurs='1'/>
+            <!-- referenced name of a deployment policy in the Config backup -->
+            <xsd:element name='Policy-Object-Name' type='xsd:string' minOccurs='0' maxOccurs='1'/>
+            <!-- configuration export containing a deployment policy -->
+            <xsd:element name='Policy-Configuration' type='tns:deployment-policy-configuration' minOccurs='0' maxOccurs='1'/>
+        </xsd:choice>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SetDomainExportResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetDomainConfigRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Domain' type='tns:domain-name'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetDomainConfigResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+        <xsd:element name='Config' type='tns:backup'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SetDomainConfigRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Config' type='tns:backup'/>
+        <xsd:element name='Policy' type='tns:deployment-policy' minOccurs='0' maxOccurs='1'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SetDomainConfigResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='DeleteDomainRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Domain' type='tns:domain-name'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='DeleteDomainResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='StartDomainRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Domain' type='tns:domain-name'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='StartDomainResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='StopDomainRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Domain' type='tns:domain-name'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='StopDomainResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='RestartDomainRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Domain' type='tns:domain-name'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='RestartDomainResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetCryptoArtifactsRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='Domain' type='tns:domain-name'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetCryptoArtifactsResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+        <xsd:element name='CryptoArtifacts'>
+          <xsd:complexType>
+            <xsd:choice>
+              <xsd:element name='CryptoFileName' type="tns:crypto-file-name" minOccurs="0" maxOccurs="unbounded"/>
+            </xsd:choice>
+            <xsd:attribute name='domain' type='tns:domain-name' use='required'/>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SetFileRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='File' type='tns:file'/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='SetFileResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='Status' type='tns:status'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='CompareConfigRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name='CompareConfig'>
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name='From'>
+                <xsd:complexType>
+                  <xsd:sequence>
+                  <xsd:choice>
+                    <xsd:element name='Running'/>
+                    <xsd:element name='Persisted'/>
+                    <xsd:element name='Settings' type='tns:export'/>
+                    <xsd:element name='Config' type='tns:backup'/>
+                  </xsd:choice>
+                    <xsd:element name='Policy' type='tns:deployment-policy' minOccurs='0' maxOccurs='1'/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name='To'>
+                <xsd:complexType>
+                  <xsd:sequence>
+                  <xsd:choice>
+                    <xsd:element name='Running'/>
+                    <xsd:element name='Persisted'/>
+                    <xsd:element name='Settings' type='tns:export'/>
+                    <xsd:element name='Config' type='tns:backup'/>
+                  </xsd:choice>
+                    <xsd:element name='Policy' type='tns:deployment-policy' minOccurs='0' maxOccurs='1'/>
+                  </xsd:sequence>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name='domain' type='tns:domain-name' use='required'/>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='CompareConfigResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+        <xsd:element name='CompareConfig'>
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name='CompareResult' type='tns:compare-result'/>
+            </xsd:sequence>
+            <xsd:attribute name='domain' type='tns:domain-name' use='required'/>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetLogRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:sequence/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetLogResponse'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:any processContents="skip" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetTokenRequest'>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Type" type="tns:token-type"/>
+        <xsd:element name="User" type="xsd:string"/>
+        <xsd:element name="Password" type="xsd:string"/>
+        <xsd:element name="Domain" type="xsd:string"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name='GetTokenResponse'>
+    <xsd:complexType>
+      <xsd:choice>
+          <xsd:element name='Status' type='tns:status'/>
+          <xsd:element name='Token' type='tns:token'/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+  
+</xsd:schema>

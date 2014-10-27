@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This set of snippets tests for proper operation of the snippet code.
+  Various snippets set and test various properties, ensuring that all the
+  appropriate snippets are included in the output exactly the correct
+  number of times and in exactly the correct order.
+  
+  The command line is:
+    
+    
+-->
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <!--
+    Test-01 tests the happy path - all the snippets end up in the right places.
+  -->
+  
+  <dcm:snippet>
+    <operation type="test-01"/>
+    
+    <dcm:insert scope="host" hostname="{{/scope/@hostname}}" unique="{{/scope/@hostname}}-init" order="1000">
+      <fail message="{{/scope/@hostname}}/init - host_{{/scope/@hostname}}_01 exists already!" if="host_{{/scope/@hostname}}_01"/>
+      <fail message="{{/scope/@hostname}}/init - host_{{/scope/@hostname}}_02 exists already!" if="host_{{/scope/@hostname}}_02"/>
+      <property name="host_{{/scope/@hostname}}_01" value="{{/scope/@hostname}}/init"/>
+      <echo>Set host_{{/scope/@hostname}}_01</echo>
+    </dcm:insert>
+    
+    <dcm:insert scope="host" hostname="{{/scope/@hostname}}" unique="{{/scope/@hostname}}-terminate" order="10000">
+      <fail message="{{/scope/@hostname}}/terminate - host_{{/scope/@hostname}}_01 doesn't exist!" unless="host_{{/scope/@hostname}}_01"/>
+      <fail message="{{/scope/@hostname}}/terminate - host_{{/scope/@hostname}}_02 exists already!" if="host_{{/scope/@hostname}}_02"/>
+      <property name="host_{{/scope/@hostname}}_02" value="{{/scope/@hostname}}/init"/>
+      <echo>Set host_{{/scope/@hostname}}_02</echo>
+    </dcm:insert>
+    
+  </dcm:snippet>
+  
+  
+  <dcm:snippet>
+    <operation type="test-01"/>
+    
+    <dcm:insert scope="domain" hostname="{{/scope/@hostname}}" domain="{{/scope/@domainname}}" unique="{{/scope/@hostname}}-{{/scope/@domainname}}-{{/scope/@operation}}" order="10000">
+      <fail message="domain_{{/scope/@hostname}}_{{/scope/@domainname}}_{{/scope/@operation}} already exists!" if="domain_{{/scope/@hostname}}_{{/scope/@domainname}}_{{/scope/@operation}}"/>
+      <property name="domain_{{/scope/@hostname}}_{{/scope/@domainname}}_{{/scope/@operation}}" value="{{/scope/@hostname}}/{{/scope/@domainname}}/{{/scope/@operation}}"/>
+      <echo>Set domain_{{/scope/@hostname}}_{{/scope/@domainname}}_{{/scope/@operation}}</echo>
+    </dcm:insert>
+    
+  </dcm:snippet>
+  
+  
+  <dcm:snippet>
+    <operation type="test-01"/>
+    
+    <dcm:insert scope="script" unique="script-init" order="1000">
+      <fail message="script/init - script_01 exists already!" if="script_01"/>
+      <fail message="script/init - script_02 exists already!" if="script_02"/>
+      <property name="script_01" value="script/init"/>
+      <echo>Set script_01</echo>
+    </dcm:insert>
+    
+    <dcm:insert scope="script" unique="script-terminate" order="10000">
+      <fail message="script/terminate - script_01 doesn't exist!" unless="script_01"/>
+      <fail message="script/terminate - script_02 exists already!" if="script_02"/>
+      <property name="script_02" value="script/init"/>
+      <echo>Set script_02</echo>
+    </dcm:insert>
+    
+  </dcm:snippet>
+  
+
+
+  <!--
+    Test-02 tests the proper ordering and uniqueness of script initializers and finalizers.
+  -->
+  
+  
+  <dcm:snippet>
+    <operation type="test-02"/>
+    
+    <dcm:insert scope="script" unique="script-init" order="1000">
+      <fail message="script/init - script_01 exists already!" if="script_01"/>
+      <fail message="script/init - script_02 exists already!" if="script_02"/>
+      <property name="script_01" value="script/init"/>
+      <echo>Set script_01</echo>
+    </dcm:insert>
+    
+    <dcm:insert scope="script" unique="script-terminate" order="10000">
+      <fail message="script/terminate - script_01 doesn't exist!" unless="script_01"/>
+      <fail message="script/terminate - script_02 exists already!" if="script_02"/>
+      <property name="script_02" value="script/init"/>
+      <echo>Set script_02</echo>
+    </dcm:insert>
+    
+  </dcm:snippet>
+  
+  
+  <dcm:snippet>
+    <operation type="test-02"/>
+    
+    <dcm:insert scope="script" unique="script-initx" order="1100">
+      <fail message="script/init - script_01 doesn't exist!" unless="script_01"/>
+      <fail message="script/init - script_02 already exists!" fi="script_02"/>
+    </dcm:insert>
+    
+    <dcm:insert scope="script" unique="script-terminatex" order="11000">
+      <fail message="script/terminate - script_01 doesn't exist!" unless="script_01"/>
+      <fail message="script/terminate - script_02 doesn't exist!" unless="script_02"/>
+    </dcm:insert>
+    
+  </dcm:snippet>
+  
+  
+  
+  <!--
+    Test-03 tests the proper ordering and uniqueness of host initializers and finalizers.
+    This test differs slightly from test-02 in that it assigns the same @order for the init and finalize
+    code in order to test whether the natural ordering is preserved.
+  -->
+  
+  <dcm:snippet>
+    <operation type="test-03"/>
+    
+    <dcm:insert scope="host" hostname="{{/scope/@hostname}}" unique="{{/scope/@hostname}}-init" order="1000">
+      <fail message="{{/scope/@hostname}}/init - host_{{/scope/@hostname}}_01 exists already!" if="host_{{/scope/@hostname}}_01"/>
+      <fail message="{{/scope/@hostname}}/init - host_{{/scope/@hostname}}_02 exists already!" if="host_{{/scope/@hostname}}_02"/>
+      <property name="host_{{/scope/@hostname}}_01" value="{{/scope/@hostname}}/init"/>
+      <echo>Set host_{{/scope/@hostname}}_01</echo>
+    </dcm:insert>
+    
+    <dcm:insert scope="host" hostname="{{/scope/@hostname}}" unique="{{/scope/@hostname}}-terminate" order="10000">
+      <fail message="{{/scope/@hostname}}/terminate - host_{{/scope/@hostname}}_01 doesn't exist!" unless="host_{{/scope/@hostname}}_01"/>
+      <fail message="{{/scope/@hostname}}/terminate - host_{{/scope/@hostname}}_02 exists already!" if="host_{{/scope/@hostname}}_02"/>
+      <property name="host_{{/scope/@hostname}}_02" value="{{/scope/@hostname}}/init"/>
+      <echo>Set host_{{/scope/@hostname}}_02</echo>
+    </dcm:insert>
+    
+  </dcm:snippet>
+  
+  
+  <dcm:snippet>
+    <operation type="test-03"/>
+    
+    <dcm:insert scope="host" hostname="{{/scope/@hostname}}" unique="{{/scope/@hostname}}-initx" order="1000">
+      <fail message="{{/scope/@hostname}}/init - host_{{/scope/@hostname}}_01 doesn't exist!" unless="host_{{/scope/@hostname}}_01"/>
+      <fail message="{{/scope/@hostname}}/init - host_{{/scope/@hostname}}_02 already exists!" if="host_{{/scope/@hostname}}_02"/>
+    </dcm:insert>
+    
+    <dcm:insert scope="host" hostname="{{/scope/@hostname}}" unique="{{/scope/@hostname}}-terminatex" order="10000">
+      <fail message="{{/scope/@hostname}}/terminate - host_{{/scope/@hostname}}_01 doesn't exist!" unless="host_{{/scope/@hostname}}_01"/>
+      <fail message="{{/scope/@hostname}}/terminate - host_{{/scope/@hostname}}_02 doesn't exist!" unless="host_{{/scope/@hostname}}_02"/>
+    </dcm:insert>
+    
+  </dcm:snippet>
+  
+  
+  
+</dcm:definition>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Modify an existing object (created in object-create-export).
+-->
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <dcm:object-modify class="Matching" name="loopback_copy">
+    <Url>Quincy</Url>
+  </dcm:object-modify>
+
+  
+</dcm:definition>

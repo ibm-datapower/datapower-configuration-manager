@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright 2014 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **/
+ -->
+
+<project name="dcmlib" basedir="." default="dist">
+    
+    <description>Build dcm.1.jar.</description>
+    
+    <property name="src" value="src"/>
+    <property name="build" value="build"/>
+    <property name="dist" value="dist"/>
+    <property name="lib" value="lib"/>
+    
+    <target name="all" depends="dist"/>
+    
+    <target name="clean" description="Delete all generated files and directories.">
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+        <delete dir="${lib}"/>
+    </target>
+    
+    <target name="init" description="Initialize the build process (create directories).">
+        <mkdir dir="${build}"/>
+        <mkdir dir="${dist}"/>
+        <mkdir dir="${lib}"/>
+        <get src="http://search.maven.org/remotecontent?filepath=xalan/xalan/2.7.2/xalan-2.7.2.jar" dest="${lib}/xalan-2.7.2.jar" skipexisting="true"/>
+        <get src="http://search.maven.org/remotecontent?filepath=xalan/serializer/2.7.2/serializer-2.7.2.jar" dest="${lib}/serializer-2.7.2.jar" skipexisting="true"/>
+    </target>
+    
+    <target name="dist" depends="init">
+        <javac srcdir="${src}" destdir="${build}" includeantruntime="true" classpath="${lib}/xalan-2.7.2.jar" debug="true" target="1.6" source="1.6"/>
+        <copy file="${src}/com/ibm/antlib.xml" todir="${build}/com/ibm"/>
+        <jar destfile="${dist}/dcm.1.jar" basedir="${build}"/>
+    </target>
+    
+    <target name="debug">
+        <echoproperties/>
+    </target>
+    
+</project>

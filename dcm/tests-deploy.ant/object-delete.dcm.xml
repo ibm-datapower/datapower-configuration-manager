@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Delete an existing object (okay, create one first).
+-->
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <dcm:object-create>
+
+    <Matching name="deleteme">
+      <mAdminState>enabled</mAdminState>
+      <MatchRules>
+        <Type>url</Type>
+        <HttpTag/>
+        <HttpValue/>
+        <Url>*</Url>
+        <ErrorCode/>
+        <XPATHExpression/>
+        <Method>default</Method>
+      </MatchRules>
+      <MatchWithPCRE>off</MatchWithPCRE>
+      <CombineWithOr>off</CombineWithOr>
+    </Matching>
+    
+  </dcm:object-create>
+  
+  <dcm:object-delete class="Matching" name="deleteme"/>
+  
+</dcm:definition>

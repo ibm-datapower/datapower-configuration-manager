@@ -1,0 +1,222 @@
+<?xml version="1.0"?>
+<project name="all-tests" basedir="." default="all-tests">
+    
+    <!-- 
+        
+        Run all defined tests.
+        
+        All the tests rely on one set of ant properties that are defined in common-definitions.ant.xml.
+        Update these definitions for your particular test environment.
+        
+        Many tests require specific ant properties, and each test (or common-xxx.ant.xml file) specifies
+        these properties in comments near the top of the file.  These properties can be supplied either
+        on the command line or through a .properties file (which is also a command line argument).
+        
+    -->
+    
+    <property name="tmpdir" location="tmp"/>    <!-- temp directory - override from command line. -->
+    <property name="tmpdir.absolute" location="${tmpdir}"/> <!-- Ensure that we know the fully qualified temp directory path.  Don't override. -->
+    
+    <mkdir dir="${tmpdir.absolute}"/> <!-- doesn't care if the directory already exists. -->
+    
+    
+    
+    <target name="all-tests" depends="basic, domain, file, cli, cache, quiesce, config, crypto, security, troubleshooting, misc">
+        
+        <echo>*** All tests have been successfully run.</echo>
+        
+    </target>
+    
+    
+    
+    
+    <target name="setup">
+        
+        <!-- Some tests rely on a temp directory and will create it at need. Ensure that we begin the test run with a clean directory. -->
+        <delete dir="${tmpdir.absolute}"/>
+        
+    </target>
+    
+    <target name="basic" depends="setup" description="Basic features of the &lt;wdp&gt; ant task.">
+        
+        <!-- Test the most basic <wdp> functionality - success/response props and so on. -->
+        <ant antfile="misc-wdp.ant.xml"/>
+        
+        <!-- Run the most basic <wdp> test just to ensure that <wdp> works and that we have a usable DP device definition. -->
+        <ant antfile="misc-date-time.ant.xml"/>
+        
+    </target>
+    
+    <target name="domain" depends="setup" description="Domain-level operations, plus importing a service into a new domain.">
+        
+        <ant antfile="domain-create-reset-restart-delete.ant.xml"/>
+        
+        <ant antfile="import-service.ant.xml"/>
+        
+        <ant antfile="import-domain.ant.xml">
+            <property name="domain" value="dcm-test"/>
+        </ant>
+        
+        <ant antfile="export-contents.ant.xml"/>
+        
+        <ant antfile="export-service.ant.xml"/>
+        
+        <ant antfile="backup-domain.ant.xml"/>
+        
+        <ant antfile="backup-domains.ant.xml"/>
+        
+    </target>
+    
+    <target name="backup-device" depends="setup" description="Backup a device, which has to be invoked explicitly because it takes so long.">
+        
+        <ant antfile="backup-device.ant.xml"/>
+        
+    </target>
+    
+    <target name="file" depends="setup" description="File-related operations.">
+        
+        <ant antfile="file-set.ant.xml"/>
+        
+        <ant antfile="file-get.ant.xml"/>
+        
+        <ant antfile="file-get-filestore.ant.xml"/>
+        
+        <ant antfile="file-dir-create.ant.xml"/>
+        
+        <ant antfile="file-dir-delete.ant.xml"/>
+        
+        <ant antfile="file-delete.ant.xml"/>
+        
+        <ant antfile="file-fetch.ant.xml"/>
+        
+        <ant antfile="file-upload.ant.xml"/>
+        
+        <ant antfile="file-clear-filestore.ant.xml"/>
+        
+    </target>
+    
+    <target name="cli" depends="setup" description="CLI-related operations">
+        
+        <ant antfile="execCLI.ant.xml"/>
+        
+    </target>
+    
+    <target name="cache" depends="setup" description="Cache-related operations">
+        
+        <ant antfile="cache-operations.ant.xml"/>
+        
+    </target>
+    
+    <target name="checkpoint" depends="setup" description="Ceckpoint-related operations">
+        
+        <ant antfile="checkpoint-operations.ant.xml"/>
+        
+    </target>
+    
+    <target name="quiesce" depends="setup" description="Quiesce-related operations">
+        
+        <ant antfile="quiesce-operations.ant.xml"/>
+        
+    </target>
+    
+    <target name="config" depends="setup" description="Configuration-related operations">
+        
+        <ant antfile="config-modify-object.ant.xml"/>
+        
+        <ant antfile="config-undo.ant.xml"/>
+        
+        <ant antfile="config-get-diff.ant.xml"/>
+        
+        <ant antfile="config-conformance-report.ant.xml"/>
+        
+        <ant antfile="config-get-object.ant.xml"/>
+        
+        <ant antfile="config-pubcert-valcred.ant.xml"/>
+        
+        <ant antfile="config-test-validate-schema.ant.xml"/>
+        
+        <ant antfile="config-test-url-refresh.ant.xml"/>
+        
+        <ant antfile="config-test-url-map.ant.xml"/>
+        
+        <ant antfile="config-import-execute.ant.xml"/>
+        
+        <ant antfile="config-execconfig.ant.xml"/>
+        
+        <ant antfile="config-get-all-statuses.ant.xml"/>
+        
+        <ant antfile="config-get-some-statuses.ant.xml"/>
+        
+    </target>
+    
+    <target name="crypto" depends="setup" description="crypto-related operations">
+        
+        <ant antfile="crypto-keycert-operations.ant.xml"/>
+        
+    </target>
+    
+    <target name="security" depends="setup" description="security-related operations">
+        
+        <ant antfile="security-known-host-operations.ant.xml"/>
+        
+        <ant antfile="security-trusted-host-operations.ant.xml"/>
+        
+        <ant antfile="security-password-map-operations.ant.xml"/>
+        
+        <ant antfile="security-userid-operations.ant.xml"/>
+<!--
+        <ant antfile="security-secure-backup.ant.xml"/>
+        
+        <ant antfile="security-secure-restore.ant.xml"/>
+-->
+    </target>
+    
+    <target name="troubleshooting" depends="setup" description="troubleshooting-related operations">
+        
+        <ant antfile="troubleshooting-get-log.ant.xml"/>
+        
+        <ant antfile="troubleshooting-generate-error-report.ant.xml"/>
+        
+        <ant antfile="troubleshooting-file-capture.ant.xml"/>
+<!--        
+        <ant antfile="troubleshooting-locate-device.ant.xml"/>
+-->        
+        <ant antfile="troubleshooting-ping.ant.xml"/>
+        
+        <ant antfile="troubleshooting-send-error-report.ant.xml"/>
+        
+        <ant antfile="troubleshooting-send-file.ant.xml"/>
+        
+        <ant antfile="troubleshooting-send-log-event.ant.xml"/>
+        
+        <ant antfile="troubleshooting-set-log-level.ant.xml"/>
+        
+        <ant antfile="troubleshooting-set-rbm-log-level.ant.xml"/>
+        
+        <ant antfile="troubleshooting-tcp-connection.ant.xml"/>
+        
+        <ant antfile="troubleshooting-packet-capture-operations.ant.xml"/>
+        
+    </target>
+    
+    <target name="misc" depends="setup" description="miscellaneous operations">
+        
+        <ant antfile="misc-create-tam-files.ant.xml"/>
+        
+        <ant antfile="misc-disconnect-user.ant.xml"/>
+        
+        <ant antfile="misc-set-system-var.ant.xml"/>
+        
+        <ant antfile="misc-set-date-time.ant.xml"/>
+        
+        <ant antfile="misc-wsrr-sync.ant.xml"/>
+        
+    </target>
+    
+    <target name="firmware" depends="setup" description="firmware operations - must be explicitly mentioned on the command line">
+        
+        <ant antfile="firmware-operations.ant.xml"/>
+        
+    </target>
+    
+</project>

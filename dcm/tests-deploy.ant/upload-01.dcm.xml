@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Upload a directory tree.
+-->
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <dcm:upload local="../schemas/**.*" remotedir="local:///x"/>
+  
+</dcm:definition>

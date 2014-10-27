@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This test is uploads a specific file to a remote directory.
+-->
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <dcm:upload file="${file}" remotedir="${remote}"/>
+  
+</dcm:definition>

@@ -1,0 +1,811 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright 2014 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **/
+ -->
+ <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    
+  <header>
+    <identifier version="1" id="com.ibm.datapower" name="DataPower" />
+    <description>The IBM WebSphere DataPower plugin deploys DataPower services.</description>
+    <tag>Infrastructure/WebSphere DataPower</tag>
+  </header>
+  
+  
+  
+  <step-type name="Backup Device">
+    <description>Backup all domains on a device (minus key/certificate files)</description>
+    <properties>
+      <property name="backupFile">
+        <property-ui type="textBox" default-value="" label="Backup file" description="DataPower export file to create/overwrite" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="BackupDevice.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Backup Domains">
+    <description>Backup one or more domains on a device (minus key/certificate files)</description>
+    <properties>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the first domain to backup" />
+      </property>
+      <property name="domainNames">
+        <property-ui type="textBox" default-value="" label="Additional blank separated domain names" description="Names of additional domains to backup" />
+      </property>
+      <property name="backupFile">
+        <property-ui type="textBox" default-value="" label="Backup file" description="DataPower export file to create/overwrite" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="BackupDomains.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Checkpoint Delete">
+    <description>Delete a checkpoint in a domain</description>
+    <properties>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of a domain containing the checkpoint" />
+      </property>
+      <property name="checkpoint">
+        <property-ui type="textBox" default-value="" label="Checkpoint name" description="Name of checkpoint" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="CheckpointDelete.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Checkpoint Restore">
+    <description>Restore a domain from a checkpoint</description>
+    <properties>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of a domain to restore from a checkpoint" />
+      </property>
+      <property name="checkpoint">
+        <property-ui type="textBox" default-value="" label="Checkpoint name" description="Name of checkpoint" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="CheckpointRestore.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Checkpoint Save">
+    <description>Checkpoint the current state of a domain</description>
+    <properties>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of a domain to checkpoint" />
+      </property>
+      <property name="checkpoint">
+        <property-ui type="textBox" default-value="" label="Checkpoint name" description="Name of checkpoint" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="CheckpointSave.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Create Domain">
+    <description>Create a new domain</description>
+    <properties>
+      <property name="newDomainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="New domain name" description="Name of the domain to create (letters, numbers, hyphen, underscore, no blanks)" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="CreateDomain.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Crypto Identity Credential from Definition">
+    <description>Create/overwrite a crypto identity credential based on a definition file</description>
+    <properties>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the target domain" />
+      </property>
+      <property name="definitionFile">
+        <property-ui type="textBox" default-value="" label="Definition file" description="Definition file for crypto identity credential" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="IDCredFromDef.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Crypto Validation Credential from Definition">
+    <description>Create/overwrite a crypto validation credential based on a definition file</description>
+    <properties>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the target domain" />
+      </property>
+      <property name="definitionFile">
+        <property-ui type="textBox" default-value="" label="Definition file" description="Definition file for crypto validation credential" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="ValCredFromDef.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Delete Domain">
+    <description>Delete a domain</description>
+    <properties>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the domain to delete" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="DeleteDomain.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Host Alias Remove">
+    <description>Remove a host alias</description>
+    <properties>
+      <property name="aliasName">
+        <property-ui type="textBox" default-value="" label="Host alias name" description="Host alias (e.g. www.ibm.com)" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="HostAliasRemove.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Host Alias Set">
+    <description>Set a host alias</description>
+    <properties>
+      <property name="aliasName">
+        <property-ui type="textBox" default-value="" label="Host alias name" description="Host alias (e.g. www.ibm.com)" />
+      </property>
+      <property name="aliasIP">
+        <property-ui type="textBox" default-value="" label="Host alias IP" description="IP address assigned to an ethernet adapter on the appliance as a primary or secondary IP address" />
+      </property>
+      <property name="comment">
+        <property-ui type="textBox" default-value="" label="Comment" description="e.g. the equivalent DNS name for this IP address" />
+      </property>
+      <property name="mAdminState">
+        <property-ui type="selectBox" default-value="enabled" label="State" description="Whether enabled or disabled"/>
+        <value label="Enabled">enabled</value>
+        <value label="Disabled">disabled</value>
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="HostAliasSet.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Import (Basic)">
+    <description>Import a DataPower export file (e.g. .zip) into a domain</description>
+    <properties>
+      <property name="fileImport">
+        <property-ui type="textBox" default-value="" label="Import File" description="DataPower export file to import" />
+      </property>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the target domain" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="ImportBasic.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Load Balancer Group from Definition">
+    <description>Create/overwrite a load balancer group based on a definition file</description>
+    <properties>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the target domain" />
+      </property>
+      <property name="definitionFile">
+        <property-ui type="textBox" default-value="" label="Definition file" description="Definition file for load balancer group" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="LBGFromDef.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Quiesce Domain">
+    <description>Quiesce a domain</description>
+    <properties>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the domain to quiesce" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="QuiesceDomain.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Restore Backup">
+    <description>Restore one or more domains from backup file (see Backup Device or Backup Domains)</description>
+    <properties>
+      <property name="backupFile">
+        <property-ui type="textBox" default-value="" label="Backup file" description="DataPower export file" />
+      </property>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the first domain to restore" />
+      </property>
+      <property name="domainNames">
+        <property-ui type="textBox" default-value="" label="Additional blank separated domain names" description="Names of additional domains to restore" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="RestoreBackup.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Save Configuration">
+    <description>Save the in-memory configuration in a domain to permanent storage</description>
+    <properties>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the domain" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="SaveConfig.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Set Log Level">
+    <description>Set the log level for the default log in a domain</description>
+    <properties>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the domain" />
+      </property>
+      <property name="loglevel">
+        <property-ui type="selectBox" default-value="error" label="Log level" description="Default log level in domain"/>
+        <value label="Debug">debug</value>
+        <value label="Information">info</value>
+        <value label="Notice">notice</value>
+        <value label="Warn">warn</value>
+        <value label="Error">error</value>
+        <value label="Critical">critic</value>
+        <value label="Alert">alert</value>
+        <value label="Emergency">emerg</value>
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="SetLogLevel.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Unquiesce Domain">
+    <description>Unquiesce a domain</description>
+    <properties>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the domain to unquiesce" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="UnquiesceDomain.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+  
+  <step-type name="Upload Directory">
+    <description>Upload a directory</description>
+    <properties>
+      <property name="fromDir">
+        <property-ui type="textBox" default-value="" label="From directory" description="Source directory" />
+      </property>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the target domain" />
+      </property>
+      <property name="toDir">
+        <property-ui type="textBox" default-value="local:///" label="To directory" description="Target directory" />
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp" />
+      <arg file="classes" />
+      <arg file="UploadDir.groovy" />
+      <arg file="${PLUGIN_INPUT_PROPS}" />
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+    </command>
+  </step-type>
+  
+  
+</plugin>

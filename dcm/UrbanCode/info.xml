@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+/**
+ * Copyright 2014 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **/
+ -->
+ <pluginInfo>
+  <!--
+  
+  **author name IS required**
+  
+  The Author Section is used to give credit to the author of the plugin.
+  Name is the only required element/attribute, but feel free to also include your email, 
+  website  or bio to allow users of your plugin to praise your work, ask questions 
+  or share their use case to help grow your plugin's functionality. 
+  -->
+  
+  <author name="IBM">
+    <organization>IBM</organization>
+    <email>regroot@us.ibm.com</email>
+    <website>http://ibm.com</website>
+    <bio/>
+  </author>
+  
+  <!--
+  
+  **intergration type IS Required**
+  
+  The integration type section identifies where the plugin fits into the process
+  excepted types are SCM, Build, Artifact, Automation, Deploy 
+  
+  For example:
+  
+  The plugin pulls Artifacts from an artifact repository during deployment
+  the Type would be "Artifact"
+  or 
+  The plugin deploys to a middleware server 
+  the Type would be "Deploy"
+  -->
+  
+  <integration type="deploy"/>
+  
+  
+  <!-- 
+  **source is NOT required**
+  
+  The source section identifies the location of the plugin source code
+  For example 
+  https://github.com/...
+  -->
+  <!--
+  <source url=""/>
+  -->
+  <!-- 
+  **license type is NOT required**
+  
+  If your plugin uses any licensed software please acknowledge it by 
+  listing the license type below  
+  
+  Apache Ant is a software tool to automate software processes during the build or 
+  deployment of an application. Ant uses an propitiatory XML file to define build 
+  and/or deployment steps(referred to as targets by ant) . The Ant executable is 
+  called to execute the targets in the build.xml.-->
+  
+  <licenses>
+    <license type="Apache2"/>
+  </licenses>
+  
+  <!-- 
+  **tool-description IS required**
+  
+  The tool-description section is used to summarize the software 
+  the plugin was created to integrate with. 
+  
+  For example: 
+  Apache Ant is a software tool to automate software processes during the build or 
+  deployment of an application. Ant uses an propitiatory XML file to define build 
+  and/or deployment steps(referred to as targets by ant) . The Ant executable is 
+  called to execute the targets in the build.xml.
+  -->
+  
+  <tool-description> IBM WebSphere DataPower is a network security appliance.  This plugin assists in deploying services to DataPower appliances. </tool-description>
+  
+  <!-- 
+  **related-info is NOT required**
+  
+  The releated-info section is used to define links which may be useful to users of the plugin 
+  but don't fall into the release-notes or tool-description section. 
+  
+  For example: releated-info can be links to pdf documentation, help videos related to plugin setup or the product's
+  website.
+  
+  excepted values for type include: PDF, WEBSITE, VIDEO  
+  -->
+  
+  <related-info>
+    <link description="Link to the DataPower version 7.0 support web site" title="DataPower" type="WEBSITE" url="http://www-01.ibm.com/support/knowledgecenter/SS9H2Y_7.0.0/com.ibm.dp.doc/welcome.html"/>
+  </related-info>
+  
+  <!-- 
+  **meta-html in NOT required**
+  
+  The meta-html section is used define the meta description and the meta keywords of the plugin page.The meta 
+  description tag allows you to influence the description of your page in the web crawlers that support the 
+  tag The meta keywords tag allows   you to provide additional text for crawler-based search engines to index 
+  along with your body copy. 
+  
+  If multiple keywords are used they must be comma(,) delimited   
+  -->  
+  
+  <meta-html>
+    <meta content="" name="description"/>
+    <meta content="" name="keywords"/>  
+  </meta-html>
+    
+  <!-- Do not change the release-version, the build process injects it. -->
+  <release-version></release-version>
+    
+    
+  <release-notes>
+    <!--
+      **release-note IS required**
+      
+      The plugin-version name must match the plugin version found in the plugin.xml file 
+      
+      The release-note should document the changes, improvements, or bug fixes introduced 
+      with the new plugin version 
+        
+      The release-note may contain text or reference a file in the plugin zip package
+      
+      For example your release note could be:
+      Support for was added for version 10.0 for software X
+      or 
+      releaseNotes/release1.html (where release1.html contains html formatted version information)
+      
+      To add a new release note add this with a description in it of the changes:
+      <release-note plugin-version="4">....</release-note>
+      
+      Our automated release process will replace 'LATEST' with the released version.
+      
+      If this already exists in the file, then the described changes have not been released yet and
+      you should just append to the existing 'LATEST' tag.
+      -->
+	  
+	 <release-note plugin-version="1"> Initial release. </release-note>
+    
+  </release-notes>
+</pluginInfo>

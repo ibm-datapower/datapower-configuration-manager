@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Update the membership list of an existing load balancer group.
+-->
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <dcm:loadbalancergroup name="bob">
+    
+    <dcm:member server="10.14.15.17" port="80" enabled="true"/>
+    <dcm:member server="10.14.15.18" enabled="true"/>
+    <dcm:member server="10.14.15.19" weight="4" port="80" health-port="80" enabled="false"/>
+    
+  </dcm:loadbalancergroup>
+<!--  
+  <dcm:object-modify class="LoadBalancerGroup" name="some-lbg">
+    <dcm:vector-insert-after class="LBGroupMembers">
+      <LBGroupMembers>
+        <Server>10.14.15.17</Server>
+        <Weight>1</Weight>
+        <MappedPort>80</MappedPort>
+        <LBMemberState>enabled</LBMemberState>
+      </LBGroupMembers>
+      <LBGroupMembers>
+        <Server>10.14.15.18</Server>
+        <Weight>1</Weight>
+        <MappedPort>0</MappedPort>
+        <LBMemberState>enabled</LBMemberState>
+      </LBGroupMembers>
+      <LBGroupMembers>
+        <Server>10.14.15.19</Server>
+        <Weight>4</Weight>
+        <MappedPort>80</MappedPort>
+        <HealthPort>80</HealthPort>
+        <LBMemberState>disabled</LBMemberState>
+      </LBGroupMembers>
+    </dcm:vector-insert-after>
+  </dcm:object-modify>
+-->
+  
+</dcm:definition>

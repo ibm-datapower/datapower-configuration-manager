@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright (c) 1999-2004 DataPower Technology, Inc.
+  All Rights Reserved.
+-->
+<!--
+  Licensed Materials - Property of IBM
+  IBM WebSphere DataPower Appliances
+  Copyright IBM Corporation 2007,2009. All Rights Reserved.
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+
+<xsd:schema targetNamespace="http://www.datapower.com/schemas/management"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:tns="http://www.datapower.com/schemas/management">
+
+  <!--
+  Ultra-primitive types that are the base of other primitives.
+  -->
+
+  <xsd:simpleType name='dmEmptyElement'>                             
+    <xsd:restriction base='xsd:string'>                             
+      <xsd:length value='0' fixed='true'/>                          
+    </xsd:restriction>                                              
+  </xsd:simpleType>                                                  
+
+  <xsd:simpleType name="dmString">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmUInt16">
+    <xsd:restriction base="xsd:unsignedShort"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmUInt32">
+    <xsd:restriction base="xsd:unsignedInt"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmUInt64">
+    <xsd:restriction base="xsd:unsignedLong"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmGauge32">
+    <xsd:restriction base="xsd:unsignedInt"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmInt32">
+    <xsd:restriction base="xsd:int"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmURL">
+    <xsd:restriction base="xsd:anyURI"/>
+  </xsd:simpleType>
+
+  <!--
+  Primitive types.
+  -->
+
+  <xsd:simpleType name="dmResourceURI">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmAdminState">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="enabled"/>
+      <xsd:enumeration value="disabled"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmCounter32">
+    <xsd:restriction base="tns:dmUInt32"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmCounter64">
+    <xsd:restriction base="tns:dmUInt64"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmEventCode">
+    <xsd:restriction base="tns:dmString"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmEventCodeMatch">
+    <xsd:restriction base="tns:dmString"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmWSMIdentifier">
+    <xsd:restriction base="tns:dmString"/>
+  </xsd:simpleType>	
+
+  <xsd:simpleType name="dmFormattedText">
+    <xsd:restriction base="tns:dmString"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmFSDirectory">
+    <xsd:restriction base="tns:dmURL"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmFSFile">
+    <xsd:restriction base="tns:dmURL"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmIPHostAddress">
+    <!-- This is an IP address. 
+         The IP address can be a V4 or V6 notation. -->
+    <xsd:restriction base="xsd:string">
+      <!-- IPV4 -->
+      <xsd:pattern value="[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"/>
+      <!-- IPV6 addr, such as "::1", "::", "1::", "::FFFF:127.0.0.1" or "fe80::211:11ff:febb:ff31" -->
+      <xsd:pattern value="((([\da-fA-F]{1,4}|\:|)(\:|)){1,7}([\da-fA-F]{1,4}|\:))"/>
+      <!-- IPV6 contains V4 compatible address. -->
+      <xsd:pattern value="((([\da-fA-F]{1,4}|\:|)(\:|)){1,5}([\da-fA-F]{1,4}|)\:(([1-9]?\d|1\d{2}|2[0-4]\d|25[0-5])\.){3}([1-9]?\d|1\d{2}|2[0-4]\d|25[0-5]))"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmHostname">
+    <xsd:restriction base="tns:dmString"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmLocalIPHostAddress">
+    <xsd:restriction base="tns:dmString"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmFragmentID">
+    <xsd:restriction base="tns:dmString"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmIPNetAddress">
+    <!-- Only allow IPV6 CIDR notation or similar CIDR syntax for IPV6. -->
+    <xsd:restriction base="xsd:string">
+      <!-- IPV4 -->
+      <xsd:pattern value="[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/[0-9]{1,2}"/>
+      <xsd:pattern value="[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ [0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"/>
+      <!-- IPV6 addr, such as "::1", "::", "1::", "::FFFF:127.0.0.1" or "fe80::211:11ff:febb:ff31" -->
+      <xsd:pattern value="((([\da-fA-F]{1,4}|\:|)(\:|)){1,7}([\da-fA-F]{1,4}|\:)\/([1-9]?\d|1[01]\d|12[0-8]))"/>
+      <!-- IPV6 contains V4 compatible address. -->
+      <xsd:pattern value="((([\da-fA-F]{1,4}|\:|)(\:|)){1,5}([\da-fA-F]{1,4}|)\:(([1-9]?\d|1\d{2}|2[0-4]\d|25[0-5])\.){3}([1-9]?\d|1\d{2}|2[0-4]\d|25[0-5])\/([1-9]?\d|1[01]\d|12[0-8]))"/>  
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmIPPort">
+    <xsd:restriction base="tns:dmUInt16"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmMACAddress">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="([0-9a-fA-F]{1,2}:){5}[0-9a-fA-F]{1,2}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmObjectClass">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmObjectName">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmOpState">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="up"/>
+      <xsd:enumeration value="down"/>
+      <xsd:enumeration value="PendingUp"/>
+      <xsd:enumeration value="PendingDown"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmPCRE">
+    <xsd:restriction base="tns:dmString"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="dmReference">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="class" type="xsd:string" use="optional"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="dmTimeInterval">
+    <xsd:restriction base="tns:dmUInt32"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmTimeIntervalHundredths">
+    <xsd:restriction base="tns:dmUInt32"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmTimeIntervalMillis">
+    <xsd:restriction base="tns:dmUInt32"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmTimestamp">
+    <xsd:restriction base="tns:dmUInt32"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmTimeOfDay">
+    <xsd:restriction base="tns:dmString"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmToggle">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="on"/>
+      <xsd:enumeration value="off"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dmXPathExpr">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+  
+  <xsd:simpleType name="dmXMLLocalName">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+
+  <xsd:complexType name="file">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:base64Binary">
+        <xsd:attribute name="name" type="xsd:string" use="optional"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="filestore-location">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="local:"/>
+      <xsd:enumeration value="store:"/>
+      <xsd:enumeration value="export:"/>
+      <xsd:enumeration value="cert:"/>
+      <xsd:enumeration value="sharedcert:"/>
+      <xsd:enumeration value="pubcert:"/>
+      <xsd:enumeration value="image:"/>
+      <xsd:enumeration value="config:"/>
+      <xsd:enumeration value="chkpoints:"/>
+      <xsd:enumeration value="logtemp:"/>
+      <xsd:enumeration value="logstore:"/>
+      <xsd:enumeration value="temporary:"/>
+      <xsd:enumeration value="tasktemplates:"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="dmDelConfig">
+    <xsd:sequence/>
+    <xsd:attribute name="name" use="required"/>
+  </xsd:complexType>
+
+  <!--
+  Attributes common to all config objects
+  -->
+  <xsd:attributeGroup name="ConfigAttributes">
+    <xsd:attribute name="name" type="xsd:string"/>
+    <xsd:attribute name="local" type="xsd:boolean"/>
+    <xsd:attribute name="intrinsic" type="xsd:boolean"/>
+    <xsd:attribute name="read-only" type="xsd:boolean"/>
+    <xsd:attribute name="external" type="xsd:boolean"/>
+  </xsd:attributeGroup>
+
+</xsd:schema>

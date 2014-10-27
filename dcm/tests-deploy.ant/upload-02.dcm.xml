@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Upload a single file.
+-->
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <dcm:upload local="../imports/logall.zip" remotedir="local:///x"/>
+  
+</dcm:definition>

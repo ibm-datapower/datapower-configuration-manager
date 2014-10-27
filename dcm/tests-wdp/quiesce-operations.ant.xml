@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<project name="quiesce-operations" basedir="." default="quiesce-operations">
+    
+    <!--
+        Quiesce/unquiesce at various granularities.
+    -->
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="quiesce-operations">
+        
+        <local name="checkpoint.name"/>
+        
+        <property name="checkpoint.name" value="some-checkpoint"/>
+        
+        
+        <wdp operation="QuiesceDevice">
+            <timeout>60</timeout>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully quiesced all services on ${hostname}</echo>
+        
+        <wdp operation="UnquiesceDevice">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully unquiesced all services on ${hostname}</echo>
+        
+        
+        <wdp operation="QuiesceDomain">
+            <timeout>60</timeout>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully quiesced all services in domain ${domain} on ${hostname}</echo>
+        
+        <wdp operation="UnquiesceDomain">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully unquiesced all services in domain ${domain} on ${hostname}</echo>
+        
+<!--        
+    
+    This doesn't seem to even result in CLI commands that are recognized...
+    
+        <wdp operation="QuiesceFSH">
+            <type>MultiProtocolGateway</type>
+            <objname>loopback</objname>
+            <fehtype>HTTPSourceProtocolHandler</fehtype>
+            <fehname>loopback-http-fsh</fehname>
+            <timeout>60</timeout>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully quiesced FSH HTTPSourceProtocolHandler/loopback-http-fsh in service MultiProtocolGateway/loopback in domain ${domain} on ${hostname}</echo>
+        
+        <wdp operation="UnquiesceFSH">
+            <type>MultiProtocolGateway</type>
+            <objname>loopback</objname>
+            <fehtype>HTTPSourceProtocolHandler</fehtype>
+            <fehname>loopback-http-fsh</fehname>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully unquiesced FSH HTTPSourceProtocolHandler/loopback-http-fsh in service MultiProtocolGateway/loopback in domain ${domain} on ${hostname}</echo>
+-->
+
+        <wdp operation="QuiesceService">
+            <type>MultiProtocolGateway</type>
+            <objname>loopback</objname>
+            <timeout>60</timeout>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully quiesced service MultiProtocolGateway/loopback in domain ${domain} on ${hostname}</echo>
+        
+        <wdp operation="UnquiesceService">
+            <type>MultiProtocolGateway</type>
+            <objname>loopback</objname>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully unquiesced in service MultiProtocolGateway/loopback in domain ${domain} on ${hostname}</echo>
+        
+        
+    </target>
+    
+</project>

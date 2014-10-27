@@ -1,0 +1,834 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  Copyright (c) 1999-2004 DataPower Technology, Inc.
+  All Rights Reserved.
+-->
+<!--
+  Licensed Materials - Property of IBM
+  IBM WebSphere DataPower Appliances
+  Copyright IBM Corporation 2007,2010. All Rights Reserved.
+  US Government Users Restricted Rights - Use, duplication or disclosure
+  restricted by GSA ADP Schedule Contract with IBM Corp.
+-->
+
+<definitions name="app-mgmt-protocol"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:wsdlsoap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+             xmlns:wsdltns="http://www.datapower.com/schemas/appliance/management/2.0/wsdl"
+             xmlns:wsi="http://ws-i.org/schemas/conformanceClaim/"
+             xmlns:tns="http://www.datapower.com/schemas/appliance/management/2.0"
+             targetNamespace="http://www.datapower.com/schemas/appliance/management/2.0/wsdl">
+
+  <types>
+    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                xmlns:tns="http://www.datapower.com/schemas/appliance/management/2.0"
+                targetNamespace="http://www.datapower.com/schemas/appliance/management/2.0">
+        <xsd:include schemaLocation="app-mgmt-protocol-v2.xsd"/>
+    </xsd:schema>
+  </types>
+
+  <message name="Fault">
+    <part name="body" element="tns:Fault"/>
+  </message>
+  
+  <message name="PingRequest">
+    <part name="body" element="tns:PingRequest"/>
+  </message>
+  <message name="PingResponse">
+    <part name="body" element="tns:PingResponse"/>
+  </message>
+  
+  <message name="GetTokenRequest">
+    <part name="body" element="tns:GetTokenRequest"/>
+  </message>
+  <message name="GetTokenResponse">
+    <part name="body" element="tns:GetTokenResponse"/>
+  </message>
+  
+  <message name="RebootRequest">
+    <part name="body" element="tns:RebootRequest"/>
+  </message>
+  <message name="RebootResponse">
+    <part name="body" element="tns:RebootResponse"/>
+  </message>
+  
+  <message name="SetFirmwareRequest">
+    <part name="body" element="tns:SetFirmwareRequest"/>
+  </message>
+  <message name="SetFirmwareResponse">
+    <part name="body" element="tns:SetFirmwareResponse"/>
+  </message>
+
+  <message name="ReinitializeRequest">
+    <part name="body" element="tns:ReinitializeRequest"/>
+  </message>
+  <message name="ReinitializeResponse">
+    <part name="body" element="tns:ReinitializeResponse"/>
+  </message>
+
+  <message name="SecureBackupRequest">
+    <part name="body" element="tns:SecureBackupRequest"/>
+  </message>
+  <message name="SecureBackupResponse">
+    <part name="body" element="tns:SecureBackupResponse"/>
+  </message>
+
+  <message name="SecureRestoreRequest">
+    <part name="body" element="tns:SecureRestoreRequest"/>
+  </message>
+  <message name="SecureRestoreResponse">
+    <part name="body" element="tns:SecureRestoreResponse"/>
+  </message>
+
+  <message name="WhenDeviceLastChangedRequest">
+    <part name="body" element="tns:WhenDeviceLastChangedRequest"/>
+  </message>
+  <message name="WhenDeviceLastChangedResponse">
+    <part name="body" element="tns:WhenDeviceLastChangedResponse"/>
+  </message>
+  
+  <message name="QuiesceRequest">
+    <part name="body" element="tns:QuiesceRequest"/>
+  </message>
+  <message name="QuiesceResponse">
+    <part name="body" element="tns:QuiesceResponse"/>
+  </message>
+  
+  <message name="UnquiesceRequest">
+    <part name="body" element="tns:UnquiesceRequest"/>
+  </message>
+  <message name="UnquiesceResponse">
+    <part name="body" element="tns:UnquiesceResponse"/>
+  </message>
+  
+  <message name="GetDeviceInfoRequest">
+    <part name="body" element="tns:GetDeviceInfoRequest"/>
+  </message>
+  <message name="GetDeviceInfoResponse">
+    <part name="body" element="tns:GetDeviceInfoResponse"/>
+  </message>
+  
+  <message name="GetDeviceSettingsRequest">
+    <part name="body" element="tns:GetDeviceSettingsRequest"/>
+  </message>
+  <message name="GetDeviceSettingsResponse">
+    <part name="body" element="tns:GetDeviceSettingsResponse"/>
+  </message>
+  
+  <message name="SetDeviceSettingsRequest">
+    <part name="body" element="tns:SetDeviceSettingsRequest"/>
+  </message>
+  <message name="SetDeviceSettingsResponse">
+    <part name="body" element="tns:SetDeviceSettingsResponse"/>
+  </message>
+  
+  <message name="GetErrorReportRequest">
+    <part name="body" element="tns:GetErrorReportRequest"/>
+  </message>
+  <message name="GetErrorReportResponse">
+    <part name="body" element="tns:GetErrorReportResponse"/>
+  </message>
+  
+  <message name="SubscribeRequest">
+    <part name="body" element="tns:SubscribeRequest"/>
+  </message>
+  <message name="SubscribeResponse">
+    <part name="body" element="tns:SubscribeResponse"/>
+  </message>
+  
+  <message name="UnsubscribeRequest">
+    <part name="body" element="tns:UnsubscribeRequest"/>
+  </message>
+  <message name="UnsubscribeResponse">
+    <part name="body" element="tns:UnsubscribeResponse"/>
+  </message>
+
+  <message name="GetDomainListRequest">
+    <part name="body" element="tns:GetDomainListRequest"/>
+  </message>  
+  <message name="GetDomainListResponse">
+    <part name="body" element="tns:GetDomainListResponse"/>
+  </message>
+  
+  <message name="GetDomainStatusRequest">
+    <part name="body" element="tns:GetDomainStatusRequest"/>
+  </message>  
+  <message name="GetDomainStatusResponse">
+    <part name="body" element="tns:GetDomainStatusResponse"/>
+  </message>
+
+  <message name="GetDomainExportRequest">
+    <part name="body" element="tns:GetDomainExportRequest"/>
+  </message>
+  <message name="GetDomainExportResponse">
+    <part name="body" element="tns:GetDomainExportResponse"/>
+  </message>
+  
+  <message name="SetDomainExportRequest">
+    <part name="body" element="tns:SetDomainExportRequest"/>
+  </message>
+  <message name="SetDomainExportResponse">
+    <part name="body" element="tns:SetDomainExportResponse"/>
+  </message>
+    
+  <message name="GetDomainConfigRequest">
+    <part name="body" element="tns:GetDomainConfigRequest"/>
+  </message>
+  <message name="GetDomainConfigResponse">
+    <part name="body" element="tns:GetDomainConfigResponse"/>
+  </message>
+  
+  <message name="SetDomainConfigRequest">
+    <part name="body" element="tns:SetDomainConfigRequest"/>
+  </message>
+  <message name="SetDomainConfigResponse">
+    <part name="body" element="tns:SetDomainConfigResponse"/>
+  </message>
+  
+  <message name="DeleteDomainRequest">
+    <part name="body" element="tns:DeleteDomainRequest"/>
+  </message>
+  <message name="DeleteDomainResponse">
+    <part name="body" element="tns:DeleteDomainResponse"/>
+  </message>
+  
+  <message name="StartDomainRequest">
+    <part name="body" element="tns:StartDomainRequest"/>
+  </message>
+  <message name="StartDomainResponse">
+    <part name="body" element="tns:StartDomainResponse"/>
+  </message>
+  
+  <message name="StopDomainRequest">
+    <part name="body" element="tns:StopDomainRequest"/>
+  </message>
+  <message name="StopDomainResponse">
+    <part name="body" element="tns:StopDomainResponse"/>
+  </message>
+  
+  <message name="RestartDomainRequest">
+    <part name="body" element="tns:RestartDomainRequest"/>
+  </message>
+  <message name="RestartDomainResponse">
+    <part name="body" element="tns:RestartDomainResponse"/>
+  </message>
+  
+  <message name="GetCryptoArtifactsRequest">
+    <part name="body" element="tns:GetCryptoArtifactsRequest"/>
+  </message>
+  <message name="GetCryptoArtifactsResponse">
+    <part name="body" element="tns:GetCryptoArtifactsResponse"/>
+  </message>
+
+  <message name="SetFileRequest">
+    <part name="body" element="tns:SetFileRequest"/>
+  </message>
+  <message name="SetFileResponse">
+    <part name="body" element="tns:SetFileResponse"/>
+  </message>
+
+  <message name="CompareConfigRequest">
+    <part name="body" element="tns:CompareConfigRequest"/>
+  </message>
+  <message name="CompareConfigResponse">
+    <part name="body" element="tns:CompareConfigResponse"/>
+  </message>
+
+  <message name="GetLogRequest">
+    <part name="body" element="tns:GetLogRequest"/>
+  </message>
+  <message name="GetLogResponse">
+    <part name="body" element="tns:GetLogResponse"/>
+  </message>
+
+  <portType name="app-mgmt-protocol">  
+    <operation name="Ping">
+        <input message="wsdltns:PingRequest"/>
+        <output message="wsdltns:PingResponse"/>
+        <fault name="PingFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="GetToken">
+        <input message="wsdltns:GetTokenRequest"/>
+        <output message="wsdltns:GetTokenResponse"/>
+        <fault name="GetTokenFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="Reboot">
+        <input message="wsdltns:RebootRequest"/>
+        <output message="wsdltns:RebootResponse"/>
+        <fault name="RebootFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="SetFirmware">
+        <input message="wsdltns:SetFirmwareRequest"/>
+        <output message="wsdltns:SetFirmwareResponse"/>
+        <fault name="SetFirmwareFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="Reinitialize">
+        <input message="wsdltns:ReinitializeRequest"/>
+        <output message="wsdltns:ReinitializeResponse"/>
+        <fault name="ReinitializeFault" message="wsdltns:Fault"/>
+    </operation>
+
+    <operation name="SecureBackup">
+        <input message="wsdltns:SecureBackupRequest"/>
+        <output message="wsdltns:SecureBackupResponse"/>
+        <fault name="SecureBackupFault" message="wsdltns:Fault"/>
+    </operation>
+
+    <operation name="SecureRestore">
+        <input message="wsdltns:SecureRestoreRequest"/>
+        <output message="wsdltns:SecureRestoreResponse"/>
+        <fault name="SecureRestoreFault" message="wsdltns:Fault"/>
+    </operation>
+
+    <operation name="WhenDeviceLastChanged">
+        <input message="wsdltns:WhenDeviceLastChangedRequest"/>
+        <output message="wsdltns:WhenDeviceLastChangedResponse"/>
+        <fault name="WhenDeviceLastChangedFault" message="wsdltns:Fault"/>
+    </operation>
+
+    <operation name="Quiesce">
+        <input message="wsdltns:QuiesceRequest"/>
+        <output message="wsdltns:QuiesceResponse"/>
+        <fault name="QuiesceFault" message="wsdltns:Fault"/>
+    </operation>
+
+    <operation name="Unquiesce">
+        <input message="wsdltns:UnquiesceRequest"/>
+        <output message="wsdltns:UnquiesceResponse"/>
+        <fault name="UnquiesceFault" message="wsdltns:Fault"/>
+    </operation>
+
+    <operation name="GetDeviceInfo">
+        <input message="wsdltns:GetDeviceInfoRequest"/>
+        <output message="wsdltns:GetDeviceInfoResponse"/>
+        <fault name="GetDeviceInfoFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="GetDeviceSettings">
+        <input message="wsdltns:GetDeviceSettingsRequest"/>
+        <output message="wsdltns:GetDeviceSettingsResponse"/>
+        <fault name="GetDeviceSettingsFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="SetDeviceSettings">
+        <input message="wsdltns:SetDeviceSettingsRequest"/>
+        <output message="wsdltns:SetDeviceSettingsResponse"/>
+        <fault name="SetDeviceSettingsFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="GetErrorReport">
+        <input message="wsdltns:GetErrorReportRequest"/>
+        <output message="wsdltns:GetErrorReportResponse"/>
+        <fault name="GetErrorReportFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="Subscribe">
+        <input message="wsdltns:SubscribeRequest"/>
+        <output message="wsdltns:SubscribeResponse"/>
+        <fault name="SubscribeFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="Unsubscribe">
+        <input message="wsdltns:UnsubscribeRequest"/>
+        <output message="wsdltns:UnsubscribeResponse"/>
+        <fault name="UnsubscribeFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="GetDomainList">
+        <input message="wsdltns:GetDomainListRequest"/>
+        <output message="wsdltns:GetDomainListResponse"/>
+        <fault name="GetDomainListFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="GetDomainStatus">
+        <input message="wsdltns:GetDomainStatusRequest"/>
+        <output message="wsdltns:GetDomainStatusResponse"/>
+        <fault name="GetDomainStatusFault" message="wsdltns:Fault"/>
+    </operation>
+
+    <operation name="GetDomainExport">
+        <input message="wsdltns:GetDomainExportRequest"/>
+        <output message="wsdltns:GetDomainExportResponse"/>
+        <fault name="GetDomainExportFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="SetDomainExport">
+        <input message="wsdltns:SetDomainExportRequest"/>
+        <output message="wsdltns:SetDomainExportResponse"/>
+        <fault name="SetDomainExportFault" message="wsdltns:Fault"/>
+    </operation>
+        
+    <operation name="GetDomainConfig">
+        <input message="wsdltns:GetDomainConfigRequest"/>
+        <output message="wsdltns:GetDomainConfigResponse"/>
+        <fault name="GetDomainConfigFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="SetDomainConfig">
+        <input message="wsdltns:SetDomainConfigRequest"/>
+        <output message="wsdltns:SetDomainConfigResponse"/>
+        <fault name="SetDomainConfigFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="DeleteDomain">
+        <input message="wsdltns:DeleteDomainRequest"/>
+        <output message="wsdltns:DeleteDomainResponse"/>
+        <fault name="DeleteDomainFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="StartDomain">
+        <input message="wsdltns:StartDomainRequest"/>
+        <output message="wsdltns:StartDomainResponse"/>
+        <fault name="StartDomainFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="StopDomain">
+        <input message="wsdltns:StopDomainRequest"/>
+        <output message="wsdltns:StopDomainResponse"/>
+        <fault name="StopDomainFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="RestartDomain">
+        <input message="wsdltns:RestartDomainRequest"/>
+        <output message="wsdltns:RestartDomainResponse"/>
+        <fault name="RestartDomainFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="GetCryptoArtifacts">
+        <input message="wsdltns:GetCryptoArtifactsRequest"/>
+        <output message="wsdltns:GetCryptoArtifactsResponse"/>
+        <fault name="GetCryptoArtifactsFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="SetFile">
+        <input message="wsdltns:SetFileRequest"/>
+        <output message="wsdltns:SetFileResponse"/>
+        <fault name="SetFileFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="CompareConfig">
+        <input message="wsdltns:CompareConfigRequest"/>
+        <output message="wsdltns:CompareConfigResponse"/>
+        <fault name="CompareConfigFault" message="wsdltns:Fault"/>
+    </operation>
+    
+    <operation name="GetLog">
+        <input message="wsdltns:GetLogRequest"/>
+        <output message="wsdltns:GetLogResponse"/>
+        <fault name="GetLogFault" message="wsdltns:Fault"/>
+    </operation>
+  </portType>
+
+  <binding name="app-mgmt-protocol-soap" type="wsdltns:app-mgmt-protocol">
+    <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    
+    <operation name="Ping">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="PingRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="PingResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="PingFault">
+            <wsdlsoap:fault name="PingFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="GetToken">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="GetTokenRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="GetTokenResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="GetTokenFault">
+            <wsdlsoap:fault name="GetTokenFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="Reboot">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="RebootRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="RebootResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="RebootFault">
+            <wsdlsoap:fault name="RebootFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="SetFirmware">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="SetFirmwareRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="SetFirmwareResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="SetFirmwareFault">
+            <wsdlsoap:fault name="SetFirmwareFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="Reinitialize">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="ReinitializeRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="ReinitializeResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="ReinitializeFault">
+            <wsdlsoap:fault name="ReinitializeFault" use="literal"/>
+        </fault>
+    </operation>
+
+  <operation name="SecureBackup">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="SecureBackupRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="SecureBackupResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="SecureBackupFault">
+            <wsdlsoap:fault name="SecureBackupFault" use="literal"/>
+        </fault>
+    </operation>
+
+    <operation name="SecureRestore">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="SecureRestoreRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="SecureRestoreResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="SecureRestoreFault">
+            <wsdlsoap:fault name="SecureRestoreFault" use="literal"/>
+        </fault>
+    </operation>
+
+  <operation name="WhenDeviceLastChanged">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="WhenDeviceLastChangedRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="WhenDeviceLastChangedResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="WhenDeviceLastChangedFault">
+            <wsdlsoap:fault name="WhenDeviceLastChangedFault" use="literal"/>
+        </fault>
+    </operation>
+
+    <operation name="Quiesce">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="QuiesceRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="QuiesceResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="QuiesceFault">
+            <wsdlsoap:fault name="QuiesceFault" use="literal"/>
+        </fault>
+    </operation> 
+
+    <operation name="Unquiesce">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="UnquiesceRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="UnquiesceResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="UnquiesceFault">
+            <wsdlsoap:fault name="UnquiesceFault" use="literal"/>
+        </fault>
+    </operation> 
+
+    <operation name="GetDeviceInfo">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="GetDeviceInfoRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="GetDeviceInfoResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="GetDeviceInfoFault">
+            <wsdlsoap:fault name="GetDeviceInfoFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="GetDeviceSettings">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="GetDeviceSettingsRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="GetDeviceSettingsResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="GetDeviceSettingsFault">
+            <wsdlsoap:fault name="GetDeviceSettingsFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="SetDeviceSettings">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="SetDeviceSettingsRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="SetDeviceSettingsResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="SetDeviceSettingsFault">
+            <wsdlsoap:fault name="SetDeviceSettingsFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="GetErrorReport">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="GetErrorReportRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="GetErrorReportResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="GetErrorReportFault">
+            <wsdlsoap:fault name="GetErrorReportFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="Subscribe">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="SubscribeRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="SubscribeResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="SubscribeFault">
+            <wsdlsoap:fault name="SubscribeFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="Unsubscribe">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="UnsubscribeRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="UnsubscribeResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="UnsubscribeFault">
+            <wsdlsoap:fault name="UnsubscribeFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="GetDomainList">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="GetDomainListRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="GetDomainListResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="GetDomainListFault">
+            <wsdlsoap:fault name="GetDomainListFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="GetDomainStatus">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="GetDomainStatusRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="GetDomainStatusResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="GetDomainStatusFault">
+            <wsdlsoap:fault name="GetDomainStatusFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="GetDomainExport">
+      <wsdlsoap:operation soapAction="" style="document"/>
+      <input name="GetDomainExportRequest">
+        <wsdlsoap:body use="literal"/>
+      </input>
+      <output name="GetDomainExportResponse">
+        <wsdlsoap:body use="literal"/>
+      </output>
+      <fault name="GetDomainExportFault">
+        <wsdlsoap:fault name="GetDomainExportFault" use="literal"/>
+      </fault>
+    </operation>
+    
+    <operation name="SetDomainExport">
+      <wsdlsoap:operation soapAction="" style="document"/>
+      <input name="SetDomainExportRequest">
+        <wsdlsoap:body use="literal"/>
+      </input>
+      <output name="SetDomainExportResponse">
+        <wsdlsoap:body use="literal"/>
+      </output>
+      <fault name="SetDomainExportFault">
+        <wsdlsoap:fault name="SetDomainExportFault" use="literal"/>
+      </fault>
+    </operation>
+    
+    <operation name="GetDomainConfig">
+      <wsdlsoap:operation soapAction="" style="document"/>
+      <input name="GetDomainConfigRequest">
+        <wsdlsoap:body use="literal"/>
+      </input>
+      <output name="GetDomainConfigResponse">
+        <wsdlsoap:body use="literal"/>
+      </output>
+      <fault name="GetDomainConfigFault">
+        <wsdlsoap:fault name="GetDomainConfigFault" use="literal"/>
+      </fault>
+    </operation>
+    
+    <operation name="SetDomainConfig">
+      <wsdlsoap:operation soapAction="" style="document"/>
+      <input name="SetDomainConfigRequest">
+        <wsdlsoap:body use="literal"/>
+      </input>
+      <output name="SetDomainConfigResponse">
+        <wsdlsoap:body use="literal"/>
+      </output>
+      <fault name="SetDomainConfigFault">
+        <wsdlsoap:fault name="SetDomainConfigFault" use="literal"/>
+      </fault>
+    </operation>
+    
+    <operation name="DeleteDomain">    
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="DeleteDomainRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="DeleteDomainResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="DeleteDomainFault">
+            <wsdlsoap:fault name="DeleteDomainFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="StartDomain">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="StartDomainRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="StartDomainResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="StartDomainFault">
+            <wsdlsoap:fault name="StartDomainFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="StopDomain">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="StopDomainRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="StopDomainResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="StopDomainFault">
+            <wsdlsoap:fault name="StopDomainFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="RestartDomain">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="RestartDomainRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="RestartDomainResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="RestartDomainFault">
+            <wsdlsoap:fault name="RestartDomainFault" use="literal"/>
+        </fault>
+    </operation>
+        
+    <operation name="GetCryptoArtifacts">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="GetCryptoArtifactsRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="GetCryptoArtifactsResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="GetCryptoArtifactsFault">
+            <wsdlsoap:fault name="GetCryptoArtifactsFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="SetFile">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="SetFileRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="SetFileResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="SetFileFault">
+            <wsdlsoap:fault name="SetFileFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="CompareConfig">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="CompareConfigRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="CompareConfigResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="CompareConfigFault">
+            <wsdlsoap:fault name="CompareConfigFault" use="literal"/>
+        </fault>
+    </operation>
+    
+    <operation name="GetLog">
+        <wsdlsoap:operation soapAction="" style="document"/>
+        <input name="GetLogRequest">
+            <wsdlsoap:body use="literal"/>
+        </input>
+        <output name="GetLogResponse">
+            <wsdlsoap:body use="literal"/>
+        </output>
+        <fault name="GetLogFault">
+            <wsdlsoap:fault name="GetLogFault" use="literal"/>
+        </fault>
+    </operation>
+  </binding>
+
+  <service name="app-mgmt-protocol">
+    <port name="app-mgmt-protocol" binding="wsdltns:app-mgmt-protocol-soap">    
+        <documentation>
+            <wsi:Claim conformsTo="http://ws-i.org/profiles/basic/1.0"></wsi:Claim>
+        </documentation>
+        
+        <wsdlsoap:address location="https://*host:port*/service/mgmt/amp/2.0"/>
+    </port>
+  </service>
+
+  <!-- SOAP 1.2 bindings are generated by xmlmgmt-produce-wsdl.xsl -->
+
+</definitions>
