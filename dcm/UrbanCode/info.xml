@@ -60,9 +60,7 @@
   For example 
   https://github.com/...
   -->
-  <!--
-  <source url=""/>
-  -->
+  <source url="https://github.com/ibm-datapower/datapower-configuration-manager"/>
   <!-- 
   **license type is NOT required**
   
@@ -154,7 +152,7 @@
       you should just append to the existing 'LATEST' tag.
       -->
 	  
-	 <release-note plugin-version="1"> Initial release. </release-note>
+	 <release-note plugin-version="1.0.0"> Initial release. </release-note>
     
   </release-notes>
 </pluginInfo>
