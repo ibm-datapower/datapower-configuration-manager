@@ -1,6 +1,6 @@
 # DataPower Configuration Manager (DCM)
 
-DCM is a package for dealing with IBM WebSphere DataPower configuration management.
+DCM is a package for dealing with IBM DataPower configuration management.
 It provides an Ant-based command line tool and a plugin for IBM Rational UrbanCode 
 Deploy (UCD).
 
