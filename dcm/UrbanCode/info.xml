@@ -29,11 +29,11 @@
   
   <author name="IBM">
     <organization>IBM</organization>
-    <email>regroot@us.ibm.com</email>
-    <website>http://ibm.com</website>
+    <email>ucplugin@us.ibm.com</email>
+    <website>https://www.ibmdw.net/urbancode/plugins/</website>
     <bio/>
   </author>
-  
+   
   <!--
   
   **intergration type IS Required**
@@ -104,7 +104,7 @@
   -->
   
   <related-info>
-    <link description="Link to the DataPower version 7.0 support web site" title="DataPower" type="WEBSITE" url="http://www-01.ibm.com/support/knowledgecenter/SS9H2Y_7.0.0/com.ibm.dp.doc/welcome.html"/>
+    <link description="Please visit the DataPower version 7.0 support web site" title="IBM WebSphere DataPower Homepage" type="WEBSITE" url="http://www-01.ibm.com/support/knowledgecenter/SS9H2Y_7.0.0/com.ibm.dp.doc/welcome.html"/>
   </related-info>
   
   <!-- 
@@ -152,7 +152,8 @@
       you should just append to the existing 'LATEST' tag.
       -->
 	  
-	 <release-note plugin-version="1.0.0"> Initial release. </release-note>
+    <release-note plugin-version="1"> Initial release. </release-note>
+    <release-note plugin-version="2"> Fix issue #1 - set ANT_HOME to plugin's version of Ant. </release-note>
     
   </release-notes>
 </pluginInfo>
