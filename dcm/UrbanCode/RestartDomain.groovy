@@ -22,7 +22,7 @@ try
   def apTool = new AirPluginTool(this.args[0], this.args[1]);
   def props = apTool.getStepProperties();
 
-  // Dump the inputs
+//// Dump the inputs
 //if (1) {
 //  args.each{ println 'arg ' + it }
 //  props.sort().each{ println 'property ' + it }
@@ -40,8 +40,8 @@ try
       property pwd (required) - password for the userid
       property domain (usually required) - the domain on the device
   */
+  def args = [];
   def ch = new CommandHelper(new File('.'));
-//ch.printEnvironmentVariables();
   def dcmDir = ch.getProcessBuilder().environment().get('PLUGIN_HOME') + '/dcm';
   ch.addEnvironmentVariable('ANT_HOME', dcmDir + '/apache-ant-1.9.4/')
   def isWindows = (System.getProperty('os.name') =~ /(?i)windows/).find()
@@ -51,14 +51,13 @@ try
           '-Ddcm.dir=' + dcmDir, 
           '-Dhost=' + props['hostname'], 
           '-Dport=' + props['portXMI'], 
+          '-Ddomain=' + props['domainName'], 
           '-Duid=' + props['uid'], 
           '-Dpwd=' + props['pwd'], 
-          '-Ddomain=' + props['domainName'], 
-          '-Ddomains=' + props['domainNames'].replace(' ', '\\ '), 
-          '-Dbackup.file=' + props['backupFile'], 
-          'backup-domains'];
+          'domain-restart'];
   ch.runCommand(args.join(' '), args);
 } catch (e) {
   println e
   System.exit 1
 }
+
