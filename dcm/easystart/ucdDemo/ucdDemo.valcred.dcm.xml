@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <dcm:valcred environment="dev" name="ucdDemo-backends">
+    <dcm:certificate file="${crypto.dir}\ResponderDev-sscert.pem"/>
+  </dcm:valcred>
+  
+  <dcm:valcred environment="sit" name="ucdDemo-backends">
+    <dcm:certificate file="${crypto.dir}\ResponderSIT-sscert.pem"/>
+  </dcm:valcred>
+  
+  <dcm:valcred environment="uat" name="ucdDemo-backends">
+    <dcm:certificate file="${crypto.dir}\ResponderUAT1-sscert.pem"/>
+    <dcm:certificate file="${crypto.dir}\ResponderUAT2-sscert.pem"/>
+  </dcm:valcred>
+  
+  <dcm:valcred environment="prod" name="ucdDemo-backends">
+    <dcm:certificate file="${crypto.dir}\ResponderProd1-sscert.pem"/>
+    <dcm:certificate file="${crypto.dir}\ResponderProd2-sscert.pem"/>
+  </dcm:valcred>
+  
+</dcm:definition>

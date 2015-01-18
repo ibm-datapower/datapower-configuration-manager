@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright 2014 IBM Corp.
+   Copyright 2014, 2015 IBM Corp.
   
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -1295,6 +1295,72 @@
         <domain>@{domain}</domain>
         <local>@{workdir}/${import_basename}</local>
         <deployment-policy-file>@{workdir}/4_gathered-deployment-policies.xml</deployment-policy-file>
+        <hostname>@{host}</hostname>
+        <uid>@{uid}</uid>
+        <pwd>@{pwd}</pwd>
+        <ignore-errors>@{ignore-errors}</ignore-errors>
+        <rewrite-local>@{rewrite-local}</rewrite-local>
+        <overwrite-files>@{overwrite-files}</overwrite-files>
+        <overwrite-objects>@{overwrite-objects}</overwrite-objects>
+        <dumpoutput>@{dumpoutput}</dumpoutput>
+      </wdp>
+      <!-- <echo>### $${import_success}=${import_success}</echo> -->
+      <!-- <echo>### $${import_errors}=${import_errors}</echo> -->
+      <if>
+        <and>
+          <istrue value="${import_success}"/>
+          <length string="${import_errors}" when="equal" length="0"/>
+        </and>
+        <then>
+          <echo>Successfully imported @{inputfile} into domain @{domain} on @{host}.</echo>
+        </then>
+        <else>
+          <echo>Raw response to importing @{inputfile}</echo>
+          <echo>${import_response}</echo>
+          <fail message="Failed to import @{inputfile} into domain @{domain} on @{host}."/>
+        </else>
+      </if>
+      
+    </sequential>
+    
+  </macrodef>
+  
+  
+  <!--
+    Import some DataPower export, applying a built-in deployment policy in the process.
+  -->
+  <macrodef name="importConfigDPO">
+    <attribute name="host"/>
+    <attribute name="port" default="5550"/>
+    <attribute name="uid"/>
+    <attribute name="pwd"/>
+    <attribute name="domain"/>
+    <attribute name="inputfile"/> <!-- name of DataPower export file -->
+    <attribute name="dpo"/> <!-- name of deployment policy object -->
+    <attribute name="dcmdir"/> <!-- directory where DCM is found -->
+    <attribute name="workdir"/> <!-- tmpdir where a directory can be created, if necessary -->
+    <attribute name="dumpinput" default="false"/>
+    <attribute name="dumpoutput" default="false"/>
+    <attribute name="ignore-errors" default="false"/>
+    <attribute name="rewrite-local" default="true"/>
+    <attribute name="overwrite-files" default="true"/>
+    <attribute name="overwrite-objects" default="true"/>
+    
+    <sequential> <!-- permit declaring some variables local in scope. -->
+      <local name="import_errors"/>
+      <local name="import_response"/>
+      <local name="import_success"/>
+      
+      <!--
+        Import the DataPower export file.
+      -->
+      <echo>Importing @{inputfile} into domain @{domain} on @{host}.</echo>
+      <wdp operation="ImportConfig" responseprop="import_response" successprop="import_success" xpathprop="import_errors" 
+        xpath="/env:Envelope/env:Body/soma:response/soma:import/import-results/exec-script-results/cfg-result[@status!='SUCCESS'] | /env:Envelope/env:Body/soma:response/soma:import/import-results/file-copy-log/file-result[not(@result='OK' or @result='ignored')] | /env:Envelope/env:Body/soma:response/soma:result"
+        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
+        <domain>@{domain}</domain>
+        <local>@{inputfile}</local>
+        <deployment-policy>@{dpo}</deployment-policy>
         <hostname>@{host}</hostname>
         <uid>@{uid}</uid>
         <pwd>@{pwd}</pwd>

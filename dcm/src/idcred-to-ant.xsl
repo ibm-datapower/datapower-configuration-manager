@@ -164,7 +164,17 @@
   
   
   <xsl:template match="dcm:idcred[@name != '']" mode="processDefinition">
-    
+<!--    
+    <xsl:element name="sequential">
+      <xsl:element name="echo">
+        <xsl:value-of select="'###'"/>
+      </xsl:element>
+      <xsl:element name="echoproperties"/>
+      <xsl:element name="echo">
+        <xsl:value-of select="'###'"/>
+      </xsl:element>
+    </xsl:element>
+-->    
     <!-- Generate ant script content to upload the key file and create a Crypto Key wrapper for it. -->
     <xsl:apply-templates select="dcm:key" mode="processDefinition"/>
     

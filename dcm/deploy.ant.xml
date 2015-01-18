@@ -118,13 +118,15 @@
 
   <description>Implement various DataPower deployment operations.</description>
   
+  <property name="dcm.build.version" value="1"/>
+  
   <!-- Ensure we know where DCM is located. -->
   <fail message="Please define the ANT property 'dcm.dir', which points to the directory where DCM is installed." unless="dcm.dir"/>
-  <available filepath="${dcm.dir}" file="dist/dcm.1.jar" property="dcm.dir.good"/>
-  <fail message="The Ant property 'dcm.dir' doesn't seem to point to DCM since ${dcm.dir}/dist/dcm.1.jar is not found." unless="dcm.dir.good"/>
+  <available filepath="${dcm.dir}" file="dist/dcm.${dcm.build.version}.jar" property="dcm.dir.good"/>
+  <fail message="The Ant property 'dcm.dir' doesn't seem to point to DCM since ${dcm.dir}/dist/dcm.${dcm.build.version}.jar is not found." unless="dcm.dir.good"/>
   
   <!-- Provide reasonable defaults for some optional properties. -->
-  <property name="dcm.jar" location="${dcm.dir}/dist/dcm.1.jar"/>
+  <property name="dcm.jar" location="${dcm.dir}/dist/dcm.${dcm.build.version}.jar"/>
   <property name="work.dir" location="./tmp"/>
   <property name="schema.dir" location="${dcm.dir}/schemas"/>
   <property name="dumpinput" value="false"/>
@@ -894,7 +896,10 @@
   </target>
   
   
-  <target name="import-changed" depends="-init-dir, check-access">
+  <target name="import-changed" depends="import-from-def"/>
+  
+  
+  <target name="import-from-def" depends="-init-dir, check-access">
     
     <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
     <fail message="The Ant property 'import.file' is required but not defined.  This is the .zip or .xcfg file to import into the domain." unless="import.file"/>
@@ -934,6 +939,35 @@
         inputfile="${import.file}"
         dcmdir="${dcm.dir}" workdir="${work.dir}" changes="${dcmdefinition}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     
+    </sequential>
+    
+  </target>
+  
+  
+  <target name="import-dpo" depends="-init-dir, check-access">
+    
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'import.file' is required but not defined.  This is the .zip or .xcfg file to import into the domain." unless="import.file"/>
+    <fail message="The Ant property 'deployment.policy.object' is required but not defined.  This name of a deployment policy object to apply during the import." unless="deployment.policy.object"/>
+    <if>
+      <not>
+        <available file="${import.file}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the import file : ${import.file}"/>
+      </then>
+    </if>
+    
+    <sequential>
+      
+      <!--
+        Import a plain .zip or .xcfg file into the domain, making no changes to the import objects or files.
+        In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+      -->
+      <importConfigDPO host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
+        inputfile="${import.file}" dpo="${deployment.policy.object}"
+        dcmdir="${dcm.dir}" workdir="${work.dir}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
+      
     </sequential>
     
   </target>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+
+  <dcm:deployment-policy environment="dev">
+    <modify-property name="ucdDemo-https" prop-name="LocalAddress" new-prop-value="192.168.13.79"/>
+  </dcm:deployment-policy>
+  
+  <dcm:deployment-policy environment="sit">
+    <modify-property name="ucdDemo-https" prop-name="LocalAddress" new-prop-value="192.168.13.71"/>
+  </dcm:deployment-policy>
+  
+  <dcm:deployment-policy environment="uat">
+    <modify-property name="ucdDemo-https" prop-name="LocalAddress" new-prop-value="192.168.13.72"/>
+  </dcm:deployment-policy>
+  
+  <dcm:deployment-policy environment="prod">
+    <modify-property name="ucdDemo-https" prop-name="LocalAddress" new-prop-value="192.168.13.74"/>
+  </dcm:deployment-policy>
+  
+</dcm:definition>

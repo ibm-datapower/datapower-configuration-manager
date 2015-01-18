@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <dcm:loadbalancergroup environment="dev" name="ucdDemo-backends">
+    <dcm:member server="192.168.13.89" port="443" enabled="true"/>
+  </dcm:loadbalancergroup>
+  
+  <dcm:loadbalancergroup environment="sit" name="ucdDemo-backends">
+    <dcm:member server="192.168.13.81" port="443" enabled="true"/>
+  </dcm:loadbalancergroup>
+  
+  <dcm:loadbalancergroup environment="uat" name="ucdDemo-backends">
+    <dcm:member server="192.168.13.82" port="443" enabled="true"/>
+    <dcm:member server="192.168.13.83" port="443" enabled="true"/>
+  </dcm:loadbalancergroup>
+  
+  <dcm:loadbalancergroup environment="prod" name="ucdDemo-backends">
+    <dcm:member server="192.168.13.84" port="443" enabled="true"/>
+    <dcm:member server="192.168.13.85" port="443" enabled="true"/>
+  </dcm:loadbalancergroup>
+  
+</dcm:definition>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <dcm:idcred environment="dev" name="ucdDemo-frontside">
+    <dcm:key file="${crypto.dir}\ucdDemoDev-privkey.pem"/>
+    <dcm:certificate file="${crypto.dir}\ucdDemoDev-sscert.pem"/>
+  </dcm:idcred>
+  
+  <dcm:idcred environment="sit" name="ucdDemo-frontside">
+    <dcm:key file="${crypto.dir}\ucdDemoSIT-privkey.pem"/>
+    <dcm:certificate file="${crypto.dir}\ucdDemoSIT-sscert.pem"/>
+  </dcm:idcred>
+  
+  <dcm:idcred environment="uat" name="ucdDemo-frontside">
+    <dcm:key file="${crypto.dir}\ucdDemoUAT-privkey.pem"/>
+    <dcm:certificate file="${crypto.dir}\ucdDemoUAT-sscert.pem"/>
+  </dcm:idcred>
+  
+  <dcm:idcred environment="prod" name="ucdDemo-frontside">
+    <dcm:key file="${crypto.dir}\ucdDemoProd-privkey.pem"/>
+    <dcm:certificate file="${crypto.dir}\ucdDemoProd-sscert.pem"/>
+  </dcm:idcred>
+  
+</dcm:definition>

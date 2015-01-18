@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright 2014 IBM Corp.
+ * Copyright 2014, 2015 IBM Corp.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
  <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     
   <header>
-    <identifier version="2" id="com.ibm.datapower" name="DataPower" />
+    <identifier version="4" id="com.ibm.datapower" name="DataPower" />
     <description>The IBM WebSphere DataPower plugin deploys DataPower services.</description>
     <tag>Infrastructure/WebSphere DataPower</tag>
   </header>
@@ -44,6 +44,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -56,9 +62,12 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="BackupDevice.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
       <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg value="-Ddevice.backup.file=@backupFile@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="backup-device"/>
     </command>
   </step-type>
   
@@ -88,6 +97,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -100,9 +115,14 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="BackupDomains.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Ddomains=@domainNames@"/> <!-- Escape blanks with backslashes! -->
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="-Dbackup.file=@backupFile@"/>
+      <arg value="backup-domains"/>
     </command>
   </step-type>
   
@@ -129,6 +149,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -141,9 +167,13 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="CheckpointDelete.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
       <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="-Dcheckpoint.name=@checkpoint@"/>
+      <arg value="checkpoint-delete"/>
     </command>
   </step-type>
   
@@ -170,6 +200,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -182,9 +218,13 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="CheckpointRestore.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="-Dcheckpoint.name=@checkpoint@"/>
+      <arg value="checkpoint-restore"/>
     </command>
   </step-type>
   
@@ -211,6 +251,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -223,9 +269,13 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="CheckpointSave.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="-Dcheckpoint.name=@checkpoint@"/>
+      <arg value="checkpoint-save"/>
     </command>
   </step-type>
   
@@ -249,6 +299,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -261,9 +317,12 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="CreateDomain.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Ddomain=@newDomainName@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="domain-create"/>
     </command>
   </step-type>
   
@@ -290,6 +349,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -302,9 +367,13 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="IDCredFromDef.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="-Didcred.file=@definitionFile@"/>
+      <arg value="idcred-from-def"/>
     </command>
   </step-type>
   
@@ -331,6 +400,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -343,9 +418,13 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="ValCredFromDef.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="-Dvalcred.file=@definitionFile@"/>
+      <arg value="valcred-from-def"/>
     </command>
   </step-type>
   
@@ -369,6 +448,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -381,9 +466,12 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="DeleteDomain.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="domain-delete"/>
     </command>
   </step-type>
   
@@ -407,6 +495,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -419,9 +513,12 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="HostAliasRemove.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="-Dhost-alias.name=@aliasName@"/>
+      <arg value="host-alias-remove"/>
     </command>
   </step-type>
   
@@ -456,6 +553,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -468,9 +571,15 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="HostAliasSet.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="-Dhost-alias.name=@aliasName@"/>
+      <arg value="-Dhost-alias.ip=@aliasIP@"/>
+      <arg value="-Dhost-alias.comment=@comment@"/>
+      <arg value="-Dhost-alias.mAdminState=@mAdminState@"/>
+      <arg value="host-alias-set"/>
     </command>
   </step-type>
   
@@ -497,6 +606,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -509,12 +624,126 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="ImportBasic.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="-Dimport.file=@fileImport@"/>
+      <arg value="import-from-def"/>
     </command>
   </step-type>
-  
+   
+   
+   
+   <step-type name="Import (Definition)">
+     <description>Import a DataPower export file (e.g. .zip) into a domain</description>
+     <properties>
+       <property name="fileImport">
+         <property-ui type="textBox" default-value="" label="Import File" description="DataPower export file to import" />
+       </property>
+       <property name="fileDefinition">
+         <property-ui type="textBox" default-value="" label="Definition File" description="DCM definitions file" />
+       </property>
+       <property name="domainName">
+         <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the target domain" />
+       </property>
+       <property name="hostname">
+         <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+       </property>
+       <property name="uid">
+         <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+       </property>
+       <property name="pwd">
+         <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+       </property>
+       <property name="portXMI">
+         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+       </property>
+       <property name="environment">
+         <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+       </property>
+       <property name="addlProperties">
+         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+       </property>
+     </properties>
+     <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+     <command program="${GROOVY_HOME}/bin/groovy">
+       <arg value="-cp" />
+       <arg file="classes" />
+       <arg file="RunDeployDotAnt.groovy" />
+       <arg file="${PLUGIN_INPUT_PROPS}" />
+       <arg file="${PLUGIN_OUTPUT_PROPS}" />
+       <arg value="-Ddomain=@domainName@"/>
+       <arg value="-Denvironment=@environment@"/>
+       <arg value="-Dimport.file=@fileImport@"/>
+       <arg value="-Dimport.changes.file=@fileDefinition@"/>
+       <arg value="import-from-def"/>
+     </command>
+   </step-type>
+   
+   
+   
+   <step-type name="Import (Deployment Policy Object)">
+     <description>Import a DataPower export file (e.g. .zip) into a domain using a deployment policy object</description>
+     <properties>
+       <property name="fileImport">
+         <property-ui type="textBox" default-value="" label="Import File" description="DataPower export file to import" />
+       </property>
+       <property name="deploymentPolicyObject">
+         <property-ui type="textBox" default-value="" label="Deployment policy object name" description="Deployment policy object (already present in the domain) to be applied during import" />
+       </property>
+       <property name="domainName">
+         <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the target domain" />
+       </property>
+       <property name="hostname">
+         <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+       </property>
+       <property name="uid">
+         <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+       </property>
+       <property name="pwd">
+         <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+       </property>
+       <property name="portXMI">
+         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+       </property>
+       <property name="environment">
+         <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+       </property>
+       <property name="addlProperties">
+         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+       </property>
+     </properties>
+     <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+     <command program="${GROOVY_HOME}/bin/groovy">
+       <arg value="-cp" />
+       <arg file="classes" />
+       <arg file="RunDeployDotAnt.groovy" />
+       <arg file="${PLUGIN_INPUT_PROPS}" />
+       <arg file="${PLUGIN_OUTPUT_PROPS}" />
+       <arg value="-Ddomain=@domainName@"/>
+       <arg value="-Denvironment=@environment@"/>
+       <arg value="-Dimport.file=@fileImport@"/>
+       <arg value="-Ddeployment.policy.object=@deploymentPolicyObject@"/>
+       <arg value="import-dpo"/>
+     </command>
+   </step-type>
+   
   
   
   <step-type name="Load Balancer Group from Definition">
@@ -538,6 +767,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -550,9 +785,13 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="LBGFromDef.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="-Dlbg.file=@definitionFile@"/>
+      <arg value="load-balancer-group-from-def"/>
     </command>
   </step-type>
   
@@ -576,6 +815,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -588,9 +833,12 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="QuiesceDomain.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="domain-quiesce"/>
     </command>
   </step-type>
   
@@ -620,6 +868,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -632,9 +886,14 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="RestoreBackup.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Ddomains=@domainNames@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="-Dbackup.file=@backupFile@"/>
+      <arg value="restore-backup"/>
     </command>
   </step-type>
   
@@ -658,6 +917,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -670,9 +935,12 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="SaveConfig.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="save"/>
     </command>
   </step-type>
   
@@ -707,6 +975,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -719,9 +993,13 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="SetLogLevel.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="-Dlog.level=@loglevel@"/>
+      <arg value="set-log-level"/>
     </command>
   </step-type>
   
@@ -745,6 +1023,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -757,9 +1041,12 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="UnquiesceDomain.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="domain-unquiesce"/>
     </command>
   </step-type>
   
@@ -789,6 +1076,12 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
       </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true" />
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true" />
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -801,9 +1094,14 @@
     <command program="${GROOVY_HOME}/bin/groovy">
       <arg value="-cp" />
       <arg file="classes" />
-      <arg file="UploadDir.groovy" />
+      <arg file="RunDeployDotAnt.groovy" />
       <arg file="${PLUGIN_INPUT_PROPS}" />
-      <arg file="${PLUGIN_OUTPUT_PROPS}" />    
+      <arg file="${PLUGIN_OUTPUT_PROPS}" />
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="-Dupload-dir.from=@fromDir@"/>
+      <arg value="-Dupload-dir.to=@toDir@"/>
+      <arg value="upload-dir"/>
     </command>
   </step-type>
   

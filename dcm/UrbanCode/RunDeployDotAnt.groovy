@@ -1,0 +1,101 @@
+/**
+ * Copyright 2015 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **/
+ 
+import com.urbancode.air.AirPluginTool;
+import com.urbancode.air.CommandHelper
+
+try 
+{
+  def apTool = new AirPluginTool(this.args[0], this.args[1]);
+  def props = apTool.getStepProperties();
+
+  def debug = false
+
+  // Dump the inputs
+  if (debug) {
+    args.each{ println 'arg ' + it }
+    props.sort().each{ println 'property ' + it }
+  }
+
+  def ch = new CommandHelper(new File('.'));
+  def dcmDir = ch.getProcessBuilder().environment().get('PLUGIN_HOME') + '/dcm';
+  ch.addEnvironmentVariable('ANT_HOME', dcmDir + '/apache-ant-1.9.4/')
+  
+  // Construct the initial set of arguments for the ant command.
+  def isWindows = (System.getProperty('os.name') =~ /(?i)windows/).find()
+  def antexe = isWindows ? "ant.bat" : "ant"
+  def antargs = [dcmDir + '/apache-ant-1.9.4/bin/' + antexe, 
+                 '-f', dcmDir + '/deploy.ant.xml', 
+                 '-Ddcm.dir=' + dcmDir, 
+                 '-Dhost=' + props['hostname'], 
+                 '-Dport=' + props['portXMI'], 
+                 '-Duid=' + props['uid'], 
+                 '-Dpwd=' + props['pwd']]
+
+  // When addlProperties != '' then we pick out one or more mappings from UCD properties
+  // to additional ant properties.  For example, crypto.dir=${p:resource/work.dir}${p:component.name}/ucdDemo/crypto
+  // will pass -Dcrypto.dir=... to deploy.ant.xml. Multiple properties may be defined, separated by '~' characters.
+  def addlProps = props['addlProperties']
+  if (addlProps.size() > 0) {
+    def definitions = addlProps.tokenize('~')
+    definitions.each{
+      if (debug) {
+        println '### additional property : ' + it
+      }
+      def property = it.toString().tokenize('=')
+      if (property.size() == 2 && property[0].size() > 0) {
+        if (debug) {
+          println '###   property ' + property[0] + '=' + property[1]
+        }
+        antargs += '-D' + property[0] + '=' + property[1]
+      } else {
+        println '!!! Ignoring malformed additional property: ' + it
+      }
+    }
+  }
+
+  // Arguments 2-N on the command line are passed to deploy.ant.xml after replacing any @xxx@ values,
+  // where xxx is the name of some property (e.g. domainName or environment).
+  for (int i = 2; i < args.size(); i += 1) {
+    def arg = args[i];
+    if (debug) {
+      println '### arg[' + i + ']=' + arg
+    }
+    // Check the argument for occurrences of every property.
+    props.each{ 
+      it.toString().find('([^=]+)=(.*)') { match, propname, propvalue ->
+        // The property=value has been split into propname and propvalue.
+        if (debug) {
+          println '     ' + propname + '=' + propvalue
+        }
+        // Replace every occurrence of the @xxx@ property name with the property value.
+        arg = arg.replaceAll('@(' + propname + ')@', { Object[] pieces -> props[pieces[1].toString()] })
+        if (debug) {
+          println '  ->' + arg
+        }
+      }
+    }
+    if (debug) {
+      println '%%% arg[' + i + ']=' + arg
+    }
+    antargs += arg
+  }
+  ch.runCommand(antargs.join(' '), antargs);
+} catch (e) {
+  println e
+  System.exit 1
+}
+

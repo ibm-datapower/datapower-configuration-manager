@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright 2015 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **/
+-->
+<!--
+  See the DataPower Configuration Manager wiki page for "Easy Start" for details on how to customize this file
+  to make it suitable for your environment.
+    
+-->
+<project name="easyStart" default="help" xmlns:props="antlib:ibm">
+
+  <description>Automated DataPower deployment/management operations</description>
+
+  <property name="dcm.dir" location="/home/regroot/projects/dcm/dcm"/>
+  <property name="dcm.build.version" value="1"/>
+  
+  <!-- Ensure we know where DCM is located. -->
+  <available filepath="${dcm.dir}" file="dist/dcm.${dcm.build.version}.jar" property="dcm.dir.good"/>
+  <fail message="The Ant property 'dcm.dir' doesn't seem to point to DCM since ${dcm.dir}/dist/dcm.${dcm.build.version}.jar is not found." unless="dcm.dir.good"/>
+  
+  <!-- 
+    Load the device properties file, which, by convention, defines dcm.dir. 
+  -->
+  <fail message="The 'device' property is required (e.g. dp01)" unless="device"/>
+  <available file="${user.dir}/device.${device}.properties" property="device.is.available"/>
+  <fail message="The ${user.dir}/device.${device}.properties file cannot be read." unless="device.is.available"/>
+  <loadproperties srcfile="${user.dir}/device.${device}.properties"/>
+  <echo>Loaded device properties from ${user.dir}/device.${device}.properties.</echo>
+  
+  <!-- Provide reasonable defaults for some optional properties. -->
+  <property name="dcm.jar" location="${dcm.dir}/dist/dcm.${dcm.build.version}.jar"/>
+  <property name="work.dir" location="${user.dir}/tmp"/>
+  <property name="schema.dir" location="${dcm.dir}/schemas"/>
+  
+  <available file="${dcm.jar}" property="jar.is.available"/>
+  <fail message="The DCM jar file is not found: ${dcm.jar}" unless="jar.is.available"/>
+  
+  
+  <!--
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      Provide necessary definitions
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  -->
+
+  <!--
+    (This block, along with the xmlns:props="antlib:ibm" above, allows the use of
+     nested Ant properties, which is sometimes useful.  For example, suppose the ant property
+     "environment" is defined as "SIT" and the ant property "xyz" is defined as "somedirectory_${environment}".
+     This <propertyhelper> definition means that ${xyz} correctly turns into "somedirectory_SIT".)
+  -->
+  <typedef uri="antlib:ibm" resource="com/ibm/antlib.xml" classpath="${dcm.jar}"/>
+  <propertyhelper>
+    <props:nested/>
+  </propertyhelper>
+
+
+  <include file="${dcm.dir}/src/dcm-taskdefs.ant.xml"/> <!-- pull in standard dcm taskdefs/macrodefs such as <if> and <createDomain> -->
+  
+  <!-- At this point we have all the most interesting taskdefs. -->
+  
+  <!-- 
+    Pull the required code from source control.
+  -->
+  <!-- ***************************************************************** -->
+  
+
+  <!-- Now we have all the files from source control, so we can load environment-specific properties. -->
+  <loadproperties srcfile="${user.dir}/env.${environment}.properties"/>
+  <echo>Loaded environment properties from ${user.dir}/env.${environment}.properties</echo>
+  
+  <!-- Load any service-specific properties. -->
+  <if>
+    <available file="${user.dir}/${service}/${service}.properties"/>
+    <then>
+      <loadproperties srcfile="${user.dir}/${service}/${service}.properties"/>
+      <echo>Loaded service properties from ${user.dir}/${service}/${service}.properties</echo>
+    </then>
+  </if>
+  
+  <!-- Ensure that we have the password for the target appliance and uid.  Prompt if necessary. -->
+  <if>
+    <not>
+      <isset property="pwd"/>
+    </not>
+    <then>
+      <input message="What is the password for '${uid}' on ${host}? " addproperty="pwd">
+        <handler type="secure"/>
+      </input>
+    </then>
+  </if>
+  
+  <property name="port" value="5550"/> <!-- Provide a default when this property hasn't been defined before. -->
+  
+  
+  <!--
+    Ensure the temp directory exists and is empty.
+  -->
+  <delete dir="${work.dir}"/>
+  <mkdir dir="${work.dir}"/>
+  
+
+  <!--
+    This is sneaky.  We load deploy.ant.xml, thus getting all the targets that it defines.  These are automatically 
+    included (along with any targets defined in this file) in handling the targets specified on the command line.  
+    If no targets were specified on the command line then we drop through to the 'help' target, which was specified 
+    as the default target at the very beginning of this build file.
+  -->
+  <import file="${dcm.dir}/deploy.ant.xml"/>
+  
+  <target name="help">
+    <echo>ant -f easyStart.ant.xml -Ddevice=dddd [ -Denvironment=eeee ] [ -Dservice=ssss ] tasks...</echo>
+    <echo> where:</echo>
+    <echo>   dddd - device id (e.g. dp01)</echo>
+    <echo>   eeee - environment name (e.g. sit)</echo>
+    <echo>   ssss - service name (e.g. ucdDemo)</echo>
+    <echo> tasks - see deploy.ant.xml for full list of available tasks (e.g. domain-recreate import-changed save)</echo>
+  </target>
+
+</project>
