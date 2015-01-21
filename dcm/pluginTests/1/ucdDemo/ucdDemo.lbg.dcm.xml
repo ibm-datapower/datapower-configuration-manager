@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <dcm:loadbalancergroup environment="test" name="ucdDemo-backends">
+    <dcm:member server="192.168.13.89" port="443" enabled="true"/>
+  </dcm:loadbalancergroup>
+  
+</dcm:definition>

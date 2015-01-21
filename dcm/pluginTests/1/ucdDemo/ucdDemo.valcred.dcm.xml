@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <dcm:valcred environment="test" name="ucdDemo-backends">
+    <dcm:certificate file="${crypto.dir}\ResponderDev-sscert.pem"/>
+  </dcm:valcred>
+  
+</dcm:definition>

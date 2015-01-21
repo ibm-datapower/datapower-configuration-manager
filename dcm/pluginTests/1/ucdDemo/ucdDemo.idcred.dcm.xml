@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <dcm:idcred environment="test" name="ucdDemo-frontside">
+    <dcm:key file="${crypto.dir}\ucdDemoDev-privkey.pem"/>
+    <dcm:certificate file="${crypto.dir}\ucdDemoDev-sscert.pem"/>
+  </dcm:idcred>
+  
+</dcm:definition>

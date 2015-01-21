@@ -19,11 +19,11 @@
  <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     
   <header>
-    <identifier version="4" id="com.ibm.datapower" name="DataPower" />
+    <identifier version="5" id="com.ibm.datapower" name="DataPower" />
     <description>The IBM WebSphere DataPower plugin deploys DataPower services.</description>
     <tag>Infrastructure/WebSphere DataPower</tag>
   </header>
-  
+   
   
   
   <step-type name="Backup Device">
@@ -741,6 +741,56 @@
        <arg value="-Dimport.file=@fileImport@"/>
        <arg value="-Ddeployment.policy.object=@deploymentPolicyObject@"/>
        <arg value="import-dpo"/>
+     </command>
+   </step-type>
+   
+   
+   
+   <step-type name="Invoke any deploy.ant.xml target">
+     <description>Invoke any deploy.ant.xml target - prefer predefined steps to this one</description>
+     <properties>
+       <property name="targetName">
+         <property-ui type="textBox" default-value="" label="Target name" description="Name of the target (e.g. domain-restart)" />
+       </property>
+       <property name="domainName">
+         <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the target domain" />
+       </property>
+       <property name="environment">
+         <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" />
+       </property>
+       <property name="addlProperties">
+         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" />
+       </property>
+       <property name="hostname">
+         <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true" />
+       </property>
+       <property name="uid">
+         <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true" />
+       </property>
+       <property name="pwd">
+         <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true" />
+       </property>
+       <property name="portXMI">
+         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true" />
+       </property>
+     </properties>
+     <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+     <command program="${GROOVY_HOME}/bin/groovy">
+       <arg value="-cp" />
+       <arg file="classes" />
+       <arg file="RunDeployDotAnt.groovy" />
+       <arg file="${PLUGIN_INPUT_PROPS}" />
+       <arg file="${PLUGIN_OUTPUT_PROPS}" />
+       <arg value="-Ddomain=@domainName@"/>
+       <arg value="-Denvironment=@environment@"/>
+       <arg value="@targetName@"/>
      </command>
    </step-type>
    

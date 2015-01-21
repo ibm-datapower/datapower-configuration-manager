@@ -88,14 +88,22 @@ try
         }
       }
     }
-    if (debug) {
-      println '%%% arg[' + i + ']=' + arg
+    if (arg.matches('-D[^=]+=.+') || arg.contains('=') == false) {
+	  // Properly formed -Dxxx=yyy or simply an ant target (e.g. idcred-from-def) which doesn't contain an equal sign.
+      if (debug) {
+        println '%%% arg[' + i + ']=' + arg
+      }
+      antargs += arg
+    } else {
+      if (debug) {
+        println '%%% ignoring arg[' + i + ']=' + arg
+      }
     }
-    antargs += arg
   }
   ch.runCommand(antargs.join(' '), antargs);
 } catch (e) {
   println e
   System.exit 1
 }
+
 
