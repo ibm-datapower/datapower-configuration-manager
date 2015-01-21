@@ -15,9 +15,11 @@ After you obtain the source either via a Git client or by downloading the reposi
 you can build the code using Apache Ant. Enter the dcm directory and issue the command below (assumes
 Apache Ant is in the path):
 
-    ant -f distro.ant.xml -Ddcm.version=1.0.1
+    ant clean build
 
-The UCD plugin will be found in dcm-distros/dcm_1.0.1_plugin.zip
+The UCD plugin will be found in dist/dcm.1.plugin.zip
+
+See Quick Start in the wiki for more details on installation.
 
 ## Contributing
 
