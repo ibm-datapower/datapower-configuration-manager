@@ -790,7 +790,6 @@
   <!--
     Firmware rollback to previous version.
   -->
-<!--  
   <macrodef name="firmwareRollback">
     <attribute name="host"/>
     <attribute name="port" default="5550"/>
@@ -803,7 +802,7 @@
     <sequential>
       <local name="success-update"/>
       
-      <! - - Rollback to previous firmware (and other aspects of file system!). - - >
+      <!-- Rollback to previous firmware (and other aspects of file system!). -->
       <wdp operation="FirmwareRollback" successprop="success-update">
         <hostname>@{host}</hostname>
         <uid>@{uid}</uid>
@@ -823,12 +822,10 @@
     </sequential>
     
   </macrodef>
--->  
   
   <!--
     Firmware update based on the supplied .scrypt2, .scrypt3, or .scrypt4 file. (Or later, who knows?)
   -->
-<!--  
   <macrodef name="firmwareUpdate">
     <attribute name="host"/>
     <attribute name="port" default="5550"/>
@@ -847,13 +844,13 @@
       <basename property="basename-scryptfile" file="@{scryptfile}"/>
       <dirname property="dirname-scryptfile" file="@{scryptfile}"/>
       
-      <! - - Upload the firmware update file. - - >
+      <!-- Upload the firmware update file. -->
       <echo>Uploading the firmware update</echo>
       <dpupload dir="${dirname-scryptfile}" target="image:///" domain="default" host="@{host}" port="@{port}" uid="@{uid}" pwd="@{pwd}">
         <include name="${basename-scryptfile}"/>
       </dpupload>
       
-      <! - - Update that puppy. - - >
+      <!-- Update that puppy. -->
       <echo>Applying the firmware update, followed automatically by a reboot of the appliance.  This requires a few minutes to complete.</echo>
       <wdp operation="BootUpdate" successprop="success-update">
         <name>${basename-scryptfile}</name>
@@ -875,7 +872,6 @@
     </sequential>
     
   </macrodef>
--->  
   
   <!--
     

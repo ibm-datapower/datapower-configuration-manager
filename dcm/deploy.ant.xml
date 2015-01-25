@@ -48,6 +48,8 @@
   idcred-from-p12 - create an idcred object after uploading a #PKCS12 file containing matching key and certificate
   
   import-changed - import a specified .zip or .xcfg file into the domain, making changes along the way
+  import-from-def - ditto
+  import-dpo - import a specified .zip or .xcfg file into the domain, making changes along the way
   
   key-from-def - upload a key (or multiple keys) based on a dcm:definition (with Crypto Key objects, of course)
   

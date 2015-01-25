@@ -89,7 +89,7 @@
   </xsl:template>
 
 
-  <xsl:template match="/objs/* | /dcm:object-create/* | /*[name() != 'objs' and not(local-name() = 'object-create' and namespace-uri() = 'urn:configuration:manufacturing:v2')]">
+  <xsl:template match="/objs/* | /dcm:object-create/* | /*[name() != 'objs' and not(local-name() = 'object-create' and namespace-uri() = 'urn:datapower:configuration:manager')]">
 
     <!-- 
       This template begins the process of rewriting each object element (e.g. <AAAPolicy>, <StylePolicy>)
