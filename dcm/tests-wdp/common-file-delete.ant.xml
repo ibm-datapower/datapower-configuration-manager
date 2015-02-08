@@ -16,7 +16,7 @@
         
         <local name="successprop"/>
         
-        <wdp operation="DeleteFile" successprop="successprop">
+        <wdp operation="DeleteFile" successprop="successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <remote>${remote}</remote>
         	<hostname>${hostname}</hostname>
         	<uid>${uid}</uid>

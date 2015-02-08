@@ -11,7 +11,7 @@
         <property name="file" value="file-set.ant.xml"/>
         <property name="file.absolute" location="${file}"/>
         
-        <wdp operation="SetFile" successprop="file-set-successprop">
+        <wdp operation="SetFile" successprop="file-set-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <local>${file.absolute}</local>
             <remote>temporary:///${file}</remote>
         	<hostname>${hostname}</hostname>

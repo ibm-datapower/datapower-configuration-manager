@@ -16,7 +16,7 @@
         
         <property name="zipfile" location="domain-export.zip"/>
         
-        <wdp operation="ImportConfig" successprop="import-domain-import-successprop">
+        <wdp operation="ImportConfig" successprop="import-domain-import-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <local>${zipfile}</local>
         	<hostname>${hostname}</hostname>
         	<uid>${uid}</uid>

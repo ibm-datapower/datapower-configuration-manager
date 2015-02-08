@@ -167,6 +167,8 @@
         <xsl:attribute name="url">https://${host}:${port}/service/mgmt/current</xsl:attribute>
         <xsl:attribute name="uid">${uid}</xsl:attribute>
         <xsl:attribute name="pwd">${pwd}</xsl:attribute>
+        <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+        <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
         <xsl:element name="include">
           <xsl:attribute name="name"><xsl:value-of select="$localBasename"/></xsl:attribute>
         </xsl:element>
@@ -189,6 +191,8 @@
         <xsl:attribute name="url">https://${host}:${port}/service/mgmt/current</xsl:attribute>
         <xsl:attribute name="uid">${uid}</xsl:attribute>
         <xsl:attribute name="pwd">${pwd}</xsl:attribute>
+        <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+        <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
       </xsl:element>
       
     </xsl:element>
@@ -208,6 +212,8 @@
         <xsl:attribute name="url">https://${host}:${port}/service/mgmt/current</xsl:attribute>
         <xsl:attribute name="uid">${uid}</xsl:attribute>
         <xsl:attribute name="pwd">${pwd}</xsl:attribute>
+        <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+        <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
         <xsl:element name="include">
           <xsl:attribute name="name"><xsl:value-of select="@match"/></xsl:attribute>
         </xsl:element>

@@ -9,7 +9,7 @@
     <target name="troubleshooting-packet-capture-operations">
         
         
-        <wdp operation="UniversalPacketCaptureDebug">
+        <wdp operation="UniversalPacketCaptureDebug" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <type>Ethernet</type>
             <ethernet-int>eth0</ethernet-int>
             <mode>timed</mode>
@@ -24,7 +24,7 @@
         <echo>Successfully started packet capture on ${hostname}</echo>
         
         
-        <wdp operation="UniversalStopPacketCapture">
+        <wdp operation="UniversalStopPacketCapture" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <type>Ethernet</type>
             <ethernet-int>eth0</ethernet-int>
             <port>5550</port>

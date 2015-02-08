@@ -11,7 +11,7 @@
         <!-- Import the specified zipfile into the specified ${domain}. -->
         <property name="zipfile" location="../imports/simple-loopback.v1.3.8.1.7.zip"/>
         
-        <wdp operation="ImportConfig" successprop="import-service-import-successprop">
+        <wdp operation="ImportConfig" successprop="import-service-import-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <local>${zipfile}</local>
         	<hostname>${hostname}</hostname>
         	<uid>${uid}</uid>

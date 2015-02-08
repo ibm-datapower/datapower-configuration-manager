@@ -540,7 +540,8 @@
         <xsl:attribute name="operation">SetConfig</xsl:attribute>
         <xsl:attribute name="successprop">success-create</xsl:attribute>
         <xsl:attribute name="responseprop">response-create</xsl:attribute>
-        <xsl:attribute name="dumpoutput">true</xsl:attribute>
+        <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+        <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
         
         <xsl:element name="config">
           <xsl:copy-of select="$config"/>

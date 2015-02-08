@@ -22,7 +22,7 @@
         <echo>The test domain is ready.</echo>
         
         
-        <wdp operation="SaveCheckpoint">
+        <wdp operation="SaveCheckpoint" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <name>${checkpoint.name}</name>
         	<hostname>${hostname}</hostname>
         	<uid>${uid}</uid>
@@ -33,7 +33,7 @@
         <echo>Checkpoint ${checkpoint.name} successfully created in ${domain} on ${hostname}</echo>
         
         
-        <wdp operation="RollbackCheckpoint">
+        <wdp operation="RollbackCheckpoint" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <name>${checkpoint.name}</name>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
@@ -44,7 +44,7 @@
         <echo>Checkpoint ${checkpoint.name} successfully rolled back in ${domain} on ${hostname}</echo>
         
         
-        <wdp operation="RemoveCheckpoint">
+        <wdp operation="RemoveCheckpoint" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <name>${checkpoint.name}</name>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>

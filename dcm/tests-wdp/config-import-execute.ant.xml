@@ -19,7 +19,7 @@
             <property name="zipfile" location="../imports/simple-importobject.4.0.2.4.zip"/>
         </ant>
         
-        <wdp operation="ImportExecute">
+        <wdp operation="ImportExecute" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <name>simple</name>
             <hostname>${hostname}</hostname>
         	<uid>${uid}</uid>

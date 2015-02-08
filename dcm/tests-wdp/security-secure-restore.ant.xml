@@ -8,7 +8,7 @@
 	
     <target name="security-secure-restore">
         
-        <wdp operation="SecureRestore">
+        <wdp operation="SecureRestore" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <objname>device-id</objname>
             <remote>export:///secure-backup.zip</remote>
             <validate>on</validate>

@@ -11,7 +11,7 @@
         <ant antfile="common-delete-domain.ant.xml"/>
         
         <!-- Create a plain-vanilla domain. -->
-        <wdp operation="SetConfig" successprop="common-create-empty-domain-create-successprop">
+        <wdp operation="SetConfig" successprop="common-create-empty-domain-create-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <config>
               <Domain name="${domain}">
                 <mAdminState>enabled</mAdminState>

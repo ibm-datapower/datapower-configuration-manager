@@ -19,7 +19,7 @@
             <property name="remote" value="temporary:///keygen.csr"/>
         </ant>
         
-        <wdp operation="DeleteConfig">
+        <wdp operation="DeleteConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <classname>CryptoCertificate</classname>
             <objname>keygen</objname>
             <hostname>${hostname}</hostname>
@@ -29,7 +29,7 @@
             <ignore-errors>true</ignore-errors>
         </wdp>
         
-        <wdp operation="DeleteConfig">
+        <wdp operation="DeleteConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <classname>CryptoKey</classname>
             <objname>keygen</objname>
             <hostname>${hostname}</hostname>
@@ -40,7 +40,7 @@
         </wdp>
         
         <!-- Generate the key/cert pair. -->
-        <wdp operation="Keygen">
+        <wdp operation="Keygen" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <c>US</c>
             <st>NY</st>
             <l>Armonk</l>

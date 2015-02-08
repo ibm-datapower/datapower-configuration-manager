@@ -11,7 +11,7 @@
         
         <local name="successprop"/>
         
-        <wdp operation="CreateDirectory" successprop="successprop">
+        <wdp operation="CreateDirectory" successprop="successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <remote>${dir}</remote>
         	<hostname>${hostname}</hostname>
         	<uid>${uid}</uid>

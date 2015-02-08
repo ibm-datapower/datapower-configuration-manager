@@ -9,7 +9,7 @@
 	
     <target name="file-clear-filestore">
         
-        <wdp operation="ClearFilestore" successprop="file-clear-filestore-successprop">
+        <wdp operation="ClearFilestore" successprop="file-clear-filestore-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <filestore>local:</filestore>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>

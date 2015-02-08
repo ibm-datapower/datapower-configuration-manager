@@ -11,7 +11,7 @@
 <!--
     Would like to test this but don't have an SMTP server to hit.
     
-        <wdp operation="SendErrorReport">
+        <wdp operation="SendErrorReport" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <host>smtp.server</host>
             <location>temporary:///error-report.txt.gz</location> <! - - Created by GenerateErrorReport - - >
             <address>me@123.com</address>

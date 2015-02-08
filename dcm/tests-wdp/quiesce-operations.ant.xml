@@ -14,7 +14,7 @@
         <property name="checkpoint.name" value="some-checkpoint"/>
         
         
-        <wdp operation="QuiesceDevice">
+        <wdp operation="QuiesceDevice" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <timeout>60</timeout>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
@@ -23,7 +23,7 @@
         
         <echo>Successfully quiesced all services on ${hostname}</echo>
         
-        <wdp operation="UnquiesceDevice">
+        <wdp operation="UnquiesceDevice" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
             <pwd>${pwd}</pwd>
@@ -32,7 +32,7 @@
         <echo>Successfully unquiesced all services on ${hostname}</echo>
         
         
-        <wdp operation="QuiesceDomain">
+        <wdp operation="QuiesceDomain" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <timeout>60</timeout>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
@@ -42,7 +42,7 @@
         
         <echo>Successfully quiesced all services in domain ${domain} on ${hostname}</echo>
         
-        <wdp operation="UnquiesceDomain">
+        <wdp operation="UnquiesceDomain" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
             <pwd>${pwd}</pwd>
@@ -55,7 +55,7 @@
     
     This doesn't seem to even result in CLI commands that are recognized...
     
-        <wdp operation="QuiesceFSH">
+        <wdp operation="QuiesceFSH" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <type>MultiProtocolGateway</type>
             <objname>loopback</objname>
             <fehtype>HTTPSourceProtocolHandler</fehtype>
@@ -69,7 +69,7 @@
         
         <echo>Successfully quiesced FSH HTTPSourceProtocolHandler/loopback-http-fsh in service MultiProtocolGateway/loopback in domain ${domain} on ${hostname}</echo>
         
-        <wdp operation="UnquiesceFSH">
+        <wdp operation="UnquiesceFSH" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <type>MultiProtocolGateway</type>
             <objname>loopback</objname>
             <fehtype>HTTPSourceProtocolHandler</fehtype>
@@ -83,7 +83,7 @@
         <echo>Successfully unquiesced FSH HTTPSourceProtocolHandler/loopback-http-fsh in service MultiProtocolGateway/loopback in domain ${domain} on ${hostname}</echo>
 -->
 
-        <wdp operation="QuiesceService">
+        <wdp operation="QuiesceService" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <type>MultiProtocolGateway</type>
             <objname>loopback</objname>
             <timeout>60</timeout>
@@ -95,7 +95,7 @@
         
         <echo>Successfully quiesced service MultiProtocolGateway/loopback in domain ${domain} on ${hostname}</echo>
         
-        <wdp operation="UnquiesceService">
+        <wdp operation="UnquiesceService" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <type>MultiProtocolGateway</type>
             <objname>loopback</objname>
             <hostname>${hostname}</hostname>

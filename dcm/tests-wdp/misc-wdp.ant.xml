@@ -11,7 +11,7 @@
         <!--
             Test the various basic features of the <wdp> task itself.
         -->
-        <wdp operation="GetStatuses" responseprop="misc-wdp-responseprop" successprop="misc-wdp-successprop">
+        <wdp operation="GetStatuses" responseprop="misc-wdp-responseprop" successprop="misc-wdp-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
         	<hostname>${hostname}</hostname>
         	<uid>${uid}</uid>
         	<pwd>${pwd}</pwd>
@@ -23,7 +23,7 @@
         <echo>misc-wdp-responseprop=${misc-wdp-responseprop}</echo>
         <echo>misc-wdp-successprop=${misc-wdp-successprop}</echo>
         
-        <wdp operation="GetStatuses" xpathprop="misc-wdp-xpathprop" xpath="/*">
+        <wdp operation="GetStatuses" xpathprop="misc-wdp-xpathprop" xpath="/*" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
             <pwd>${pwd}</pwd>
@@ -34,7 +34,7 @@
         
         <echo>misc-wdp-xpathprop=${misc-wdp-xpathprop}</echo>
         
-        <wdp operation="GetStatuses" if="isTrue" successprop="misc-wdp-1">
+        <wdp operation="GetStatuses" if="isTrue" successprop="misc-wdp-1" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
             <pwd>${pwd}</pwd>
@@ -52,7 +52,7 @@
             </else>
         </if>
         
-        <wdp operation="GetStatuses" if="isFalse" successprop="misc-wdp-2">
+        <wdp operation="GetStatuses" if="isFalse" successprop="misc-wdp-2" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
             <pwd>${pwd}</pwd>
@@ -70,7 +70,7 @@
             </else>
         </if>
         
-        <wdp operation="GetStatuses" unless="isFalse" successprop="misc-wdp-3">
+        <wdp operation="GetStatuses" unless="isFalse" successprop="misc-wdp-3" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
             <pwd>${pwd}</pwd>
@@ -88,7 +88,7 @@
             </else>
         </if>
         
-        <wdp operation="GetStatuses" unless="isTrue" successprop="misc-wdp-4">
+        <wdp operation="GetStatuses" unless="isTrue" successprop="misc-wdp-4" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
             <pwd>${pwd}</pwd>

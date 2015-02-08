@@ -22,7 +22,7 @@
         <property name="zipfile" location="${tmpdir.absolute}/export-service.zip"/>
 
         <!-- Export the service. -->
-        <wdp operation="Export">
+        <wdp operation="Export" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <objects xmlns:soma="http://www.datapower.com/schemas/management">
                 <soma:object class="${type}" name="${service}" ref-objects="true" ref-files="true"/>
             </objects>

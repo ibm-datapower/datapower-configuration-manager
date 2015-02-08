@@ -8,7 +8,7 @@
 	
     <target name="config-pubcert-valcred">
         
-        <wdp operation="ValCredAddCertsFromDir">
+        <wdp operation="ValCredAddCertsFromDir" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
         	<hostname>${hostname}</hostname>
         	<uid>${uid}</uid>
         	<pwd>${pwd}</pwd>

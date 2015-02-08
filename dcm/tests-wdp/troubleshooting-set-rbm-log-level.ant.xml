@@ -9,7 +9,7 @@
     <target name="troubleshooting-set-rbm-log-level">
         
     
-        <wdp operation="SetRBMLogLevel">
+        <wdp operation="SetRBMLogLevel" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <rbmlog>off</rbmlog>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>

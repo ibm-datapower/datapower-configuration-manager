@@ -14,7 +14,7 @@
     
     <target name="config-get-all-statuses">
         
-        <wdp operation="GetStatuses">
+        <wdp operation="GetStatuses" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <statuses>ObjectStatus</statuses>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>

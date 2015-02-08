@@ -155,7 +155,29 @@
 
   <include file="${dcm.dir}/src/dcm-taskdefs.ant.xml"/> <!-- pull in standard dcm taskdefs/macrodefs such as <createDomain> -->
 
-
+  <!-- When the user wants to capture SOMA details then ensure we have a proper directory. -->
+<!--  
+  <if>
+    <not>
+      <equals arg1="${capture.soma.dir}" arg2=""/>
+    </not>
+    <then>
+      <property name="capture.soma.absolute" location="${capture.soma.dir}"/>
+      <if>
+        <isfileselected file="${capture.soma.absolute}">
+          <writable/>
+        </isfileselected>
+        <then>
+          <echo>Capturing SOMA requests and responses: ${capture.soma.absolute}</echo>
+        </then>
+        <else>
+          <mkdir dir="${capture.soma.absolute}"/>
+          <echo>Created directory for capturing SOMA requests and responses: ${capture.soma.absolute}</echo>
+        </else>
+      </if>
+    </then>
+  </if>
+-->
   <!--
     Backup all the domains on the device.  Note that this is not a secure backup that includes
     key and certificate files.
@@ -182,7 +204,7 @@
       Backup all the domains on the device, which is not a secure backup that includes
       key and certificate files.
     -->
-    <backupDevice host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" local="${device.backup.file}"/>
+    <backupDevice host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" local="${device.backup.file}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     
   </target>
   
@@ -212,7 +234,7 @@
     <!--
       Backup the specified domains on the device.
     -->
-    <backupDomains host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" domains="${domains}" local="${backup.file}"/>
+    <backupDomains host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" domains="${domains}" local="${backup.file}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     
   </target>
   
@@ -253,7 +275,7 @@
       in case of an error.  Also, detects that firmware.version is already set and does nothing in that case.
       In case of an error it throws an exception or prints the SOAP response and terminates Ant.
     -->
-    <checkDeviceAccess host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" versionprop="firmware.version"/>
+    <checkDeviceAccess host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" versionprop="firmware.version" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     <if>
       <or>
         <not>
@@ -279,7 +301,8 @@
       <local name="success"/>
       
       <wdp operation="RemoveCheckpoint" successprop="success" responseprop="response"
-        xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="okay">
+        xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="okay"
+        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
         <hostname>${host}</hostname>
         <port>${port}</port>
         <uid>${uid}</uid>
@@ -318,7 +341,8 @@
       <local name="success"/>
       
       <wdp operation="RollbackCheckpoint" successprop="success" responseprop="response"
-        xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="okay">
+        xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="okay"
+        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
         <hostname>${host}</hostname>
         <port>${port}</port>
         <uid>${uid}</uid>
@@ -357,7 +381,8 @@
       <local name="success"/>
       
       <wdp operation="SaveCheckpoint" successprop="success" responseprop="response"
-        xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="okay">
+        xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="okay"
+        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
         <hostname>${host}</hostname>
         <port>${port}</port>
         <uid>${uid}</uid>
@@ -489,7 +514,7 @@
       <defprop-set name="aduseemailuid" from="tam.aduseemailuid" defvalue="off"/>
       <defprop-set name="adgchost" from="tam.adgchost" defvalue=""/>
       
-      <wdp operation="CreateTAMFiles" successprop="success" responseprop="response" dumpinput="true"
+      <wdp operation="CreateTAMFiles" successprop="success" responseprop="response"  dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="okay">
         <hostname>${host}</hostname>
         <port>${port}</port>
@@ -569,11 +594,11 @@
       Creates the domain when it doesn't exist and prints whether it had to create the domain or not.
       In case of an error it throws an exception or prints the SOAP response and terminates Ant.
     -->
-    <createDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"/>
+    <createDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     <sequential>
       <local name="domainstatus"/>
-      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus"/>
-      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="default"/>
+      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
+      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="default" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     </sequential>
     
   </target>
@@ -587,11 +612,11 @@
       Deletes the domain when it exists and prints whether it had to delete the domain or not.
       In case of an error it throws an exception or prints the SOAP response and terminates Ant.
     -->
-    <deleteDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"/>
+    <deleteDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     <sequential>
       <local name="domainstatus"/>
-      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus"/>
-      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="default"/>
+      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
+      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="default" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     </sequential>
     
   </target>
@@ -615,11 +640,11 @@
       Resets the domain conventionally, when the domain exists, printing what it did.
       In case of an error it throws an exception or prints the SOAP response and terminates Ant.
     -->
-    <resetDomainConventionally host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"/>
+    <resetDomainConventionally host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     <sequential>
       <local name="domainstatus"/>
-      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus"/>
-      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="${domain}"/>
+      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
+      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     </sequential>
     
   </target>
@@ -633,7 +658,7 @@
       Quiesces the domain, when the domain exists, printing what it did.
       In case of an error it throws an exception or prints the SOAP response and terminates Ant.
     -->
-    <quiesceDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"/>
+    <quiesceDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     
   </target>
   
@@ -646,7 +671,7 @@
       Restarts the domain, when the domain exists, printing what it did.
       In case of an error it throws an exception or prints the SOAP response and terminates Ant.
     -->
-    <restartDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"/>
+    <restartDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     
   </target>
   
@@ -659,7 +684,7 @@
       Unquiesces the domain, when the domain exists, printing what it did.
       In case of an error it throws an exception or prints the SOAP response and terminates Ant.
     -->
-    <unquiesceDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"/>
+    <unquiesceDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     
   </target>
   
@@ -669,7 +694,7 @@
   -->
   <target name="firmware-rollback" depends="-init-dir, check-access">
     
-    <firmwareRollback host="${host}" port="${port}" uid="${uid}" pwd="${pwd}"/>
+    <firmwareRollback host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     
   </target>
   
@@ -689,7 +714,7 @@
       </then>
     </if>
     
-    <firmwareUpdate host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" scryptfile="${new.firmware.file}"/>
+    <firmwareUpdate host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" scryptfile="${new.firmware.file}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     
   </target>
   
@@ -702,7 +727,8 @@
       <!-- Create or overwrite the specified host alias. -->
       <objectDelete host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="default"
         class="HostAlias" name="${host-alias.name}"
-        dcmdir="${dcm.dir}" workdir="${work.dir}"/>
+        dcmdir="${dcm.dir}" workdir="${work.dir}"
+        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     </sequential>
     
   </target>
@@ -718,7 +744,7 @@
     <sequential>
       <!-- Create or overwrite the specified host alias. -->
       <objectCreateByInline host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="default" versionprop="firmware.version"
-        dcmdir="${dcm.dir}" schemadir="${schema.dir}" workdir="${work.dir}">
+        dcmdir="${dcm.dir}" schemadir="${schema.dir}" workdir="${work.dir}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
         <HostAlias name="${host-alias.name}">
           <mAdminState>${host-alias.mAdminState}</mAdminState>
           <UserSummary>${host-alias.comment}</UserSummary>
@@ -835,7 +861,7 @@
       
       <idcredFromKeyAndCert host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
         certfile="${idcred.cert.file}" certpwd="${idcred.cert.pwd}" keyfile="${idcred.key.file}" keypwd="${idcred.key.pwd}" 
-        objname="${idcred.objname}" ignoreexpiration="${ignoreexpiration}"/>
+        objname="${idcred.objname}" ignoreexpiration="${ignoreexpiration}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
       
     </sequential>
     
@@ -891,7 +917,8 @@
       </if>
 
       <idcredFromPKCS12 host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
-        p12file="${idcred.p12.file}" p12pwd="${idcred.p12.pwd}" objname="${idcred.objname}" ignoreexpiration="${ignoreexpiration}"/>
+        p12file="${idcred.p12.file}" p12pwd="${idcred.p12.pwd}" objname="${idcred.objname}" ignoreexpiration="${ignoreexpiration}"
+        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
       
     </sequential>
     
@@ -1111,7 +1138,9 @@
       </then>
     </if>
     
-    <restoreBackup host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" domains="${domains}" zipfile="${backup.file}" dry-run="${dry-run}"/>
+    <restoreBackup host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" 
+      domains="${domains}" zipfile="${backup.file}" dry-run="${dry-run}"
+      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     
   </target>
   
@@ -1126,8 +1155,8 @@
     -->
     <sequential>
       <local name="domainstatus"/>
-      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus"/>
-      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="${domain}"/>
+      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
+      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     </sequential>
     
   </target>
@@ -1141,7 +1170,7 @@
     <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
     <fail message="The Ant property 'log.level' is required but not defined.  This is the log level to set (debug, info, noice, warn, error, critic, alert, emerg)." unless="log.level"/>
     
-    <setLogLevel host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" loglevel="${log.level}"/>
+    <setLogLevel host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" loglevel="${log.level}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     
   </target>
   
@@ -1152,7 +1181,9 @@
     <fail message="The Ant property 'upload-dir.from' is required but not defined.  This is the directory in the local filesystem to upload from (e.g. c:\abc or /home/xxx/abc)." unless="upload-dir.from"/>
     <fail message="The Ant property 'upload-dir.to' is required but not defined.  This is the fully qualified directory on DataPower to upload to (e.g. cert:/// or local:///abc)." unless="upload-dir.to"/>
     
-    <dpupload dir="${upload-dir.from}" target="${upload-dir.to}" domain="${domain}" host="${host}" port="${port}" uid="${uid}" pwd="${pwd}"/>
+    <dpupload dir="${upload-dir.from}" target="${upload-dir.to}" domain="${domain}" 
+      host="${host}" port="${port}" uid="${uid}" pwd="${pwd}"
+      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}"/>
     
   </target>
   
@@ -1245,7 +1276,7 @@
     </if>
     
     <valcredFromFiles host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
-      dcmdir="${dcm.dir}" rootdir="${valcred.dir}" objname="${valcred.objname}">
+      dcmdir="${dcm.dir}" rootdir="${valcred.dir}" objname="${valcred.objname}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
       <include name="*"/>
     </valcredFromFiles>
     

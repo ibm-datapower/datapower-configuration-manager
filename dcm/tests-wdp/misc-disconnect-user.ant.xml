@@ -12,7 +12,7 @@
         
         <input addproperty="sessionid" message="Please enter a session id for some active user currently logged into ${hostname}:"/>
         
-        <wdp operation="DisconnectUser">
+        <wdp operation="DisconnectUser" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <sessionid>${sessionid}</sessionid>
             <host>${hostname}</host>
             <hostname>${hostname}</hostname>

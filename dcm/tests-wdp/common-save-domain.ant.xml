@@ -7,7 +7,7 @@
     
     <target name="common-save-domain">
         
-        <wdp operation="SaveConfig">
+        <wdp operation="SaveConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
             <pwd>${pwd}</pwd>

@@ -150,6 +150,7 @@
           <isset property="versionprop"/>
         </not>
         <then>
+          <echo>### checkDeviceAccess : dumpoutput=@{dumpoutput}</echo>
           <wdp operation="GetStatuses" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
             <statuses>FirmwareVersion</statuses>
             <domain>default</domain>
@@ -192,6 +193,8 @@
     <attribute name="schemadir"/> <!-- directory where cached schemas can be found -->
     <attribute name="workdir"/> <!-- tmpdir where a directory can be created, if necessary -->
     <attribute name="dpschemaFileVbl"/> <!-- name of ANT variable to create that will contain the location of the preprocessed schema file. -->
+    <attribute name="dumpinput" default="false"/>
+    <attribute name="dumpoutput" default="false"/>
     
     <sequential>
       <local name="fileSavedSchema"/>
@@ -230,11 +233,11 @@
               
               <!-- Time to do the heavy lifting of downloading the schema files from the host and generating the dpschema file. -->
               
-              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt.wsdl"     domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}"/>
-              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt.xsd"      domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}"/>
-              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt-base.xsd" domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}"/>
-              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt-ops.xsd"  domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}"/>
-              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt-b2b.xsd"  domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" ignoreerror="true"/>
+              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt.wsdl"     domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"/>
+              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt.xsd"      domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"/>
+              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt-base.xsd" domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"/>
+              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt-ops.xsd"  domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"/>
+              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt-b2b.xsd"  domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" ignoreerror="true"/>
               
               <nxslt infile="@{workdir}/xml-mgmt.wsdl" outfile="@{workdir}/collected.xml" xsl="@{dcmdir}/src/dpschema-collectxml.xsl"/>
               <nxslt infile="@{workdir}/collected.xml" outfile="${fileCreatedSchema}"     xsl="@{dcmdir}/src/dpschema-reformatsoma.xsl"/>
@@ -298,7 +301,7 @@
       <local name="domain_exists"/>
       <local name="domainlist"/>
 
-      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist"/>
+      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"/>
       
       <xpath inprop="domainlist" outprop="domain_exists" 
         xpath="/status/DomainStatus[Domain='@{domain}']"/>
@@ -803,7 +806,7 @@
       <local name="success-update"/>
       
       <!-- Rollback to previous firmware (and other aspects of file system!). -->
-      <wdp operation="FirmwareRollback" successprop="success-update">
+      <wdp operation="FirmwareRollback" successprop="success-update" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <hostname>@{host}</hostname>
         <uid>@{uid}</uid>
         <pwd>@{pwd}</pwd>
@@ -846,13 +849,13 @@
       
       <!-- Upload the firmware update file. -->
       <echo>Uploading the firmware update</echo>
-      <dpupload dir="${dirname-scryptfile}" target="image:///" domain="default" host="@{host}" port="@{port}" uid="@{uid}" pwd="@{pwd}">
+      <dpupload dir="${dirname-scryptfile}" target="image:///" domain="default" host="@{host}" port="@{port}" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <include name="${basename-scryptfile}"/>
       </dpupload>
       
       <!-- Update that puppy. -->
       <echo>Applying the firmware update, followed automatically by a reboot of the appliance.  This requires a few minutes to complete.</echo>
-      <wdp operation="BootUpdate" successprop="success-update">
+      <wdp operation="BootUpdate" successprop="success-update" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <name>${basename-scryptfile}</name>
         <hostname>@{host}</hostname>
         <uid>@{uid}</uid>
@@ -973,12 +976,12 @@
         Okay, we now have a #PKCS12 file containing a key/cert pair plus the password for the file.
         Upload the file regardless of whether it may already exist.
       -->
-      <dpupload dir="${dirname}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}">
+      <dpupload dir="${dirname}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <include name="${basename}"/>
       </dpupload>
       
       <!-- Create a Crypto Certficate object to wrap the #PKCS12 file. -->
-      <wdp operation="SetConfig" successprop="success-create-cert">
+      <wdp operation="SetConfig" successprop="success-create-cert" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <config>
           <CryptoCertificate name="${basename-no-ext}">
             <mAdminState>enabled</mAdminState>
@@ -1002,7 +1005,7 @@
         <then>
           
           <!-- Create a Crypto Key object to wrap the #PKCS12 file. -->
-          <wdp operation="SetConfig" successprop="success-create-key">
+          <wdp operation="SetConfig" successprop="success-create-key" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
             <config>
               <CryptoKey name="${basename-no-ext}">
                 <mAdminState>enabled</mAdminState>
@@ -1025,7 +1028,7 @@
             <then>
               
               <!-- Create the idcred object. -->
-              <wdp operation="SetConfig" successprop="success-create-idcred">
+              <wdp operation="SetConfig" successprop="success-create-idcred" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
                 <config>
                   <CryptoIdentCred name="@{objname}">
                     <mAdminState>enabled</mAdminState>
@@ -1119,7 +1122,7 @@
         <then>
           
           <!-- Upload the two files from the same source directory. -->
-          <dpupload dir="${dirname-cert}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}">
+          <dpupload dir="${dirname-cert}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
             <include name="${basename-cert}"/>
             <include name="${basename-key}"/>
           </dpupload>
@@ -1128,10 +1131,10 @@
         <else>
           
           <!-- Upload the two files from different source directories. -->
-          <dpupload dir="${dirname-cert}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}">
+          <dpupload dir="${dirname-cert}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
             <include name="${basename-cert}"/>
           </dpupload>
-          <dpupload dir="${dirname-key}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}">
+          <dpupload dir="${dirname-key}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
             <include name="${basename-key}"/>
           </dpupload>
           
@@ -1139,7 +1142,7 @@
       </if>
       
       <!-- Create a Crypto Certficate object to wrap the certificate file. -->
-      <wdp operation="SetConfig" successprop="success-create-cert">
+      <wdp operation="SetConfig" successprop="success-create-cert" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <config>
           <CryptoCertificate name="${basename-cert}">
             <mAdminState>enabled</mAdminState>
@@ -1163,7 +1166,7 @@
         <then>
           
           <!-- Create a Crypto Key object to wrap the key file. -->
-          <wdp operation="SetConfig" successprop="success-create-key">
+          <wdp operation="SetConfig" successprop="success-create-key" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
             <config>
               <CryptoKey name="${basename-key}">
                 <mAdminState>enabled</mAdminState>
@@ -1186,7 +1189,7 @@
             <then>
               
               <!-- Create the idcred object. -->
-              <wdp operation="SetConfig" successprop="success-create-idcred">
+              <wdp operation="SetConfig" successprop="success-create-idcred" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
                 <config>
                   <CryptoIdentCred name="@{objname}">
                     <mAdminState>enabled</mAdminState>
@@ -1421,10 +1424,11 @@
       
       <!-- We'll need the preprocessed schema to make our best effort to ensure that the request is schema-compliant. -->
       <ensureDPSchema host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" versionprop="@{versionprop}"
-        domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"/>
+        domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"
+        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"/>
       
       <!-- Get the configuration of the existing object. -->
-      <wdp operation="GetConfig" responseprop="get_response">
+      <wdp operation="GetConfig" responseprop="get_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <domain>@{domain}</domain>
         <hostname>@{host}</hostname>
         <port>@{port}</port>
@@ -1471,7 +1475,8 @@
           
           <!-- Create the new object. -->
           <wdp operation="SetConfig" responseprop="set_response"
-            xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay">
+            xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay"
+            dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
             <domain>@{domain}</domain>
             <hostname>@{host}</hostname>
             <port>@{port}</port>
@@ -1535,7 +1540,8 @@
       
       <!-- We'll need the preprocessed schema to make our best effort to ensure that the request is schema-compliant. -->
       <ensureDPSchema host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" versionprop="@{versionprop}"
-        domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"/>
+        domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"
+        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"/>
 
       <!-- 
         Copy the inline definition to a file, wrapping it in an dcm:object-create
@@ -1557,7 +1563,8 @@
       
       <!-- Create the new object. -->
       <wdp operation="SetConfig" responseprop="set_response"
-        xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay">
+        xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay"
+        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <domain>@{domain}</domain>
         <hostname>@{host}</hostname>
         <port>@{port}</port>
@@ -1621,7 +1628,8 @@
       
       <!-- We'll need the preprocessed schema to make our best effort to ensure that the request is schema-compliant. -->
       <ensureDPSchema host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" versionprop="@{versionprop}"
-        domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"/>
+        domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"
+        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"/>
       
       <!-- Determine the file extension. -->
       <basename property="file_base_name" file="@{export}"/>
@@ -1688,7 +1696,8 @@
           
           <!-- Create the new object. -->
           <wdp operation="SetConfig" responseprop="set_response"
-            xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay">
+            xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay"
+            dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
             <domain>@{domain}</domain>
             <hostname>@{host}</hostname>
             <port>@{port}</port>
@@ -1744,7 +1753,7 @@
       <local name="delete_response"/>
       
       <!-- Delete the existing object. -->
-      <wdp operation="DeleteConfig" responseprop="delete_response" successprop="delete_success">
+      <wdp operation="DeleteConfig" responseprop="delete_response" successprop="delete_success" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <domain>@{domain}</domain>
         <hostname>@{host}</hostname>
         <port>@{port}</port>
@@ -1805,10 +1814,11 @@
       
       <!-- We'll need the preprocessed schema to make our best effort to ensure that the request is schema-compliant. -->
       <ensureDPSchema host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" versionprop="@{versionprop}"
-        domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"/>
+        domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"
+        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"/>
       
       <!-- Get the configuration of the existing object. -->
-      <wdp operation="GetConfig" responseprop="get_response">
+      <wdp operation="GetConfig" responseprop="get_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <domain>@{domain}</domain>
         <hostname>@{host}</hostname>
         <port>@{port}</port>
@@ -1848,7 +1858,8 @@
           
           <!-- Create the new object. -->
           <wdp operation="SetConfig" responseprop="set_response"
-            xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay">
+            xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay"
+            dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
             <domain>@{domain}</domain>
             <hostname>@{host}</hostname>
             <port>@{port}</port>
@@ -1917,10 +1928,9 @@
       <local name="domain_exists"/>
       <local name="domainlist"/>
       
-      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist"/>
+      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"/>
       
-      <xpath inprop="domainlist" outprop="domain_exists" 
-        xpath="/status/DomainStatus[Domain='@{domain}']"/>
+      <xpath inprop="domainlist" outprop="domain_exists" xpath="/status/DomainStatus[Domain='@{domain}']"/>
       
       <if>
         <not>
@@ -1995,7 +2005,7 @@
       <local name="domain_exists"/>
       <local name="domainlist"/>
       
-      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist"/>
+      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"/>
       
       <xpath inprop="domainlist" outprop="domain_exists" 
         xpath="/status/DomainStatus[Domain='@{domain}']"/>
@@ -2075,7 +2085,7 @@
       <local name="domain_exists"/>
       <local name="domainlist"/>
       
-      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist"/>
+      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"/>
       
       <xpath inprop="domainlist" outprop="domain_exists" 
         xpath="/status/DomainStatus[Domain='@{domain}']"/>
@@ -2179,7 +2189,7 @@
       <local name="domain_exists"/>
       <local name="domainlist"/>
       
-      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist"/>
+      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"/>
       
       <xpath inprop="domainlist" outprop="domain_exists" 
         xpath="/status/DomainStatus[Domain='@{domain}']"/>
@@ -2244,7 +2254,7 @@
       <local name="success-update"/>
 
       <!-- Restore the specified domain(s). -->
-      <wdp operation="Restore" successprop="success-update">
+      <wdp operation="Restore" successprop="success-update" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <local>@{zipfile}</local>
         <domain>@{domain}</domain>
         <domains>@{domains}</domains>
@@ -2518,7 +2528,9 @@
       <echo>saveDomainUnconditionally : ignore-errors=@{ignore-errors}</echo>
 -->
       <!-- Save this domain -->
-      <wdp operation="SaveConfig" responseprop="save_response" xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="save_okay" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
+      <wdp operation="SaveConfig" responseprop="save_response" 
+        xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="save_okay" 
+        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <domain>@{domain}</domain>
         <host>@{host}</host>
         <port>@{port}</port>
@@ -2576,7 +2588,7 @@
       <local name="domain_exists"/>
       <local name="domainlist"/>
       
-      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist"/>
+      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"/>
       
       <xpath inprop="domainlist" outprop="domain_exists" 
         xpath="/status/DomainStatus[Domain='@{domain}']"/>
@@ -2645,7 +2657,8 @@
       <local name="valcred-objname"/>
       
       <!-- Upload all the files in the specified directory.  These are all supposed to be certificate files for this valcred object. -->
-      <dpupload dir="@{rootdir}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" uploadedfilesprop="uploaded-files">
+      <dpupload dir="@{rootdir}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" 
+        uploadedfilesprop="uploaded-files" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <definition/>
       </dpupload>
       
@@ -2659,7 +2672,7 @@
       
       <!-- <echo>config = ${config}</echo> -->
       
-      <wdp operation="SetConfig" successprop="success-create" responseprop="response-create">
+      <wdp operation="SetConfig" successprop="success-create" responseprop="response-create" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <wrapper>${config}</wrapper>
         <hostname>@{host}</hostname>
         <uid>@{uid}</uid>
@@ -2738,7 +2751,7 @@
       <nxslt infile="${exportxml}" outprop="objects_delete" xsl="@{dcmdir}/src/unimport-extract-delete.xsl"/>
 
       <!-- Disable the objects, ignoring some errors for the moment. -->
-      <wdp operation="ModifyConfig">
+      <wdp operation="ModifyConfig" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <wrapper>${objects_disable}</wrapper>
         <domain>@{domain}</domain>
         <host>@{host}</host>
@@ -2757,7 +2770,7 @@
         the next object we deleted, the MQ QM, fails to delete because it was still in use by the MQ FSH, which apparently had not
         finished being destroyed.  Since it was a race condition, sometimes the MQ QM deleted successfully and sometimes not.
       -->
-      <wdp operation="DeleteConfig">
+      <wdp operation="DeleteConfig" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <wrapper>${objects_delete}</wrapper>
         <domain>@{domain}</domain>
         <host>@{host}</host>
@@ -2766,7 +2779,7 @@
         <pwd>@{pwd}</pwd>
         <ignore-errors>true</ignore-errors>
       </wdp>
-      <wdp operation="DeleteConfig">
+      <wdp operation="DeleteConfig" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}">
         <wrapper>${objects_delete}</wrapper>
         <domain>@{domain}</domain>
         <host>@{host}</host>
@@ -2837,10 +2850,9 @@
       <local name="domain_exists"/>
       <local name="domainlist"/>
       
-      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist"/>
+      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"/>
       
-      <xpath inprop="domainlist" outprop="domain_exists" 
-        xpath="/status/DomainStatus[Domain='@{domain}']"/>
+      <xpath inprop="domainlist" outprop="domain_exists" xpath="/status/DomainStatus[Domain='@{domain}']"/>
       
       <if>
         <not>

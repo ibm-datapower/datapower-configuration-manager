@@ -5,7 +5,7 @@
 	
     <target name="misc-date-time">
         
-        <wdp operation="GetStatuses">
+        <wdp operation="GetStatuses" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
         	<hostname>${hostname}</hostname>
         	<uid>${uid}</uid>
         	<pwd>${pwd}</pwd>

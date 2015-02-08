@@ -18,7 +18,7 @@
         
         <local name="successprop"/>
         
-        <wdp operation="SetFile" successprop="successprop">
+        <wdp operation="SetFile" successprop="successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <local>${local}</local>
             <remote>${remote}</remote>
         	<hostname>${hostname}</hostname>

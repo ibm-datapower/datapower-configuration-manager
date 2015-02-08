@@ -10,7 +10,7 @@
         
 
         <!-- Generate the device certificate. -->
-        <wdp operation="DeviceCertificate">
+        <wdp operation="DeviceCertificate" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <host>${hostname}</host>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>

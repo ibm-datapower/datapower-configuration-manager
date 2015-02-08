@@ -11,7 +11,7 @@
 <!-- 
     Don't know enough to get the necessary parameters together.
     
-        <wdp operation="CreateTAMFiles">
+        <wdp operation="CreateTAMFiles" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <createcopy>off</createcopy>
             <outputconfigfile>temporary:///create-tam-files.txt</outputconfigfile>
             <administrator-uid>myid</administrator-uid>

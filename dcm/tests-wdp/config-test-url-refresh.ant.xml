@@ -14,7 +14,7 @@
             <property name="zipfile" location="../imports/simple-urlrefresh.4.0.2.4.zip"/>
         </ant>
         
-        <wdp operation="TestURLRefresh">
+        <wdp operation="TestURLRefresh" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <name>simple</name>
             <url>store:///xml-mgmt.xsd</url>
             <hostname>${hostname}</hostname>

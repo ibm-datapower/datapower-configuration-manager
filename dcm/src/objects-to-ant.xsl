@@ -158,6 +158,8 @@
             <xsl:attribute name="pwd">${pwd}</xsl:attribute>
             <xsl:attribute name="port">${port}</xsl:attribute>
             <xsl:attribute name="versionprop">firmware_version</xsl:attribute>
+            <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+            <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
           </xsl:element>
           
           <!-- Create a new object based on an existing object in an export. -->
@@ -175,6 +177,8 @@
             <xsl:attribute name="dcmdir">${dcm.dir}</xsl:attribute>
             <xsl:attribute name="schemadir">${schema.dir}</xsl:attribute>
             <xsl:attribute name="workdir">${work.dir}</xsl:attribute>
+            <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+            <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
             <xsl:copy-of select="*"/>
           </xsl:element>
           
@@ -187,6 +191,8 @@
             <xsl:attribute name="pwd">${pwd}</xsl:attribute>
             <xsl:attribute name="port">${port}</xsl:attribute>
             <xsl:attribute name="versionprop">firmware_version</xsl:attribute>
+            <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+            <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
           </xsl:element>
           
           <!-- Create a new object based on an existing object in the domain. -->
@@ -203,6 +209,8 @@
             <xsl:attribute name="dcmdir">${dcm.dir}</xsl:attribute>
             <xsl:attribute name="schemadir">${schema.dir}</xsl:attribute>
             <xsl:attribute name="workdir">${work.dir}</xsl:attribute>
+            <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+            <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
             <xsl:copy-of select="*"/>
           </xsl:element>
           
@@ -215,6 +223,8 @@
             <xsl:attribute name="pwd">${pwd}</xsl:attribute>
             <xsl:attribute name="port">${port}</xsl:attribute>
             <xsl:attribute name="versionprop">firmware_version</xsl:attribute>
+            <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+            <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
           </xsl:element>
           
           <!-- Create a new object based on inline content. -->
@@ -228,6 +238,8 @@
             <xsl:attribute name="dcmdir">${dcm.dir}</xsl:attribute>
             <xsl:attribute name="schemadir">${schema.dir}</xsl:attribute>
             <xsl:attribute name="workdir">${work.dir}</xsl:attribute>
+            <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+            <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
             <xsl:copy-of select="*"/>
           </xsl:element>
           
@@ -241,6 +253,8 @@
             <xsl:attribute name="pwd">${pwd}</xsl:attribute>
             <xsl:attribute name="port">${port}</xsl:attribute>
             <xsl:attribute name="versionprop">firmware_version</xsl:attribute>
+            <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+            <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
           </xsl:element>
           
           <!-- Delete an existing object. -->
@@ -254,6 +268,8 @@
             <xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
             <xsl:attribute name="dcmdir">${dcm.dir}</xsl:attribute>
             <xsl:attribute name="workdir">${work.dir}</xsl:attribute>
+            <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+            <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
           </xsl:element>
           
         </xsl:when>
@@ -266,6 +282,8 @@
             <xsl:attribute name="pwd">${pwd}</xsl:attribute>
             <xsl:attribute name="port">${port}</xsl:attribute>
             <xsl:attribute name="versionprop">firmware_version</xsl:attribute>
+            <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+            <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
           </xsl:element>
           
           <!-- Modify an existing object based on inline content. -->
@@ -281,6 +299,8 @@
             <xsl:attribute name="dcmdir">${dcm.dir}</xsl:attribute>
             <xsl:attribute name="schemadir">${schema.dir}</xsl:attribute>
             <xsl:attribute name="workdir">${work.dir}</xsl:attribute>
+            <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+            <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
             <xsl:copy-of select="*"/>
           </xsl:element>
           

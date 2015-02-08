@@ -17,7 +17,7 @@
         <property name="some-file-in-config-filestore" value="config:///somefile.cfg"/>
         
         
-        <wdp operation="BootDelete">
+        <wdp operation="BootDelete" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
             <pwd>${pwd}</pwd>
@@ -26,7 +26,7 @@
         <echo>Successfully deleted the version that you COULD have rolled back to on ${hostname}</echo>
         
 
-        <wdp operation="BootUpdate">
+        <wdp operation="BootUpdate" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <name>${name-of-image}</name>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
@@ -36,7 +36,7 @@
         <echo>Successfully updated firmware to ${name-of-image} on ${hostname}</echo>
         
         
-        <wdp operation="BootSwitch">
+        <wdp operation="BootSwitch" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
             <pwd>${pwd}</pwd>
@@ -45,7 +45,7 @@
         <echo>Successfully rolled back to the previous firmware version on ${hostname}</echo>
         
         
-        <wdp operation="SelectConfig">
+        <wdp operation="SelectConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <remote>${some-file-in-config-filestore}</remote>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
@@ -55,7 +55,7 @@
         <echo>Successfully selected config file to use on next reboot of ${hostname}</echo>
 -->        
         
-        <wdp operation="Shutdown">
+        <wdp operation="Shutdown" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <mode>reboot</mode> <!-- reboot, reload, or halt -->
             <delay>1</delay>
             <hostname>${hostname}</hostname>

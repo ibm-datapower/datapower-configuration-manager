@@ -9,7 +9,7 @@
     <target name="security-known-host-operations">
 
         <!-- Ensure that the SSH Client Profile exists, as a precondition. -->
-        <wdp operation="SetConfig">
+        <wdp operation="SetConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
           <config>
             <SSHClientProfile name="simple">
               <mAdminState>enabled</mAdminState>
@@ -31,7 +31,7 @@
           <domain>default</domain>
         </wdp>
       
-        <wdp operation="AddKnownHost">
+        <wdp operation="AddKnownHost" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <clientname>simple</clientname>
             <knownhost>regroot@oc8206860462.ibm.com</knownhost>
             <type>ssh-rsa</type>
@@ -45,7 +45,7 @@
         <echo>Successfully added a client known host for ${hostname}</echo>
         
         
-        <wdp operation="DeleteKnownHost">
+        <wdp operation="DeleteKnownHost" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <clientname>simple</clientname>
             <knownhost>regroot@oc8206860462.ibm.com</knownhost>
             <hostname>${hostname}</hostname>
@@ -57,7 +57,7 @@
         <echo>Successfully removed a client known host from ${hostname}</echo>
         
         
-        <wdp operation="DeleteKnownHostTable">
+        <wdp operation="DeleteKnownHostTable" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <clientname>simple</clientname>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>

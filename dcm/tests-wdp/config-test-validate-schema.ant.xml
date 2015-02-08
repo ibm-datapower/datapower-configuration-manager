@@ -8,7 +8,7 @@
 	
     <target name="config-test-validate-schema">
         
-        <wdp operation="TestValidateSchema">
+        <wdp operation="TestValidateSchema" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <xml>store:///healthcheck.xml</xml>
             <schema>store:///schemas/soap-envelope.xsd</schema>
             <hostname>${hostname}</hostname>

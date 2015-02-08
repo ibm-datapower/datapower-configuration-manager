@@ -177,6 +177,8 @@
           <xsl:attribute name="url">https://${host}:${port}/service/mgmt/current</xsl:attribute>
           <xsl:attribute name="uid">${uid}</xsl:attribute>
           <xsl:attribute name="pwd">${pwd}</xsl:attribute>
+          <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+          <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
           <xsl:element name="include">
             <xsl:attribute name="name"><xsl:value-of select="$fileBasename"/></xsl:attribute>
           </xsl:element>
@@ -188,6 +190,8 @@
         <xsl:attribute name="operation">SetConfig</xsl:attribute>
         <xsl:attribute name="successprop">success-create</xsl:attribute>
         <xsl:attribute name="responseprop">response-create</xsl:attribute>
+        <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+        <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
         
         <xsl:element name="config">
           <xsl:copy-of select="$config"/>
@@ -363,6 +367,8 @@
           <xsl:attribute name="url">https://${host}:${port}/service/mgmt/current</xsl:attribute>
           <xsl:attribute name="uid">${uid}</xsl:attribute>
           <xsl:attribute name="pwd">${pwd}</xsl:attribute>
+          <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+          <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
           <xsl:element name="include">
             <xsl:attribute name="name"><xsl:value-of select="$fileBasename"/></xsl:attribute>
           </xsl:element>
@@ -374,6 +380,8 @@
         <xsl:attribute name="operation">SetConfig</xsl:attribute>
         <xsl:attribute name="successprop">success-create</xsl:attribute>
         <xsl:attribute name="responseprop">response-create</xsl:attribute>
+        <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
+        <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
         
         <xsl:element name="config">
           <xsl:copy-of select="$config"/>

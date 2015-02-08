@@ -9,7 +9,7 @@
     <target name="misc-set-system-var">
         
         
-        <wdp operation="SetSystemVar">
+        <wdp operation="SetSystemVar" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <name>var://system/amp/debug</name>
             <value>0</value>
             <host>${hostname}</host>

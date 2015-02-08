@@ -16,7 +16,7 @@
         <mkdir dir="${tmpdir.absolute}"/> <!-- doesn't care if the directory already exists. -->
         
         
-        <wdp operation="GetLog">
+        <wdp operation="GetLog" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
             <pwd>${pwd}</pwd>

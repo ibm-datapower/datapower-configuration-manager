@@ -13,7 +13,7 @@
             <property name="dir" value="${dir}"/>
         </ant>
         
-        <wdp operation="RemoveDirectory" successprop="file-dir-delete-successprop">
+        <wdp operation="RemoveDirectory" successprop="file-dir-delete-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
             <remote>${dir}</remote>
         	<hostname>${hostname}</hostname>
         	<uid>${uid}</uid>
