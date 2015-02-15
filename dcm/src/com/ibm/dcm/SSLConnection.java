@@ -69,7 +69,11 @@ public class SSLConnection {
     boolean dumpoutput = false;
     if (params.get("dumpoutput") != null && params.get("dumpoutput").equals("true"))
       dumpoutput = true;
-    String rawresponse = sendAndReceive (url, params.get("uid"), params.get("pwd"), request, dumpinput, dumpoutput);
+    String capturesoma = params.get("capturesoma");
+    if (capturesoma != null && capturesoma.length() == 0) {
+      capturesoma = null;
+    }
+    String rawresponse = sendAndReceive(url, params.get("uid"), params.get("pwd"), request, dumpinput, dumpoutput, capturesoma); 
     NamedParams result = new NamedParams (params);
     result.set ("request", request);
     result.set ("rawresponse", rawresponse);
@@ -84,7 +88,7 @@ public class SSLConnection {
    * 
    */
   public String sendAndReceive (String dpurl, String uid, String pwd, String request) throws Exception {
-    return sendAndReceive(dpurl, uid, pwd, request, false, false);
+    return sendAndReceive(dpurl, uid, pwd, request, false, false, null);
   }
 
 
@@ -95,13 +99,34 @@ public class SSLConnection {
    * 
    */
   public String sendAndReceive (String dpurl, String uid, String pwd, String request, boolean dumpinput, boolean dumpoutput) throws Exception {
+    return sendAndReceive(dpurl, uid, pwd, request, dumpinput, dumpoutput, null);
+  }
+
+
+  /**
+   * This method sends a SOMA request and returns the response.
+   * 
+   * An exception is thrown for any overt failure.
+   * 
+   */
+  public String sendAndReceive (String dpurl, String uid, String pwd, String request, boolean dumpinput, boolean dumpoutput, String capturesoma) throws Exception {
 
     String result = "";
+    
+    // System.out.println("sendAndReceive capturesoma=" + capturesoma);
 
     HttpsURLConnection conn = null;
     Writer out = null;
     BufferedReader in = null;
+    BufferedWriter capture = null;
     try {
+      if (capturesoma != null) {
+        capture = new BufferedWriter(new FileWriter(capturesoma, true));  // Append to file if it exists
+        capture.write("\r\n{{ b48397ae-5fff-4438-97c0-d79f88bb243e }}\r\n[[request " + dpurl + "]]\r\n");
+        capture.write(request);
+        capture.flush();
+      }
+
       conn = (HttpsURLConnection)(new URL(dpurl)).openConnection();
       conn.setHostnameVerifier(new VeryTrustingHostNameVerifier());
 
@@ -117,7 +142,7 @@ public class SSLConnection {
         System.out.println("SSLConnection.sendAndReceive sent to " + dpurl + " :");
         System.out.println(request);
       }
-
+      
       // Send the request.
       out = new OutputStreamWriter(conn.getOutputStream());
       out.write(request); 
@@ -141,10 +166,15 @@ public class SSLConnection {
         System.out.println("SSLConnection.sendAndReceive received:");
         System.out.println(result);
       }
-
+      
+      if (capture != null) {
+        capture.write("\r\n{{ b48397ae-5fff-4438-97c0-d79f88bb243e }}\r\n[[response " + conn.getResponseMessage() + "]]\r\n");
+        capture.write(result);
+        capture.close();
+      }
+      
       in.close();
       out.close();
-
     } catch (Exception e) {
 
       // Close everything, ignoring any errors.
@@ -157,6 +187,12 @@ public class SSLConnection {
       if (out != null) {
         try {
           out.close();
+        } catch (Exception x) {
+        }
+      }
+      if (capture != null) {
+        try {
+          capture.close();
         } catch (Exception x) {
         }
       }

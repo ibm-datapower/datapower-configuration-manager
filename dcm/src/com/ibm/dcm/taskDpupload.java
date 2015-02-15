@@ -37,6 +37,9 @@ public class taskDpupload extends MatchingTask {
   private Vector<String> uploadedFiles = new Vector<String>();
   private String successProperty = null;
   private String uploadedFilesProperty = null;
+  private boolean dumpInput = false;
+  private boolean dumpOutput = false;
+  private String capturesoma = null;
 
   private static SSLConnection singletonConnection = null;
 
@@ -93,6 +96,18 @@ public class taskDpupload extends MatchingTask {
 
   public void setUploadedfilesprop(String propname) {
     uploadedFilesProperty = propname;
+  }
+
+  public void setDumpinput(boolean flag) {
+    dumpInput = flag;
+  }
+
+  public void setDumpoutput(boolean flag) {
+    dumpOutput = flag;
+  }
+
+  public void setCapturesoma(String filename) {
+    capturesoma = filename; // filename ending in '.soma'
   }
 
   public void execute()
@@ -242,7 +257,7 @@ public class taskDpupload extends MatchingTask {
 
     HashSet<String> createdDirs = new HashSet<String>();
 
-//        System.out.println("### fileset=" + getImplicitFileSet().toString());
+//    System.out.println("### fileset=" + getImplicitFileSet().toString());
 
     DirectoryScanner dirScanner = getImplicitFileSet().getDirectoryScanner(); 
 
@@ -251,21 +266,20 @@ public class taskDpupload extends MatchingTask {
       remoteRoot += "/";
 
     // Ensure the remote root directory (if any) exists.
-    System.out.println ("creating directory " + remoteRoot + " in domain " + findArg("domain"));
+//    System.out.println ("creating directory " + remoteRoot + " in domain " + findArg("domain"));
     createDirectory(remoteRoot, createdDirs, true);
 
     // Ensure that any directories specified in the FileSet are created.
     String[] dirs = dirScanner.getIncludedDirectories();
-
     for (int i = 0; i < dirs.length; i += 1) {
 
       String remote = remoteRoot + dirs[i];
 
-//            System.out.println ("creating directory " + remote + " in domain " + findArg("domain"));
+//      System.out.println ("creating directory " + remote + " in domain " + findArg("domain"));
       createDirectory(remote, createdDirs, true);
     }
 
-//        System.out.println();
+//    System.out.println();
 
     // Upload the files in the FileSet.
     String[] files = dirScanner.getIncludedFiles();
@@ -279,16 +293,14 @@ public class taskDpupload extends MatchingTask {
       // We don't worry about firmware-specific variations in this SOMA SOAP message because
       // the message hasn't changed between 3.5.1.13 through 3.8.1.7.
       String msg =
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-      "<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
-      "<env:Body>" +
-      "<soma:request domain=\"" + findArg("domain")+ "\" xmlns:soma=\"http://www.datapower.com/schemas/management\">" +
-      "<soma:set-file name=\"" + remote + "\">" +
-      Base64.base64FromBinaryFile(local) + 
-      "</soma:set-file>" +
-      "</soma:request>" +
-      "</env:Body>" +
-      "</env:Envelope>";
+                  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+                  "<env:Envelope xmlns:env=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
+                    "<env:Body>" +
+                      "<soma:request domain=\"" + findArg("domain")+ "\" xmlns:soma=\"http://www.datapower.com/schemas/management\">" +
+                        "<soma:set-file name=\"" + remote + "\">" + Base64.base64FromBinaryFile(local) + "</soma:set-file>" +
+                      "</soma:request>" +
+                    "</env:Body>" +
+                  "</env:Envelope>";
 
       String url = findArg("url");
       if (findArg("host").length() > 0) {

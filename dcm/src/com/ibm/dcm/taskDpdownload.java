@@ -29,6 +29,9 @@ public class taskDpdownload extends MatchingTask {
 
   private Vector<Arg> args = new Vector<Arg>();
   private String successProperty = null;
+  private boolean dumpInput = false;
+  private boolean dumpOutput = false;
+  private String capturesoma = null;
 
   private static SSLConnection singletonConnection = null;
 
@@ -81,6 +84,18 @@ public class taskDpdownload extends MatchingTask {
 
   public void setSuccessprop(String propname) {
     successProperty = propname;
+  }
+
+  public void setDumpinput(boolean flag) {
+    dumpInput = flag;
+  }
+
+  public void setDumpoutput(boolean flag) {
+    dumpOutput = flag;
+  }
+
+  public void setCapturesoma(String filename) {
+    capturesoma = filename; // filename ending in '.soma'
   }
 
   public void execute()

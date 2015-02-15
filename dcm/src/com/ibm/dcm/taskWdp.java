@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 IBM Corp.
+ * Copyright 2014, 2015 IBM Corp.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ public class taskWdp extends XMLFragment {
   private String unlessProperty = null;
   private boolean dumpInput = false;
   private boolean dumpOutput = false;
+  private String capturesoma = null;
 
   private static SSLConnection singletonConnection = null;
   private static Soma singletonSoma = null;
@@ -111,6 +112,10 @@ public class taskWdp extends XMLFragment {
     dumpOutput = flag;
   }
 
+  public void setCapturesoma(String filename) {
+    capturesoma = filename; // filename ending in '.soma'
+  }
+
 
   public void execute()
   {
@@ -176,7 +181,10 @@ public class taskWdp extends XMLFragment {
     if (dumpOutput) {
       params.set("dumpoutput", "true");
     }
-
+    if (capturesoma != null) {
+      params.set("capturesoma", capturesoma);
+    }
+    
     // Decide whether to do this operation at all, when the @if or @unless attributes were
     // specified.  If both were specified then @if must evaluate to true and @unless must
     // evaluate to false in order for the operation to be carried out.
