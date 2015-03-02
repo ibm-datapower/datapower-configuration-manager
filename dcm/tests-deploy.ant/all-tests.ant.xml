@@ -198,5 +198,43 @@
     
   </target>
   
+  
+  <target name="unit-test-remove-unwanted" depends="" description="unit test the remove-unwanted-elements.xsl stylesheet">
+    
+    <delete dir="tmp"/>
+    <mkdir dir="tmp"/>
+    
+    <xslt in="testdata/remove-unwanted.xml" out="tmp/remove-unwanted-processed-1.xml" style="../src/remove-unwanted-elements.xsl">
+      <factory name="org.apache.xalan.processor.TransformerFactoryImpl">
+        <attribute name="http://xml.apache.org/xalan/features/optimize" value="true"/>
+      </factory>
+      <param name="param1" expression="qa"/>
+    </xslt>
+    
+    <xslt in="testdata/remove-unwanted.xml" out="tmp/remove-unwanted-processed-2.xml" style="../src/remove-unwanted-elements.xsl">
+      <factory name="org.apache.xalan.processor.TransformerFactoryImpl">
+        <attribute name="http://xml.apache.org/xalan/features/optimize" value="true"/>
+      </factory>
+      <param name="param2" expression="prod2"/>
+    </xslt>
+
+    <xslt in="testdata/remove-unwanted.xml" out="tmp/remove-unwanted-processed-3.xml" style="../src/remove-unwanted-elements.xsl">
+      <factory name="org.apache.xalan.processor.TransformerFactoryImpl">
+        <attribute name="http://xml.apache.org/xalan/features/optimize" value="true"/>
+      </factory>
+      <param name="param1" expression="dev"/>
+      <param name="param2" expression="dev2"/>
+    </xslt>
+    
+    <xslt in="testdata/remove-unwanted.xml" out="tmp/remove-unwanted-processed-4.xml" style="../src/remove-unwanted-elements.xsl">
+      <factory name="org.apache.xalan.processor.TransformerFactoryImpl">
+        <attribute name="http://xml.apache.org/xalan/features/optimize" value="true"/>
+      </factory>
+      <param name="param1" expression="qa"/>
+      <param name="param2" expression="dev2"/>
+    </xslt>
+    
+  </target>
+  
 
 </project>
