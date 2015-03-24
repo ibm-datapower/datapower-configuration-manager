@@ -9,7 +9,7 @@
         
         <property name="dir" value="local:///x"/>
         
-        <wdp operation="CreateDirectory" successprop="file-dir-create-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="CreateDirectory" successprop="file-dir-create-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <remote>${dir}</remote>
         	<hostname>${hostname}</hostname>
         	<uid>${uid}</uid>

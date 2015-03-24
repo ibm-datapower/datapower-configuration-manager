@@ -19,7 +19,7 @@ import com.urbancode.air.CommandHelper
 
 try 
 {
-  def apTool = new AirPluginTool(this.args[0], this.args[1]);
+  def apTool = new AirPluginTool(args[0], args[1]);
   def props = apTool.getStepProperties();
 
   def debug = false
@@ -28,6 +28,28 @@ try
   if (debug) {
     args.each{ println 'arg ' + it }
     props.sort().each{ println 'property ' + it }
+  }
+
+  // An odd bug surfaced in 6.1.0.3 (uncertain about other releases).  Arguments
+  // that should be a single argument, e.g. -Dxxx=yyy, are being delivered as
+  // two arguments, e.g. -D and xxx=yyy.  This bit of code patches around that
+  // by the simple expedient of checking for a -D argument and, when found,
+  // rewriting the arguments array.
+  if (args.any{it == '-D'}) {
+    println '### rewriting args'
+    def tmpargs = [];
+    for (int i = 0; i < args.size(); i += 1) {
+      if (args[i] == '-D') {
+        tmpargs.add(args[i] + args[i+1]);
+        i += 1;
+      } else {
+        tmpargs.add(args[i]);
+      }
+    }
+    args = tmpargs;
+    if (debug) {
+      args.each{ println 'rewritten arg ' + it }
+    }
   }
 
   def ch = new CommandHelper(new File('.'));
@@ -89,7 +111,7 @@ try
       }
     }
     if (arg.matches('-D[^=]+=.+') || arg.contains('=') == false) {
-	  // Properly formed -Dxxx=yyy or simply an ant target (e.g. idcred-from-def) which doesn't contain an equal sign.
+          // Properly formed -Dxxx=yyy or simply an ant target (e.g. idcred-from-def) which doesn't contain an equal sign.
       if (debug) {
         println '%%% arg[' + i + ']=' + arg
       }

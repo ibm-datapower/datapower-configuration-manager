@@ -16,7 +16,7 @@
         <mkdir dir="${tmpdir.absolute}"/> <!-- doesn't care if the directory already exists. -->
         
         
-        <wdp operation="GetConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="GetConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <classname>XMLManager</classname>
         	<objname>default</objname>
             <recursive>true</recursive>

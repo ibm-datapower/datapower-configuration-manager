@@ -13,7 +13,7 @@
         <local name="domainFlag"/>
         
         <!-- Get the list of domains into an ant property whose lifetime expires with the end of this target. -->
-        <wdp operation="GetStatuses" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="GetStatuses" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
             <pwd>${pwd}</pwd>
@@ -28,7 +28,7 @@
         <if>
             <length length="0" when="greater" string="${domainFlag}"/>
             <then>
-                <wdp operation="DeleteConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+                <wdp operation="DeleteConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
                     <classname>Domain</classname>
                     <objname>${domain}</objname>
                     <hostname>${hostname}</hostname>

@@ -12,7 +12,7 @@
     
     Unable to test this since I don't have WSRR available at the moment.
     
-        <wdp operation="WSRRSynchronize" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="WSRRSynchronize" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <name>something</name>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>

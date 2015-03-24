@@ -14,7 +14,7 @@
             <property name="zipfile" location="../imports/simple-urlrewrite.4.0.2.4.zip"/>
         </ant>
         
-        <wdp operation="TestURLRewrite" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="TestURLRewrite" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <name>simple</name>
             <url>http://1.2.3.4/abc</url>
             <hostname>${hostname}</hostname>

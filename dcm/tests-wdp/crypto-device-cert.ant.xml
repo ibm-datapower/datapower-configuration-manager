@@ -10,7 +10,7 @@
         
 
         <!-- Generate the device certificate. -->
-        <wdp operation="DeviceCertificate" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="DeviceCertificate" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <host>${hostname}</host>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>

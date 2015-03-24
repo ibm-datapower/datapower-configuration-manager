@@ -8,7 +8,7 @@
 	
     <target name="config-undo">
         
-        <wdp operation="UndoConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="UndoConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <classname>HTTPSourceProtocolHandler</classname>
             <objname>loopback-http-fsh</objname>
         	<hostname>${hostname}</hostname>

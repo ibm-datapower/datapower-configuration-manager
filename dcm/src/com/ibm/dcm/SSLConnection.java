@@ -70,7 +70,7 @@ public class SSLConnection {
     if (params.get("dumpoutput") != null && params.get("dumpoutput").equals("true"))
       dumpoutput = true;
     String capturesoma = params.get("capturesoma");
-    if (capturesoma != null && capturesoma.length() == 0) {
+    if (capturesoma != null && capturesoma.isEmpty()) {
       capturesoma = null;
     }
     String rawresponse = sendAndReceive(url, params.get("uid"), params.get("pwd"), request, dumpinput, dumpoutput, capturesoma); 
@@ -120,7 +120,7 @@ public class SSLConnection {
     BufferedReader in = null;
     BufferedWriter capture = null;
     try {
-      if (capturesoma != null) {
+      if (capturesoma != null  && !capturesoma.isEmpty()) {
         capture = new BufferedWriter(new FileWriter(capturesoma, true));  // Append to file if it exists
         capture.write("\r\n{{ b48397ae-5fff-4438-97c0-d79f88bb243e }}\r\n[[request " + dpurl + "]]\r\n");
         capture.write(request);

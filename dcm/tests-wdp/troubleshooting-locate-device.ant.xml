@@ -9,7 +9,7 @@
     <target name="troubleshooting-locate-device">
         
         
-        <wdp operation="LocateDevice" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="LocateDevice" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <state>on</state>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
@@ -19,7 +19,7 @@
         <echo>Successfully turned on the LED for ${hostname}</echo>
         
         
-        <wdp operation="LocateDevice" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="LocateDevice" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <state>off</state>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>

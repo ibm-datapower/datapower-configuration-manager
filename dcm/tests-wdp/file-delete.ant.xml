@@ -20,7 +20,7 @@
             <property name="remote" value="${remote}"/>
         </ant>
         
-        <wdp operation="DeleteFile" successprop="file-delete-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="DeleteFile" successprop="file-delete-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <remote>${remote}</remote>
         	<hostname>${hostname}</hostname>
         	<uid>${uid}</uid>

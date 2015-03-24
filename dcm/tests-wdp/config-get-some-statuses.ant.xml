@@ -16,7 +16,7 @@
         
         <local name="status"/>
         
-        <wdp operation="GetObjectStatus" dumpinput="@{dumpinput}" dumpoutput="true">
+        <wdp operation="GetObjectStatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
             <pwd>${pwd}</pwd>

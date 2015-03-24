@@ -11,7 +11,7 @@
 <!--
     Would like to test this but don't have an SMTP server to hit.
     
-        <wdp operation="SendFile" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="SendFile" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <host>smtp.server</host>
             <remote>logtemp:///default-log-xml</remote>
             <address>me@123.com</address>

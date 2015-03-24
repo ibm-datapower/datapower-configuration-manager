@@ -8,7 +8,7 @@
 
     <target name="config-modify-object">
 
-        <wdp operation="ModifyConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="ModifyConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <config>
                 <HTTPSourceProtocolHandler name="loopback-http-fsh">
                     <LocalPort>2</LocalPort>

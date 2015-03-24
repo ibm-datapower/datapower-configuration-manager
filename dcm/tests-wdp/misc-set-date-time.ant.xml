@@ -9,7 +9,7 @@
     <target name="misc-set-date-time">
         
         
-        <wdp operation="SetTimeAndDate" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="SetTimeAndDate" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
             <pwd>${pwd}</pwd>

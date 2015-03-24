@@ -5,7 +5,7 @@
 	
     <target name="execCLI">
         
-        <wdp operation="ExecCLI" successprop="execCLI-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="ExecCLI" successprop="execCLI-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <cli>show system</cli>
         	<hostname>${hostname}</hostname>
         	<uid>${uid}</uid>

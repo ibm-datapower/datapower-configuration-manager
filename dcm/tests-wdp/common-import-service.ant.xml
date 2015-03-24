@@ -7,7 +7,7 @@
     
     <target name="common-import-service">
         
-        <wdp operation="ImportConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="ImportConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <local>${zipfile}</local>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>

@@ -131,13 +131,14 @@
   <property name="dcm.jar" location="${dcm.dir}/dist/dcm.${dcm.build.version}.jar"/>
   <property name="work.dir" location="./tmp"/>
   <property name="schema.dir" location="${dcm.dir}/schemas"/>
+  <property name="capturesoma" value=""/>
   <property name="dumpinput" value="false"/>
   <property name="dumpoutput" value="false"/>
   
   
   <!--
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      Provide necessary definitionsi
+      Provide necessary definitions
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   -->
 
@@ -155,34 +156,11 @@
 
   <include file="${dcm.dir}/src/dcm-taskdefs.ant.xml"/> <!-- pull in standard dcm taskdefs/macrodefs such as <createDomain> -->
 
-  <!-- When the user wants to capture SOMA details then ensure we have a proper directory. -->
-  <if>
-    <isset property="capture.soma.dir"/>
-    <then>
-      <property name="capture.soma.absolute" location="${capture.soma.dir}"/>
-      <if>
-        <isfileselected file="${capture.soma.absolute}">
-          <writable/>
-        </isfileselected>
-        <then>
-          <echo>Capturing SOMA requests and responses: ${capture.soma.absolute}</echo>
-        </then>
-        <else>
-          <mkdir dir="${capture.soma.absolute}"/>
-          <echo>Created directory for capturing SOMA requests and responses: ${capture.soma.absolute}</echo>
-        </else>
-      </if>
-    </then>
-    <else>
-      <property name="capture.soma.absolute" value=""/>
-    </else>
-  </if>
-
   <!--
     Backup all the domains on the device.  Note that this is not a secure backup that includes
     key and certificate files.
   -->
-  <target name="backup-device">
+  <target name="backup-device" depends="-init-dir, check-access">
     
     <fail message="The Ant property 'device.backup.file' is required but not defined.  This is the filename where the device backup will be written." unless="device.backup.file"/>
     <sequential>
@@ -204,7 +182,7 @@
       Backup all the domains on the device, which is not a secure backup that includes
       key and certificate files.
     -->
-    <backupDevice host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" local="${device.backup.file}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+    <backupDevice host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" local="${device.backup.file}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
   </target>
   
@@ -212,7 +190,7 @@
   <!--
     Backup specific domains on the device.
   -->
-  <target name="backup-domains">
+  <target name="backup-domains" depends="-init-dir, check-access">
     
     <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
     <fail message="The Ant property 'backup.file' is required but not defined.  This is the filename where the backup will be written." unless="backup.file"/>
@@ -234,7 +212,7 @@
     <!--
       Backup the specified domains on the device.
     -->
-    <backupDomains host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" domains="${domains}" local="${backup.file}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+    <backupDomains host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" domains="${domains}" local="${backup.file}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
   </target>
   
@@ -275,7 +253,7 @@
       in case of an error.  Also, detects that firmware.version is already set and does nothing in that case.
       In case of an error it throws an exception or prints the SOAP response and terminates Ant.
     -->
-    <checkDeviceAccess host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" versionprop="firmware.version" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+    <checkDeviceAccess host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" versionprop="firmware.version" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     <if>
       <or>
         <not>
@@ -302,7 +280,7 @@
       
       <wdp operation="RemoveCheckpoint" successprop="success" responseprop="response"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="okay"
-        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}">
+        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
         <hostname>${host}</hostname>
         <port>${port}</port>
         <uid>${uid}</uid>
@@ -342,7 +320,7 @@
       
       <wdp operation="RollbackCheckpoint" successprop="success" responseprop="response"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="okay"
-        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}">
+        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
         <hostname>${host}</hostname>
         <port>${port}</port>
         <uid>${uid}</uid>
@@ -382,7 +360,7 @@
       
       <wdp operation="SaveCheckpoint" successprop="success" responseprop="response"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="okay"
-        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}">
+        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
         <hostname>${host}</hostname>
         <port>${port}</port>
         <uid>${uid}</uid>
@@ -514,7 +492,7 @@
       <defprop-set name="aduseemailuid" from="tam.aduseemailuid" defvalue="off"/>
       <defprop-set name="adgchost" from="tam.adgchost" defvalue=""/>
       
-      <wdp operation="CreateTAMFiles" successprop="success" responseprop="response"  dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"
+      <wdp operation="CreateTAMFiles" successprop="success" responseprop="response"  dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="okay">
         <hostname>${host}</hostname>
         <port>${port}</port>
@@ -594,11 +572,11 @@
       Creates the domain when it doesn't exist and prints whether it had to create the domain or not.
       In case of an error it throws an exception or prints the SOAP response and terminates Ant.
     -->
-    <createDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+    <createDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     <sequential>
       <local name="domainstatus"/>
-      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
-      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="default" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="default" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     </sequential>
     
   </target>
@@ -612,11 +590,11 @@
       Deletes the domain when it exists and prints whether it had to delete the domain or not.
       In case of an error it throws an exception or prints the SOAP response and terminates Ant.
     -->
-    <deleteDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+    <deleteDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     <sequential>
       <local name="domainstatus"/>
-      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
-      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="default" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="default" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     </sequential>
     
   </target>
@@ -640,11 +618,11 @@
       Resets the domain conventionally, when the domain exists, printing what it did.
       In case of an error it throws an exception or prints the SOAP response and terminates Ant.
     -->
-    <resetDomainConventionally host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+    <resetDomainConventionally host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     <sequential>
       <local name="domainstatus"/>
-      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
-      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     </sequential>
     
   </target>
@@ -658,7 +636,7 @@
       Quiesces the domain, when the domain exists, printing what it did.
       In case of an error it throws an exception or prints the SOAP response and terminates Ant.
     -->
-    <quiesceDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+    <quiesceDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
   </target>
   
@@ -671,7 +649,7 @@
       Restarts the domain, when the domain exists, printing what it did.
       In case of an error it throws an exception or prints the SOAP response and terminates Ant.
     -->
-    <restartDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+    <restartDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
   </target>
   
@@ -684,7 +662,7 @@
       Unquiesces the domain, when the domain exists, printing what it did.
       In case of an error it throws an exception or prints the SOAP response and terminates Ant.
     -->
-    <unquiesceDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+    <unquiesceDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
   </target>
   
@@ -694,7 +672,7 @@
   -->
   <target name="firmware-rollback" depends="-init-dir, check-access">
     
-    <firmwareRollback host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+    <firmwareRollback host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
   </target>
   
@@ -714,7 +692,7 @@
       </then>
     </if>
     
-    <firmwareUpdate host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" scryptfile="${new.firmware.file}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+    <firmwareUpdate host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" scryptfile="${new.firmware.file}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
   </target>
   
@@ -728,7 +706,7 @@
       <objectDelete host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="default"
         class="HostAlias" name="${host-alias.name}"
         dcmdir="${dcm.dir}" workdir="${work.dir}"
-        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     </sequential>
     
   </target>
@@ -744,7 +722,7 @@
     <sequential>
       <!-- Create or overwrite the specified host alias. -->
       <objectCreateByInline host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="default" versionprop="firmware.version"
-        dcmdir="${dcm.dir}" schemadir="${schema.dir}" workdir="${work.dir}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}">
+        dcmdir="${dcm.dir}" schemadir="${schema.dir}" workdir="${work.dir}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
         <HostAlias name="${host-alias.name}">
           <mAdminState>${host-alias.mAdminState}</mAdminState>
           <UserSummary>${host-alias.comment}</UserSummary>
@@ -775,7 +753,7 @@
       
       <!-- Generate an ant script that will do the actual work. -->
       <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
-      <nxslt infile="${idcred.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-environments.xsl">
+      <nxslt infile="${idcred.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
         <param ant="environment" xsl="param1"/>
       </nxslt>
       <nxslt inprop="tmp" outfile="${work.dir}/idcred.ant.xml" xsl="${dcm.dir}/src/idcred-to-ant.xsl">
@@ -861,7 +839,7 @@
       
       <idcredFromKeyAndCert host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
         certfile="${idcred.cert.file}" certpwd="${idcred.cert.pwd}" keyfile="${idcred.key.file}" keypwd="${idcred.key.pwd}" 
-        objname="${idcred.objname}" ignoreexpiration="${ignoreexpiration}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+        objname="${idcred.objname}" ignoreexpiration="${ignoreexpiration}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
       
     </sequential>
     
@@ -918,7 +896,7 @@
 
       <idcredFromPKCS12 host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
         p12file="${idcred.p12.file}" p12pwd="${idcred.p12.pwd}" objname="${idcred.objname}" ignoreexpiration="${ignoreexpiration}"
-        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
       
     </sequential>
     
@@ -953,7 +931,7 @@
           <expandproperties/>
         </filterchain>
       </loadfile>
-      <nxslt inprop="tmp" outprop="tmp2" xsl="${dcm.dir}/src/remove-unwanted-environments.xsl">
+      <nxslt inprop="tmp" outprop="tmp2" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
         <param ant="environment" xsl="param1"/>
       </nxslt>
       <nxslt inprop="tmp2" outprop="dcmdefinition" xsl="${dcm.dir}/src/expand-black-white-modify.xsl"/>
@@ -966,7 +944,7 @@
       -->
       <importConfig host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
         inputfile="${import.file}"
-        dcmdir="${dcm.dir}" workdir="${work.dir}" changes="${dcmdefinition}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+        dcmdir="${dcm.dir}" workdir="${work.dir}" changes="${dcmdefinition}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
     </sequential>
     
@@ -995,7 +973,7 @@
       -->
       <importConfigDPO host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
         inputfile="${import.file}" dpo="${deployment.policy.object}"
-        dcmdir="${dcm.dir}" workdir="${work.dir}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+        dcmdir="${dcm.dir}" workdir="${work.dir}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
       
     </sequential>
     
@@ -1050,7 +1028,7 @@
       
       <!-- Generate an ant script that will do the actual work. -->
       <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
-      <nxslt infile="${lbg.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-environments.xsl">
+      <nxslt infile="${lbg.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
         <param ant="environment" xsl="param1"/>
       </nxslt>
       <nxslt inprop="tmp" outfile="${work.dir}/lbg.ant.xml" xsl="${dcm.dir}/src/load-balancer-group-to-ant.xsl">
@@ -1107,7 +1085,7 @@
       
       <!-- Generate an ant script that will do the actual work. -->
       <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
-      <nxslt infile="${objects.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-environments.xsl">
+      <nxslt infile="${objects.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
         <param ant="environment" xsl="param1"/>
       </nxslt>
       <nxslt inprop="tmp" outfile="${work.dir}/objects.ant.xml" xsl="${dcm.dir}/src/objects-to-ant.xsl">
@@ -1124,7 +1102,7 @@
   <!--
     Restore domains from a device or multiple-domains backup.
   -->
-  <target name="restore-backup">
+  <target name="restore-backup" depends="-init-dir, check-access">
     
     <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
     <fail message="The Ant property 'backup.file' is required but not defined.  This is the backup file containing multiple domains (see backup-device or backup-domains)." unless="backup.file"/>
@@ -1140,7 +1118,7 @@
     
     <restoreBackup host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" 
       domains="${domains}" zipfile="${backup.file}" dry-run="${dry-run}"
-      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
   </target>
   
@@ -1155,8 +1133,8 @@
     -->
     <sequential>
       <local name="domainstatus"/>
-      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
-      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     </sequential>
     
   </target>
@@ -1165,12 +1143,12 @@
   <!--
     Set the default log level in a domain
   -->
-  <target name="set-log-level">
+  <target name="set-log-level" depends="-init-dir, check-access">
     
     <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
     <fail message="The Ant property 'log.level' is required but not defined.  This is the log level to set (debug, info, noice, warn, error, critic, alert, emerg)." unless="log.level"/>
     
-    <setLogLevel host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" loglevel="${log.level}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+    <setLogLevel host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" loglevel="${log.level}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
   </target>
   
@@ -1183,7 +1161,7 @@
     
     <dpupload dir="${upload-dir.from}" target="${upload-dir.to}" domain="${domain}" 
       host="${host}" port="${port}" uid="${uid}" pwd="${pwd}"
-      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
   </target>
   
@@ -1207,7 +1185,7 @@
       
       <!-- Generate an ant script that will do the actual work. -->
       <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
-      <nxslt infile="${upload.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-environments.xsl">
+      <nxslt infile="${upload.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
         <param ant="environment" xsl="param1"/>
       </nxslt>
       <nxslt inprop="tmp" outfile="${work.dir}/upload.ant.xml" xsl="${dcm.dir}/src/upload-to-ant.xsl">
@@ -1240,7 +1218,7 @@
       
       <!-- Generate an ant script that will do the actual work. -->
       <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
-      <nxslt infile="${valcred.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-environments.xsl">
+      <nxslt infile="${valcred.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
         <param ant="environment" xsl="param1"/>
       </nxslt>
       <nxslt inprop="tmp" outfile="${work.dir}/valcred.ant.xml" xsl="${dcm.dir}/src/valcred-to-ant.xsl">
@@ -1276,7 +1254,7 @@
     </if>
     
     <valcredFromFiles host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
-      dcmdir="${dcm.dir}" rootdir="${valcred.dir}" objname="${valcred.objname}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}">
+      dcmdir="${dcm.dir}" rootdir="${valcred.dir}" objname="${valcred.objname}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
       <include name="*"/>
     </valcredFromFiles>
     
@@ -1306,6 +1284,7 @@
   
   <target name="-init-dir" depends="clean">
     <mkdir dir="${work.dir}"/>
+    <mkdir dir="${schema.dir}"/>
   </target>
   
 

@@ -22,7 +22,7 @@
             <property name="remote" value="${remote}"/>
         </ant>
         
-      <wdp operation="MoveFile" successprop="file-move-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+      <wdp operation="MoveFile" successprop="file-move-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <source>${remote}</source>
             <destination>${remote2}</destination>
             <hostname>${hostname}</hostname>

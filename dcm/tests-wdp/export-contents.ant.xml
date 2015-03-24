@@ -18,7 +18,7 @@
         <property name="zipfile" location="${tmpdir.absolute}/export-contents.zip"/>
 
         <!-- Export the contents of the default domain. -->
-        <wdp operation="Export" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="Export" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <format>ZIP</format>
             <all-files>true</all-files>
             <local>${zipfile}</local>

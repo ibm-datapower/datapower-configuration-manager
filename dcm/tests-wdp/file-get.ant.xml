@@ -16,7 +16,7 @@
         <property name="file" value="xml-mgmt-ops.xsd"/>
         <property name="file.absolute" value="${tmpdir.absolute}/${file}"/>
         
-        <wdp operation="GetFile" successprop="file-get-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="GetFile" successprop="file-get-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <local>${file.absolute}</local>
             <remote>store:///${file}</remote>
         	<hostname>${hostname}</hostname>

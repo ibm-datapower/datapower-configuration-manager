@@ -20,7 +20,7 @@
         
         <property name="filestore" value="local:"/>
         
-        <wdp operation="GetFilestore" successprop="file-get-filestore-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="GetFilestore" successprop="file-get-filestore-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <filestore>${filestore}</filestore>
         	<hostname>${hostname}</hostname>
         	<uid>${uid}</uid>

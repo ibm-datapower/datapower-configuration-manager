@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright 2014 IBM Corp.
+   Copyright 2014,2015 IBM Corp.
   
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -169,6 +169,7 @@
         <xsl:attribute name="pwd">${pwd}</xsl:attribute>
         <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
         <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
+        <xsl:attribute name="capturesoma">${capturesoma}</xsl:attribute>
         <xsl:element name="include">
           <xsl:attribute name="name"><xsl:value-of select="$localBasename"/></xsl:attribute>
         </xsl:element>
@@ -193,6 +194,7 @@
         <xsl:attribute name="pwd">${pwd}</xsl:attribute>
         <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
         <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
+        <xsl:attribute name="capturesoma">${capturesoma}</xsl:attribute>
       </xsl:element>
       
     </xsl:element>
@@ -214,6 +216,7 @@
         <xsl:attribute name="pwd">${pwd}</xsl:attribute>
         <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
         <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
+        <xsl:attribute name="capturesoma">${capturesoma}</xsl:attribute>
         <xsl:element name="include">
           <xsl:attribute name="name"><xsl:value-of select="@match"/></xsl:attribute>
         </xsl:element>

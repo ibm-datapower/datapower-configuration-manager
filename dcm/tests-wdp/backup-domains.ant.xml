@@ -16,7 +16,7 @@
         <property name="zipfile" location="${tmpdir.absolute}/backup-domains.zip"/>
         
         <!-- Export two domains. -->
-        <wdp operation="Backup" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="Backup" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <local>${zipfile}</local>
             <domains>default</domains>
         	<hostname>${hostname}</hostname>

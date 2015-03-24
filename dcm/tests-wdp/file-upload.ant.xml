@@ -17,7 +17,7 @@
         <property name="remote" value="local:///"/>
         <property name="pattern" value=".*\.java"/> <!-- PCRE to accept only Java files, ignoring files with other extensions. -->
         
-        <wdp operation="Upload" successprop="file-upload-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="Upload" successprop="file-upload-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <local>${local}</local>
             <pattern>${pattern}</pattern>
             <remote>${remote}</remote>

@@ -181,7 +181,7 @@ public class taskWdp extends XMLFragment {
     if (dumpOutput) {
       params.set("dumpoutput", "true");
     }
-    if (capturesoma != null) {
+    if (capturesoma != null && !capturesoma.isEmpty()) {
       params.set("capturesoma", capturesoma);
     }
     

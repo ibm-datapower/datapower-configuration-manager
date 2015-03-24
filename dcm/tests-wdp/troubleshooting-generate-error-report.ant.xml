@@ -9,7 +9,7 @@
     <target name="troubleshooting-generate-error-report">
         
         
-        <wdp operation="GenerateErrorReport" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="GenerateErrorReport" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
             <pwd>${pwd}</pwd>

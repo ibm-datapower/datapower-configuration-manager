@@ -307,7 +307,7 @@ public class taskDpupload extends MatchingTask {
         url = "https://" + findArg("host") + ":" + findArg("port", "5550") + "/service/mgmt/current";
       }
 
-      String result = getConnection().sendAndReceive(url, findArg("uid"), findArg("pwd"), msg);
+      String result = getConnection().sendAndReceive(url, findArg("uid"), findArg("pwd"), msg, dumpInput, dumpOutput, capturesoma);
 //      System.out.println("### " + result);
       SomaUtils.ensureOK(result, "Failed uploading file " + remote);
 
@@ -390,7 +390,7 @@ public class taskDpupload extends MatchingTask {
             url = "https://" + findArg("host") + ":" + findArg("port", "5550") + "/service/mgmt/current";
           }
 
-          getConnection().sendAndReceive(url, findArg("uid"), findArg("pwd"), msg);
+          getConnection().sendAndReceive(url, findArg("uid"), findArg("pwd"), msg, dumpInput, dumpOutput, capturesoma);
           //
           // We don't check for "OK" here because it will fail if you try to "create" the directory that is for the
           // hard drive. Since we can't conveniently tell which directory is the mount point for the hard drive,

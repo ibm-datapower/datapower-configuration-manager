@@ -16,7 +16,7 @@
         <property name="zipfile" location="${tmpdir.absolute}/backup-device.zip"/>
         
         <!-- Export the device. -->
-        <wdp operation="BackupDevice" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="BackupDevice" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <local>${zipfile}</local>
         	<hostname>${hostname}</hostname>
         	<uid>${uid}</uid>

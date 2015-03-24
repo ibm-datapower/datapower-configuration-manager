@@ -196,7 +196,7 @@ public class taskDpdownload extends MatchingTask {
       port = "5550";
     String url = "https://" + findArg("hostname") + ":" + port + "/service/mgmt/current";
 //System.out.println("Sending to " + url);
-    String result = getConnection().sendAndReceive(url, findArg("uid"), findArg("pwd"), msg);
+    String result = getConnection().sendAndReceive(url, findArg("uid"), findArg("pwd"), msg, dumpInput, dumpOutput, capturesoma);
 //System.out.println(result);
 
     // Extract, decode, and save the file content.

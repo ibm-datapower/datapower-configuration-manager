@@ -9,7 +9,7 @@
     <target name="troubleshooting-set-log-level">
         
     
-        <wdp operation="SetLogLevel" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="SetLogLevel" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <loglevel>debug</loglevel>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>

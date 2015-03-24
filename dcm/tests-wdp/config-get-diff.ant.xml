@@ -21,7 +21,7 @@
         
         <property name="file.absolute" location="../imports/simple-loopback.v1.3.8.1.7.zip"/>
         
-        <wdp operation="GetDiff" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="GetDiff" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <from-export>${file.absolute}</from-export>
             <to-export>${file.absolute}</to-export>
             <hostname>${hostname}</hostname>
@@ -35,7 +35,7 @@
         <xpath inprop="rawresponse1" outfile="${tmpdir.absolute}/config-get-diff1.xml" xpath="/env:Envelope/env:Body/soma:response/soma:diff" xpathtype="node"/>
         
         
-        <wdp operation="GetDiff" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="GetDiff" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <from-export>${file.absolute}</from-export>
             <to-class>MultiProtocolGateway</to-class>
             <to-name>loopback</to-name>

@@ -9,7 +9,7 @@
     <target name="troubleshooting-tcp-connection">
         
     
-        <wdp operation="TCPConnectionTest" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="TCPConnectionTest" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <host>${hostname}</host>
             <port>5550</port>
             <hostname>${hostname}</hostname>

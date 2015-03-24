@@ -21,7 +21,7 @@
         <property name="class" value="WSGateway"/>
         <property name="name" value="logsoap"/>
         
-        <wdp operation="GetConformanceReport" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="GetConformanceReport" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <class>${class}</class>
             <name>${name}</name>
             <profile>dp-wsi-bp.xsl</profile>

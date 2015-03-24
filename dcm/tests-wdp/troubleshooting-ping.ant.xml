@@ -9,7 +9,7 @@
     <target name="troubleshooting-ping">
         
         
-        <wdp operation="Ping" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}">
+        <wdp operation="Ping" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <host>${hostname}</host>
             <hostname>${hostname}</hostname>
             <uid>${uid}</uid>
