@@ -53,13 +53,11 @@
     <attribute name="pwd"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="BackupDevice"/>
-      <wdp operation="BackupDevice" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <wdp operation="BackupDevice" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <local>@{local}</local>
         <hostname>@{host}</hostname>
         <port>@{port}</port>
@@ -99,14 +97,11 @@
     <attribute name="pwd"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="Backup"/>
-      
-      <wdp operation="Backup" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <wdp operation="Backup" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <local>@{local}</local>
         <domain>@{domain}</domain>
         <domains>@{domains}</domains>
@@ -147,20 +142,18 @@
     <attribute name="versionprop"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
       <local name="status"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="GetStatuses.FirmwareVersion"/>
       
       <if>
         <not>
           <isset property="versionprop"/>
         </not>
         <then>
-          <wdp operation="GetStatuses" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+          <wdp operation="GetStatuses" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
             <statuses>FirmwareVersion</statuses>
             <domain>default</domain>
             <hostname>@{host}</hostname>
@@ -204,13 +197,11 @@
     <attribute name="dpschemaFileVbl"/> <!-- name of ANT variable to create that will contain the location of the preprocessed schema file. -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     
     <sequential>
       <local name="fileSavedSchema"/>
       <local name="fileCreatedSchema"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="ensureDPSchema"/>
       
       <property name="fileSavedSchema" value="@{schemadir}/${@{versionprop}}.dpschema.xml"/>
       <property name="fileCreatedSchema" value="@{workdir}/${@{versionprop}}.dpschema.xml"/>
@@ -245,11 +236,11 @@
               
               <!-- Time to do the heavy lifting of downloading the schema files from the host and generating the dpschema file. -->
               
-              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt.wsdl"     domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
-              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt.xsd"      domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
-              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt-base.xsd" domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
-              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt-ops.xsd"  domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
-              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt-b2b.xsd"  domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}" ignoreerror="true"/>
+              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt.wsdl"     domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
+              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt.xsd"      domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
+              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt-base.xsd" domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
+              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt-ops.xsd"  domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
+              <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt-b2b.xsd"  domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}" ignoreerror="true"/>
               
               <nxslt infile="@{workdir}/xml-mgmt.wsdl" outfile="@{workdir}/collected.xml" xsl="@{dcmdir}/src/dpschema-collectxml.xsl"/>
               <nxslt infile="@{workdir}/collected.xml" outfile="${fileCreatedSchema}"     xsl="@{dcmdir}/src/dpschema-reformatsoma.xsl"/>
@@ -304,7 +295,7 @@
     <attribute name="domain"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
@@ -313,10 +304,8 @@
       <local name="create_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="CreateDomain"/>
       
-      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
+      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
       
       <xpath inprop="domainlist" outprop="domain_exists" 
         xpath="/status/DomainStatus[Domain='@{domain}']"/>
@@ -325,7 +314,7 @@
         <equals arg1="${domain_exists}" arg2=""/>
         <then>
           
-          <wdp operation="SetConfig" successprop="create_success" responseprop="create_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"
+          <wdp operation="SetConfig" successprop="create_success" responseprop="create_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="create_okay">
             <config>
               <Domain name="@{domain}">
@@ -389,7 +378,7 @@
     <attribute name="domain"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
@@ -398,10 +387,8 @@
       <local name="delete_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="DeleteDomain"/>
       
-      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
+      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
       
       <xpath inprop="domainlist" outprop="domain_exists" xpath="/status/DomainStatus[Domain='@{domain}']"/>
       
@@ -411,7 +398,7 @@
         </not>
         <then>
           
-          <wdp operation="DeleteConfig" successprop="delete_success" responseprop="delete_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"
+          <wdp operation="DeleteConfig" successprop="delete_success" responseprop="delete_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="delete_okay">
             <classname>Domain</classname>
             <objname>@{domain}</objname>
@@ -472,7 +459,7 @@
     <attribute name="objname"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
@@ -480,8 +467,6 @@
       <local name="disable_okay"/>
       <local name="disable_response"/>
       <local name="disable_success"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="disableObject"/>
       
       <storexml outprop="config">
         <config>
@@ -492,7 +477,7 @@
       </storexml>
       
       <wdp operation="ModifyConfig" domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" 
-        successprop="disable_success" responseprop="disable_response" dumpinput="@{dumpoutput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"
+        successprop="disable_success" responseprop="disable_response" dumpinput="@{dumpoutput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="disable_okay">
         <wrapper>${config}</wrapper>
       </wdp>
@@ -540,7 +525,7 @@
     <attribute name="dcmdir"/> <!-- directory where DCM is found -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     <element name="definition" implicit="yes"/>
     
@@ -550,8 +535,6 @@
       <local name="disable_okay"/>
       <local name="disable_response"/>
       <local name="disable_success"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="disableObjects"/>
       
       <!-- Store the dcm:definition (DCM policy) in a property for easy access. -->
       <storexml outprop="dcmpolicy">
@@ -566,7 +549,7 @@
       </nxslt>
       
       <wdp operation="ModifyConfig" 
-        successprop="disable_success" responseprop="disable_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"
+        successprop="disable_success" responseprop="disable_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="disable_okay">
         <domain>@{domain}</domain>
         <hostname>@{host}</hostname>
@@ -621,7 +604,7 @@
     <attribute name="objname"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
@@ -629,8 +612,6 @@
       <local name="enable_okay"/>
       <local name="enable_response"/>
       <local name="enable_success"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="enableObject"/>
       
       <storexml outprop="config">
         <config>
@@ -641,7 +622,7 @@
       </storexml>
       
       <wdp operation="ModifyConfig" domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" 
-        successprop="enable_success" responseprop="enable_response" dumpinput="@{dumpoutput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"
+        successprop="enable_success" responseprop="enable_response" dumpinput="@{dumpoutput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="enable_okay">
         <wrapper>${config}</wrapper>
       </wdp>
@@ -689,7 +670,7 @@
     <attribute name="dcmdir"/> <!-- directory where DCM is found -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     <element name="definition" implicit="yes"/>
     
@@ -699,8 +680,6 @@
       <local name="enable_okay"/>
       <local name="enable_response"/>
       <local name="enable_success"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="enableObjects"/>
       
       <!-- Store the dcm:definition (DCM policy) in a property for easy access. -->
       <storexml outprop="dcmpolicy">
@@ -715,7 +694,7 @@
       </nxslt>
       
       <wdp operation="ModifyConfig" 
-        successprop="enable_success" responseprop="enable_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"
+        successprop="enable_success" responseprop="enable_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="enable_okay">
         <domain>@{domain}</domain>
         <hostname>@{host}</hostname>
@@ -774,7 +753,7 @@
     <attribute name="user-comment" default=""/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     <element name="wrapper"/>
     
@@ -782,10 +761,8 @@
       <local name="export_file"/>
       <local name="export_response"/>
       <local name="status"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="exportConfig"/>
       
-      <wdp operation="Export" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}" 
+      <wdp operation="Export" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}" 
         responseprop="export_response" 
         xpathprop="export_file" xpath="string(/env:Envelope/env:Body/soma:response/soma:file)">
         <domain>@{domain}</domain>
@@ -832,16 +809,14 @@
     <attribute name="pwd"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
       <local name="success-update"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="firmwareRollback"/>
       
       <!-- Rollback to previous firmware (and other aspects of file system!). -->
-      <wdp operation="FirmwareRollback" successprop="success-update" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <wdp operation="FirmwareRollback" successprop="success-update" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <hostname>@{host}</hostname>
         <uid>@{uid}</uid>
         <pwd>@{pwd}</pwd>
@@ -872,28 +847,26 @@
     <attribute name="scryptfile"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
       <local name="basename-scryptfile"/>
       <local name="dirname-scryptfile"/>
       <local name="success-update"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="firmwareUpdate"/>
       
       <basename property="basename-scryptfile" file="@{scryptfile}"/>
       <dirname property="dirname-scryptfile" file="@{scryptfile}"/>
       
       <!-- Upload the firmware update file. -->
       <echo>Uploading the firmware update</echo>
-      <dpupload dir="${dirname-scryptfile}" target="image:///" domain="default" host="@{host}" port="@{port}" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <dpupload dir="${dirname-scryptfile}" target="image:///" domain="default" host="@{host}" port="@{port}" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <include name="${basename-scryptfile}"/>
       </dpupload>
       
       <!-- Update that puppy. -->
       <echo>Applying the firmware update, followed automatically by a reboot of the appliance.  This requires a few minutes to complete.</echo>
-      <wdp operation="BootUpdate" successprop="success-update" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <wdp operation="BootUpdate" successprop="success-update" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <name>${basename-scryptfile}</name>
         <hostname>@{host}</hostname>
         <uid>@{uid}</uid>
@@ -956,15 +929,13 @@
     <attribute name="domainsprop"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
       <local name="status"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="getDomainStatus"/>
 
-      <wdp operation="GetStatuses" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <wdp operation="GetStatuses" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <statuses>DomainStatus</statuses>
         <domain>default</domain>
         <hostname>@{host}</hostname>
@@ -994,7 +965,7 @@
     <attribute name="ignoreexpiration" default="off"/> <!-- on or off -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
@@ -1005,8 +976,6 @@
       <local name="success-create-cert"/>
       <local name="success-create-idcred"/>
       <local name="success-create-key"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="idcredFromPKCS12"/>
 <!--      
       <echo>p12file=@{p12file}</echo>
       <echo>p12pwd=@{p12pwd}</echo>
@@ -1021,12 +990,12 @@
         Okay, we now have a #PKCS12 file containing a key/cert pair plus the password for the file.
         Upload the file regardless of whether it may already exist.
       -->
-      <dpupload dir="${dirname}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <dpupload dir="${dirname}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <include name="${basename}"/>
       </dpupload>
       
       <!-- Create a Crypto Certficate object to wrap the #PKCS12 file. -->
-      <wdp operation="SetConfig" successprop="success-create-cert" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <wdp operation="SetConfig" successprop="success-create-cert" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <config>
           <CryptoCertificate name="${basename-no-ext}">
             <mAdminState>enabled</mAdminState>
@@ -1050,7 +1019,7 @@
         <then>
           
           <!-- Create a Crypto Key object to wrap the #PKCS12 file. -->
-          <wdp operation="SetConfig" successprop="success-create-key" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+          <wdp operation="SetConfig" successprop="success-create-key" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
             <config>
               <CryptoKey name="${basename-no-ext}">
                 <mAdminState>enabled</mAdminState>
@@ -1073,7 +1042,7 @@
             <then>
               
               <!-- Create the idcred object. -->
-              <wdp operation="SetConfig" successprop="success-create-idcred" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+              <wdp operation="SetConfig" successprop="success-create-idcred" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
                 <config>
                   <CryptoIdentCred name="@{objname}">
                     <mAdminState>enabled</mAdminState>
@@ -1134,7 +1103,7 @@
     <attribute name="ignoreexpiration" default="off"/> <!-- on or off -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
@@ -1146,8 +1115,6 @@
       <local name="success-create-cert"/>
       <local name="success-create-idcred"/>
       <local name="success-create-key"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="idcredFromKeyAndCert"/>
 <!--      
       <echo>certfile=@{certfile}</echo>
       <echo>certpwd=@{certpwd}</echo>
@@ -1170,7 +1137,7 @@
         <then>
           
           <!-- Upload the two files from the same source directory. -->
-          <dpupload dir="${dirname-cert}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+          <dpupload dir="${dirname-cert}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
             <include name="${basename-cert}"/>
             <include name="${basename-key}"/>
           </dpupload>
@@ -1179,10 +1146,10 @@
         <else>
           
           <!-- Upload the two files from different source directories. -->
-          <dpupload dir="${dirname-cert}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+          <dpupload dir="${dirname-cert}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
             <include name="${basename-cert}"/>
           </dpupload>
-          <dpupload dir="${dirname-key}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+          <dpupload dir="${dirname-key}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
             <include name="${basename-key}"/>
           </dpupload>
           
@@ -1190,7 +1157,7 @@
       </if>
       
       <!-- Create a Crypto Certficate object to wrap the certificate file. -->
-      <wdp operation="SetConfig" successprop="success-create-cert" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <wdp operation="SetConfig" successprop="success-create-cert" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <config>
           <CryptoCertificate name="${basename-cert}">
             <mAdminState>enabled</mAdminState>
@@ -1214,7 +1181,7 @@
         <then>
           
           <!-- Create a Crypto Key object to wrap the key file. -->
-          <wdp operation="SetConfig" successprop="success-create-key" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+          <wdp operation="SetConfig" successprop="success-create-key" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
             <config>
               <CryptoKey name="${basename-key}">
                 <mAdminState>enabled</mAdminState>
@@ -1237,7 +1204,7 @@
             <then>
               
               <!-- Create the idcred object. -->
-              <wdp operation="SetConfig" successprop="success-create-idcred" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+              <wdp operation="SetConfig" successprop="success-create-idcred" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
                 <config>
                   <CryptoIdentCred name="@{objname}">
                     <mAdminState>enabled</mAdminState>
@@ -1295,7 +1262,7 @@
     <attribute name="workdir"/> <!-- tmpdir where a directory can be created, if necessary -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     <attribute name="rewrite-local" default="true"/>
     <attribute name="overwrite-files" default="true"/>
@@ -1309,8 +1276,6 @@
       <local name="import_basename"/>
       <local name="import_response"/>
       <local name="import_success"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="importConfig"/>
       
       <!-- Store the dcm:definition (DCM policy) in a property for easy access. -->
       <if>
@@ -1341,7 +1306,7 @@
       <echo>Importing @{inputfile} into domain @{domain} on @{host}.</echo>
       <wdp operation="ImportConfig" responseprop="import_response" successprop="import_success" xpathprop="import_errors" 
         xpath="/env:Envelope/env:Body/soma:response/soma:import/import-results/exec-script-results/cfg-result[@status!='SUCCESS'] | /env:Envelope/env:Body/soma:response/soma:import/import-results/file-copy-log/file-result[not(@result='OK' or @result='ignored')] | /env:Envelope/env:Body/soma:response/soma:result"
-        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <domain>@{domain}</domain>
         <local>@{workdir}/${import_basename}</local>
         <deployment-policy-file>@{workdir}/4_gathered-deployment-policies.xml</deployment-policy-file>
@@ -1391,7 +1356,7 @@
     <attribute name="workdir"/> <!-- tmpdir where a directory can be created, if necessary -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     <attribute name="rewrite-local" default="true"/>
     <attribute name="overwrite-files" default="true"/>
@@ -1401,8 +1366,6 @@
       <local name="import_errors"/>
       <local name="import_response"/>
       <local name="import_success"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="importConfigDPO"/>
       
       <!--
         Import the DataPower export file.
@@ -1410,7 +1373,7 @@
       <echo>Importing @{inputfile} into domain @{domain} on @{host}.</echo>
       <wdp operation="ImportConfig" responseprop="import_response" successprop="import_success" xpathprop="import_errors" 
         xpath="/env:Envelope/env:Body/soma:response/soma:import/import-results/exec-script-results/cfg-result[@status!='SUCCESS'] | /env:Envelope/env:Body/soma:response/soma:import/import-results/file-copy-log/file-result[not(@result='OK' or @result='ignored')] | /env:Envelope/env:Body/soma:response/soma:result"
-        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <domain>@{domain}</domain>
         <local>@{inputfile}</local>
         <deployment-policy>@{dpo}</deployment-policy>
@@ -1463,7 +1426,7 @@
     <attribute name="workdir"/> <!-- tmpdir where a directory can be created, if necessary -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     <attribute name="changes" default=""/> <!-- Alternative to passing in XML content -->
     <element name="definition" implicit="yes" optional="yes"/>
@@ -1476,16 +1439,14 @@
       <local name="schema_file"/>
       <local name="set_okay"/>
       <local name="set_response"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="objectCreateByCopying"/>
       
       <!-- We'll need the preprocessed schema to make our best effort to ensure that the request is schema-compliant. -->
       <ensureDPSchema host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" versionprop="@{versionprop}"
         domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"
-        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
+        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
       
       <!-- Get the configuration of the existing object. -->
-      <wdp operation="GetConfig" responseprop="get_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <wdp operation="GetConfig" responseprop="get_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <domain>@{domain}</domain>
         <hostname>@{host}</hostname>
         <port>@{port}</port>
@@ -1533,7 +1494,7 @@
           <!-- Create the new object. -->
           <wdp operation="SetConfig" responseprop="set_response"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay"
-            dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+            dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
             <domain>@{domain}</domain>
             <hostname>@{host}</hostname>
             <port>@{port}</port>
@@ -1583,7 +1544,7 @@
     <attribute name="workdir"/> <!-- tmpdir where a directory can be created, if necessary -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     <attribute name="changes" default=""/> <!-- Alternative to passing in XML content -->
     <element name="definition" implicit="yes" optional="yes"/>
@@ -1595,13 +1556,11 @@
       <local name="schema_file"/>
       <local name="set_okay"/>
       <local name="set_response"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="objectCreateByInline"/>
       
       <!-- We'll need the preprocessed schema to make our best effort to ensure that the request is schema-compliant. -->
       <ensureDPSchema host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" versionprop="@{versionprop}"
         domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"
-        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
+        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
 
       <!-- 
         Copy the inline definition to a file, wrapping it in an dcm:object-create
@@ -1624,7 +1583,7 @@
       <!-- Create the new object. -->
       <wdp operation="SetConfig" responseprop="set_response"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay"
-        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <domain>@{domain}</domain>
         <hostname>@{host}</hostname>
         <port>@{port}</port>
@@ -1670,7 +1629,7 @@
     <attribute name="workdir"/> <!-- tmpdir where a directory can be created, if necessary -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     <attribute name="changes" default=""/> <!-- Alternative to passing in XML content -->
     <element name="definition" implicit="yes" optional="yes"/>
@@ -1686,13 +1645,11 @@
       <local name="schema_file"/>
       <local name="set_okay"/>
       <local name="set_response"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="objectCreateFromExport"/>
       
       <!-- We'll need the preprocessed schema to make our best effort to ensure that the request is schema-compliant. -->
       <ensureDPSchema host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" versionprop="@{versionprop}"
         domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"
-        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
+        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
       
       <!-- Determine the file extension. -->
       <basename property="file_base_name" file="@{export}"/>
@@ -1760,7 +1717,7 @@
           <!-- Create the new object. -->
           <wdp operation="SetConfig" responseprop="set_response"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay"
-            dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+            dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
             <domain>@{domain}</domain>
             <hostname>@{host}</hostname>
             <port>@{port}</port>
@@ -1809,17 +1766,15 @@
     <attribute name="workdir"/> <!-- tmpdir where a directory can be created, if necessary -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
 
     <sequential>
       <local name="delete_success"/>
       <local name="delete_response"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="objectDelete"/>
       
       <!-- Delete the existing object. -->
-      <wdp operation="DeleteConfig" responseprop="delete_response" successprop="delete_success" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <wdp operation="DeleteConfig" responseprop="delete_response" successprop="delete_success" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <domain>@{domain}</domain>
         <hostname>@{host}</hostname>
         <port>@{port}</port>
@@ -1865,7 +1820,7 @@
     <attribute name="workdir"/> <!-- tmpdir where a directory can be created, if necessary -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     <attribute name="changes" default=""/> <!-- Alternative to passing in XML content -->
     <element name="definition" implicit="yes" optional="yes"/>
@@ -1878,16 +1833,14 @@
       <local name="schema_file"/>
       <local name="set_okay"/>
       <local name="set_response"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="objectModify"/>
       
       <!-- We'll need the preprocessed schema to make our best effort to ensure that the request is schema-compliant. -->
       <ensureDPSchema host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" versionprop="@{versionprop}"
         domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"
-        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
+        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
       
       <!-- Get the configuration of the existing object. -->
-      <wdp operation="GetConfig" responseprop="get_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <wdp operation="GetConfig" responseprop="get_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <domain>@{domain}</domain>
         <hostname>@{host}</hostname>
         <port>@{port}</port>
@@ -1928,7 +1881,7 @@
           <!-- Create the new object. -->
           <wdp operation="SetConfig" responseprop="set_response"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay"
-            dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+            dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
             <domain>@{domain}</domain>
             <hostname>@{host}</hostname>
             <port>@{port}</port>
@@ -1988,7 +1941,7 @@
     <attribute name="timeout" default="60"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
@@ -1997,10 +1950,8 @@
       <local name="quiesce_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="quiesceDomain"/>
       
-      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
+      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
       
       <xpath inprop="domainlist" outprop="domain_exists" xpath="/status/DomainStatus[Domain='@{domain}']"/>
       
@@ -2010,7 +1961,7 @@
         </not>
         <then>
           
-          <wdp operation="QuiesceDomain" successprop="quiesce_success" responseprop="quiesce_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"
+          <wdp operation="QuiesceDomain" successprop="quiesce_success" responseprop="quiesce_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="quiesce_okay">
             <hostname>@{host}</hostname>
             <port>@{port}</port>
@@ -2068,7 +2019,7 @@
     <attribute name="domain"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
@@ -2077,10 +2028,8 @@
       <local name="reset_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="resetDomainConventionally"/>
       
-      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
+      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
       
       <xpath inprop="domainlist" outprop="domain_exists" 
         xpath="/status/DomainStatus[Domain='@{domain}']"/>
@@ -2091,7 +2040,7 @@
         </not>
         <then>
           
-          <wdp operation="ResetDomain" successprop="reset_success" responseprop="reset_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"
+          <wdp operation="ResetDomain" successprop="reset_success" responseprop="reset_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="reset_okay">
             <hostname>@{host}</hostname>
             <port>@{port}</port>
@@ -2148,7 +2097,7 @@
     <attribute name="domain"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
@@ -2160,10 +2109,8 @@
       <local name="delete_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="resetDomainDeleteCreate"/>
       
-      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
+      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
       
       <xpath inprop="domainlist" outprop="domain_exists" 
         xpath="/status/DomainStatus[Domain='@{domain}']"/>
@@ -2174,7 +2121,7 @@
         </not>
         <then>
           
-          <wdp operation="DeleteConfig" successprop="delete_success" responseprop="delete_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"
+          <wdp operation="DeleteConfig" successprop="delete_success" responseprop="delete_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="delete_okay">
             <classname>Domain</classname>
             <objname>@{domain}</objname>
@@ -2200,7 +2147,7 @@
         </then>
       </if>
 
-      <wdp operation="SetConfig" successprop="create_success" responseprop="create_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"
+      <wdp operation="SetConfig" successprop="create_success" responseprop="create_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="create_okay">
         <config>
           <Domain name="@{domain}">
@@ -2258,7 +2205,7 @@
     <attribute name="domain"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
@@ -2267,10 +2214,8 @@
       <local name="restart_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="restartDomain"/>
       
-      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
+      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
       
       <xpath inprop="domainlist" outprop="domain_exists" 
         xpath="/status/DomainStatus[Domain='@{domain}']"/>
@@ -2281,7 +2226,7 @@
         </not>
         <then>
           
-          <wdp operation="RestartDomain" successprop="restart_success" responseprop="restart_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"
+          <wdp operation="RestartDomain" successprop="restart_success" responseprop="restart_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="restart_okay">
             <hostname>@{host}</hostname>
             <port>@{port}</port>
@@ -2329,16 +2274,14 @@
     <attribute name="pwd"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
       <local name="success-update"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="restoreBackup"/>
       
       <!-- Restore the specified domain(s). -->
-      <wdp operation="Restore" successprop="success-update" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <wdp operation="Restore" successprop="success-update" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <local>@{zipfile}</local>
         <domain>@{domain}</domain>
         <domains>@{domains}</domains>
@@ -2478,13 +2421,11 @@
     <attribute name="domainStatusProp"/> <!-- property returned by getDomainStatus -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
       <local name="save_needed"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="saveDomainIfChanged"/>
       
       <fail message="The domainStatusProp attribute was not supplied in the ant script invoking &lt;saveDomainIfChanged&gt;!">
         <condition>
@@ -2499,7 +2440,7 @@
         <equals arg1="${save_needed}" arg2="on"/>
         <then>
           <saveDomainUnconditionally host="@{host}" port="@{port}" uid="@{uid}" pwd="@{pwd}" domain="@{domain}"
-            dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}" ignore-errors="@{ignore-errors}"/>
+            dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}" ignore-errors="@{ignore-errors}"/>
         </then>
       </if>
       
@@ -2532,14 +2473,12 @@
     <attribute name="domainStatusProp"/> <!-- property returned by getDomainStatus -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
       <local name="answer"/>
       <local name="save_needed"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="saveDomainIfPrompted"/>
       
       <fail message="The domainStatusProp attribute was not supplied in the ant script invoking &lt;saveDomainIfChangedPrompt&gt;!">
         <condition>
@@ -2560,7 +2499,7 @@
             <then>
 
               <saveDomainUnconditionally host="@{host}" port="@{port}" uid="@{uid}" pwd="@{pwd}" domain="@{domain}"
-                dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}" ignore-errors="@{ignore-errors}"/>
+                dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}" ignore-errors="@{ignore-errors}"/>
               
             </then>
           </if>
@@ -2602,14 +2541,12 @@
     <attribute name="domain"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
       <local name="save_okay"/>
       <local name="save_response"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="saveDomainUnconditionally"/>
 <!--      
       <echo>saveDomainUnconditionally : host=@{host}</echo>
       <echo>saveDomainUnconditionally : port=@{port}</echo>
@@ -2623,7 +2560,7 @@
       <!-- Save this domain -->
       <wdp operation="SaveConfig" responseprop="save_response" 
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="save_okay" 
-        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+        dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <domain>@{domain}</domain>
         <host>@{host}</host>
         <port>@{port}</port>
@@ -2673,7 +2610,7 @@
     <attribute name="loglevel"/> <!-- debug, info, noice, warn, error, critic, alert, emerg -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
@@ -2681,10 +2618,8 @@
       <local name="set_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="setLogLevel"/>
       
-      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
+      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
       
       <xpath inprop="domainlist" outprop="domain_exists" 
         xpath="/status/DomainStatus[Domain='@{domain}']"/>
@@ -2695,7 +2630,7 @@
         </not>
         <then>
           
-          <wdp operation="SetLogLevel" successprop="set_success" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"
+          <wdp operation="SetLogLevel" successprop="set_success" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay">
             <hostname>@{host}</hostname>
             <port>@{port}</port>
@@ -2744,7 +2679,7 @@
     <attribute name="objname"/> <!-- name of the Validation Credential object to create -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <element name="definition" implicit="yes"/>
     
     <sequential>
@@ -2752,12 +2687,10 @@
       <local name="success-create"/>
       <local name="uploadedfiles"/>
       <local name="valcred-objname"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="valcredFromFiles"/>
       
       <!-- Upload all the files in the specified directory.  These are all supposed to be certificate files for this valcred object. -->
       <dpupload dir="@{rootdir}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" 
-        uploadedfilesprop="uploaded-files" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+        uploadedfilesprop="uploaded-files" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <definition/>
       </dpupload>
       
@@ -2771,7 +2704,7 @@
       
       <!-- <echo>config = ${config}</echo> -->
       
-      <wdp operation="SetConfig" successprop="success-create" responseprop="response-create" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <wdp operation="SetConfig" successprop="success-create" responseprop="response-create" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <wrapper>${config}</wrapper>
         <hostname>@{host}</hostname>
         <uid>@{uid}</uid>
@@ -2814,7 +2747,7 @@
     <attribute name="workdir"/> <!-- tmpdir where a directory can be created, if necessary -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     <element name="definition" implicit="yes"/>
     
@@ -2826,8 +2759,6 @@
       <local name="delete_success"/>
       <local name="objects_delete"/>
       <local name="objects_disable"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="unimportConfig"/>
       
       <!-- Rewrite the DP export to account for changes to object names or WSDLs (in a WSP), or just copy the DP export file. -->
       <basename property="exportname" file="@{inputfile}"/>
@@ -2853,7 +2784,7 @@
       <nxslt infile="${exportxml}" outprop="objects_delete" xsl="@{dcmdir}/src/unimport-extract-delete.xsl"/>
 
       <!-- Disable the objects, ignoring some errors for the moment. -->
-      <wdp operation="ModifyConfig" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <wdp operation="ModifyConfig" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <wrapper>${objects_disable}</wrapper>
         <domain>@{domain}</domain>
         <host>@{host}</host>
@@ -2872,7 +2803,7 @@
         the next object we deleted, the MQ QM, fails to delete because it was still in use by the MQ FSH, which apparently had not
         finished being destroyed.  Since it was a race condition, sometimes the MQ QM deleted successfully and sometimes not.
       -->
-      <wdp operation="DeleteConfig" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <wdp operation="DeleteConfig" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <wrapper>${objects_delete}</wrapper>
         <domain>@{domain}</domain>
         <host>@{host}</host>
@@ -2881,7 +2812,7 @@
         <pwd>@{pwd}</pwd>
         <ignore-errors>true</ignore-errors>
       </wdp>
-      <wdp operation="DeleteConfig" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}">
+      <wdp operation="DeleteConfig" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <wrapper>${objects_delete}</wrapper>
         <domain>@{domain}</domain>
         <host>@{host}</host>
@@ -2890,7 +2821,7 @@
         <pwd>@{pwd}</pwd>
         <ignore-errors>true</ignore-errors>
       </wdp>
-      <wdp operation="DeleteConfig" successprop="delete_success" responseprop="delete_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"
+      <wdp operation="DeleteConfig" successprop="delete_success" responseprop="delete_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
         xpath="/env:Envelope/env:Body/soma:response/soma:result[(text() and text() != 'OK') or error-log[log-event[normalize-space() != 'Cannot find configuration object']]]" xpathprop="delete_errors">
         <wrapper>${objects_delete}</wrapper>
         <domain>@{domain}</domain>
@@ -2943,7 +2874,7 @@
     <attribute name="domain"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
-    <attribute name="capturesoma"/>
+    <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
@@ -2952,10 +2883,8 @@
       <local name="unquiesce_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      <local name="capture"/>
-      <captureSomaFilename name="capture" dir="@{capturesoma}" operation="unquiesceDomain"/>
       
-      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"/>
+      <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
       
       <xpath inprop="domainlist" outprop="domain_exists" xpath="/status/DomainStatus[Domain='@{domain}']"/>
       
@@ -2965,7 +2894,7 @@
         </not>
         <then>
           
-          <wdp operation="UnquiesceDomain" successprop="unquiesce_success" responseprop="unquiesce_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="${capture}"
+          <wdp operation="UnquiesceDomain" successprop="unquiesce_success" responseprop="unquiesce_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="unquiesce_okay">
             <hostname>@{host}</hostname>
             <port>@{port}</port>
@@ -3073,45 +3002,6 @@
           <!-- <echo>### name=@{name}, from=@{from}, defvalue=@{defvalue} : 2 : result=${@{name}}</echo> -->
         </else>
       </if>
-    </sequential>
-  </macrodef>
-  
-  
-  <!-- Set a property to the name of a SOMA capture file based on the current timestamp and the operation. -->
-  <macrodef name="captureSomaFilename">
-    <attribute name="name"/>
-    <attribute name="dir"/> <!-- directory name unless ends in '.soma', which means it is a filename -->
-    <attribute name="operation"/>
-    <sequential>
-      <local name="ts"/>
-      <!-- <echo>### captureSomaFilename name=@{name} dir=@{dir} operation=@{operation}</echo> -->
-      <if>
-        <equals arg1="@{dir}" arg2=""/>
-        <then>
-          <!-- Don't capture. -->
-          <property name="@{name}" value=""/>
-          <!-- <echo>### captureSomaFilename : don't capture</echo> -->
-        </then>
-        <else>
-          <if>
-            <matches string="@{dir}" pattern=".*\.soma$"/>
-            <then>
-              <!-- @{dir} is actually a filename rather than a directory name, so use it. -->
-              <property name="@{name}" value="@{dir}"/>
-              <!-- <echo>### captureSomaFilename : filename rather than directory</echo> -->
-            </then>
-            <else>
-              <!-- Trust that this is a directory name ending in '/' and append a filename to it. -->
-              <tstamp>
-                <format property="ts" pattern="yyyy.MM.dd_hh.mm.ss.SSS"/>
-              </tstamp>
-              <property name="@{name}" value="@{dir}/${ts}_@{operation}.soma"/>
-              <!-- <echo>### captureSomaFilename : directory name</echo> -->
-            </else>
-          </if>
-        </else>
-      </if>
-      <!-- <echo>### captureSomaFilename : '${@{name}}'</echo> -->
     </sequential>
   </macrodef>
   
