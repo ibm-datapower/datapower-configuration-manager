@@ -63,6 +63,13 @@
   
   save - save the domain
   
+  secure-backup-device - secure backup of device
+  
+  service-quiesce - quiesce a service
+  
+  service-unquiesce -unquiesce a service
+  
+  service-status - get the opstate of a service
   upload-dir - upload an entire directory
   upload-from-def - upload files specified in dcm:definition/dcm:upload elements
   
@@ -1136,6 +1143,64 @@
       <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
       <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     </sequential>
+  </target>
+  
+	<!-- 
+		Secure Backup the device.  
+		-->
+  <target name="secure-backup-device">
+		
+		<fail unless="secure.backup.remote" message="The Ant property 'secure.backup.remote' is required but not defined.  This is the remote location for the secure backup. " />
+		<fail unless="secure.backup.objname" message="The Ant property 'secure.backup.objname' is required but not defined.  This is the crypto certificate object to be used for the secure backup. " />
+		
+		<secureBackupDevice host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" remote="${secure.backup.remote}" objname="${secure.backup.objname}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}"/>
+
+  </target>
+	
+  <!-- 
+	Quiesce service. 
+  -->	
+  <target name="service-quiesce" depends="-init-dir, check-access">
+		<fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain" />
+		<fail message="The Ant property 'service.name' is required but not defined.  This is the name of a service to be quiesced on the DataPower device." unless="domain" />
+		<fail message="The Ant property 'service.type' is required but not defined.  This is the type of a service to be quiesced on the DataPower device." unless="domain" />
+		<!--
+	      Quiesces the service printing what it did.
+	      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+	    -->
+		<quiesceService host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" servicename="${service.name}" servicetype="${service.type}" ignore-errors="${ignoreerrors}"  dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}" />
+	</target>
+
+	<!-- 
+	  Unquiesce service.  
+    -->	
+	<target name="service-unquiesce" depends="-init-dir, check-access">
+
+		<fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain" />
+		<fail message="The Ant property 'service.name' is required but not defined.  This is the name of a service to be quiesced on the DataPower device." unless="domain" />
+		<fail message="The Ant property 'service.type' is required but not defined.  This is the type of a service to be quiesced on the DataPower device." unless="domain" />
+		<!--
+	      Unquiesces the service printing what it did.
+	      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+	    -->
+		<unquiesceService host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" servicename="${service.name}" servicetype="${service.type}" ignore-errors="${ignoreerrors}"   dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}" />
+
+	</target>
+
+
+	<!-- 
+	  Get service status.  
+	-->	
+	<target name="service-status">
+
+		<fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain" />
+		<fail message="The Ant property 'service.name' is required but not defined.  This is the name of a service to be checked on the DataPower device." unless="service.name" />
+		<fail message="The Ant property 'servicetype.type' is required but not defined.  This is the type of a service to be checked on the DataPower device." unless="service.type" />
+		<!--
+	      Get opstate for the service printing what it did.
+	      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+		-->
+		<getServiceStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" servicename="${service.name}" servicetype="${service.type}" outputprop="opstateprop"  dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capture.soma.absolute}" />
     
   </target>
   
