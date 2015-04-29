@@ -30,10 +30,20 @@
   </target>
 
 
-  <target name="backup-device" depends="setup" description="Backup a device">
+  <target name="backup-device" depends="setup" description="Backup a device, both regular and secure">
     
     <ant antfile="../deploy.ant.xml" target="backup-device">
       <property name="device.backup.file" location="../tmp/xi52a.zip"/>
+    </ant>
+    
+    <ant antfile="../deploy.ant.xml" target="certificate-from-def">
+      <property name="domain" value="default"/>
+      <property name="cert.file" location="secure-backup-cert.dcm.xml"/>
+    </ant>
+    
+    <ant antfile="../deploy.ant.xml" target="secure-backup-device">
+      <property name="secure.backup.remote" value="temporary:///"/>
+      <property name="secure.backup.objname" value="secureBackupCert"/>
     </ant>
     
   </target>
@@ -154,6 +164,34 @@
     
     <ant antfile="../deploy.ant.xml" target="objects-from-def">
       <property name="objects.file" location="object-delete.dcm.xml"/>
+    </ant>
+    
+  </target>
+  
+  
+  <target name="quiesce" depends="setup" description="Quiesce/unquiesce domain, service">
+    
+    <ant antfile="../deploy.ant.xml" target="domain-quiesce"/>
+    
+    <ant antfile="../deploy.ant.xml" target="domain-unquiesce"/>
+    
+    <ant antfile="../deploy.ant.xml" target="import-from-def">
+      <property name="import.file" location="01-loopback.v1.3.8.1.7.zip"/>
+    </ant>
+    
+    <ant antfile="../deploy.ant.xml" target="service-status">
+      <property name="service.name" value="loopback"/>
+      <property name="service.type" value="MultiProtocolGateway"/>
+    </ant>
+    
+    <ant antfile="../deploy.ant.xml" target="service-quiesce">
+      <property name="service.name" value="loopback"/>
+      <property name="service.type" value="MultiProtocolGateway"/>
+    </ant>
+    
+    <ant antfile="../deploy.ant.xml" target="service-unquiesce">
+      <property name="service.name" value="loopback"/>
+      <property name="service.type" value="MultiProtocolGateway"/>
     </ant>
     
   </target>

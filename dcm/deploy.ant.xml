@@ -62,7 +62,13 @@
   objects-from-def - create, delete, or modify objects based on dcm:object-* elements
   
   save - save the domain
-  
+
+  secure-backup-device - secure backup of device
+
+  service-quiesce - quiesce a service
+  service-unquiesce -unquiesce a service
+  service-status - get the opstate of a service
+
   upload-dir - upload an entire directory
   upload-from-def - upload files specified in dcm:definition/dcm:upload elements
   
@@ -273,37 +279,8 @@
     <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
     <fail message="The Ant property 'checkpoint.name' is required but not defined.  This defines name of the checkpoint that will be deleted." unless="checkpoint.name"/>
     
-    <sequential>
-      <local name="okay"/>
-      <local name="response"/>
-      <local name="success"/>
-      
-      <wdp operation="RemoveCheckpoint" successprop="success" responseprop="response"
-        xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="okay"
-        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
-        <hostname>${host}</hostname>
-        <port>${port}</port>
-        <uid>${uid}</uid>
-        <pwd>${pwd}</pwd>
-        <domain>${domain}</domain>
-        <name>${checkpoint.name}</name>
-      </wdp>
-      
-      <if>
-        <and>
-          <istrue value="${success}"/>
-          <equals arg1="${okay}" arg2="OK"/>
-        </and>
-        <then>
-          <echo>Deleted checkpoint ${checkpoint.name} in ${domain} on ${host}.</echo>
-        </then>
-        <else>
-          <echo>Raw response for deleting checkpoint: ${response}</echo>
-          <fail message="Failed to delete checkpoint ${checkpoint.name} in ${domain} on ${host}."/>
-        </else>
-      </if>
-      
-    </sequential>
+    <removeCheckpoint host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" checkpoint-name="${checkpoint.name}"
+      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
   </target>
   
@@ -313,37 +290,8 @@
     <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
     <fail message="The Ant property 'checkpoint.name' is required but not defined.  This defines name of the checkpoint that will be restored." unless="checkpoint.name"/>
     
-    <sequential>
-      <local name="okay"/>
-      <local name="response"/>
-      <local name="success"/>
-      
-      <wdp operation="RollbackCheckpoint" successprop="success" responseprop="response"
-        xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="okay"
-        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
-        <hostname>${host}</hostname>
-        <port>${port}</port>
-        <uid>${uid}</uid>
-        <pwd>${pwd}</pwd>
-        <domain>${domain}</domain>
-        <name>${checkpoint.name}</name>
-      </wdp>
-      
-      <if>
-        <and>
-          <istrue value="${success}"/>
-          <equals arg1="${okay}" arg2="OK"/>
-        </and>
-        <then>
-          <echo>Restored checkpoint ${checkpoint.name} in ${domain} on ${host}.</echo>
-        </then>
-        <else>
-          <echo>Raw response for restoring checkpoint: ${response}</echo>
-          <fail message="Failed to restore checkpoint ${checkpoint.name} in ${domain} on ${host}."/>
-        </else>
-      </if>
-      
-    </sequential>
+    <rollbackCheckpoint host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" checkpoint-name="${checkpoint.name}"
+      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
   </target>
   
@@ -352,38 +300,9 @@
     
     <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
     <fail message="The Ant property 'checkpoint.name' is required but not defined.  This defines name of the checkpoint that will be saved." unless="checkpoint.name"/>
-    
-    <sequential>
-      <local name="okay"/>
-      <local name="response"/>
-      <local name="success"/>
-      
-      <wdp operation="SaveCheckpoint" successprop="success" responseprop="response"
-        xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="okay"
-        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
-        <hostname>${host}</hostname>
-        <port>${port}</port>
-        <uid>${uid}</uid>
-        <pwd>${pwd}</pwd>
-        <domain>${domain}</domain>
-        <name>${checkpoint.name}</name>
-      </wdp>
-      
-      <if>
-        <and>
-          <istrue value="${success}"/>
-          <equals arg1="${okay}" arg2="OK"/>
-        </and>
-        <then>
-          <echo>Saved checkpoint ${checkpoint.name} in ${domain} on ${host}.</echo>
-        </then>
-        <else>
-          <echo>Raw response for saving checkpoint: ${response}</echo>
-          <fail message="Failed to save checkpoint ${checkpoint.name} in ${domain} on ${host}."/>
-        </else>
-      </if>
-      
-    </sequential>
+
+    <saveCheckpoint host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" checkpoint-name="${checkpoint.name}"
+        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
   </target>
   
@@ -1138,7 +1057,69 @@
     </sequential>
     
   </target>
+
+
+  <!--
+    Secure Backup the device.
+  -->
+  <target name="secure-backup-device">
+
+    <fail unless="secure.backup.remote" message="The Ant property 'secure.backup.remote' is required but not defined. This is the remote location for the secure backup. " />
+    <fail unless="secure.backup.objname" message="The Ant property 'secure.backup.objname' is required but not defined. This is the crypto certificate object to be used for the secure backup. " />
+
+    <secureBackup host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" remote="${secure.backup.remote}" objname="${secure.backup.objname}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+  </target>
+
+  <!--
+    Quiesce service.
+  -->	
+  <target name="service-quiesce" depends="-init-dir, check-access">
+    <fail message="The Ant property 'domain' is required but not defined. This is the name of a domain on the DataPower device." unless="domain" />
+    <fail message="The Ant property 'service.name' is required but not defined. This is the name of a service to be quiesced on the DataPower device." unless="service.name" />
+    <fail message="The Ant property 'service.type' is required but not defined. This is the type of a service to be quiesced on the DataPower device." unless="service.type" />
+    <!--
+      Quiesces the service printing what it did.
+      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+    -->
+    <quiesceService host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" servicename="${service.name}" servicetype="${service.type}" ignore-errors="${ignoreerrors}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}" />
   
+  </target>
+
+
+  <!--
+    Unquiesce service.
+  -->	
+  <target name="service-unquiesce" depends="-init-dir, check-access">
+    
+    <fail message="The Ant property 'domain' is required but not defined. This is the name of a domain on the DataPower device." unless="domain" />
+    <fail message="The Ant property 'service.name' is required but not defined. This is the name of a service to be quiesced on the DataPower device." unless="service.name" />
+    <fail message="The Ant property 'service.type' is required but not defined. This is the type of a service to be quiesced on the DataPower device." unless="service.type" />
+    <!--
+      Unquiesces the service printing what it did.
+      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+    -->
+    <unquiesceService host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" servicename="${service.name}" servicetype="${service.type}" ignore-errors="${ignoreerrors}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}" />
+    
+  </target>
+
+
+  <!--
+    Get service status.
+  -->	
+  <target name="service-status">
+
+    <fail message="The Ant property 'domain' is required but not defined. This is the name of a domain on the DataPower device." unless="domain" />
+    <fail message="The Ant property 'service.name' is required but not defined. This is the name of a service to be checked on the DataPower device." unless="service.name" />
+    <fail message="The Ant property 'servicetype.type' is required but not defined. This is the type of a service to be checked on the DataPower device." unless="service.type" />
+    <!--
+      Get opstate for the service printing what it did.
+      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+    -->
+    <getServiceStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" servicename="${service.name}" servicetype="${service.type}" outputprop="opstateprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}" />
+    
+  </target>
+
   
   <!--
     Set the default log level in a domain
