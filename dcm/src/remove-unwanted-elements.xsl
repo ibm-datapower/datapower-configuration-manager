@@ -27,6 +27,11 @@
   Ditto deviceid="...", which is useful, for example, when specifying a key/cert
   pair for a particular idcred, or defining a host alias for an ethernet port.
   
+  In addition to all that, it resolves any <dcm:include href="..."/> elements.
+  The included file may have any root element you like.  The root element of
+  the included file may be <dcm:wrapper>.  In this case the contents of the
+  <dcm:wrapper> is kept, ignoring the wrapper element itself.
+  
 -->
 <xsl:stylesheet version="1.0" 
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
@@ -49,10 +54,51 @@
   
   
   <xsl:template match="/">
-    <!-- <xsl:message></xsl:message> -->
-    <xsl:apply-templates select="." mode="filter"/>
-    <!-- <xsl:message></xsl:message> -->
+    <xsl:variable name="resolveIncludes">
+      <xsl:apply-templates select="." mode="handleIncludes"/>
+    </xsl:variable>
+    <xsl:variable name="filtered">
+      <xsl:apply-templates select="exslt:node-set($resolveIncludes)" mode="filter"/>
+    </xsl:variable>
+    <xsl:copy-of select="exslt:node-set($filtered)"/>
   </xsl:template>
+
+
+  <!-- *************************************************************************************** -->
+
+
+  <xsl:template match="/" mode="handleIncludes">
+    <xsl:copy>
+      <xsl:apply-templates select="node()" mode="handleIncludes"/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="dcm:include[@href!='']" mode="handleIncludes">
+    <xsl:apply-templates select="document(@href)" mode="handleIncludes"/>
+  </xsl:template>
+  
+  <xsl:template match="dcm:include" mode="handleIncludes">
+    <xsl:element name="cman:error">The &lt;dcm:include&gt; element must have a href attribute that points to some file to include.</xsl:element>
+  </xsl:template>
+  
+  <xsl:template match="dcm:wrapper" mode="handleIncludes">
+    <!-- Implicitly remove the dcm:wrapper element, keeping only its children. -->
+    <xsl:apply-templates select="node()" mode="handleIncludes"/>
+  </xsl:template>
+  
+  <xsl:template match="*" mode="handleIncludes">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()" mode="handleIncludes"/>
+    </xsl:copy>
+  </xsl:template>
+  
+  <xsl:template match="@*|text()|comment()|processing-instruction()" mode="handleIncludes">
+    <xsl:copy-of select="."/>
+  </xsl:template>
+  
+  
+  <!-- *************************************************************************************** -->
+  
   
   <xsl:template match="/" mode="filter">
     <xsl:copy>

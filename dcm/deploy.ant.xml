@@ -240,8 +240,12 @@
       <local name="tmpl-file"/>
       
       <!-- Generate an ant script that will do the actual work. -->
+      <nxslt infile="${cert.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
+        <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
+      </nxslt>
       <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
-      <nxslt infile="${cert.file}" outfile="${work.dir}/cert.ant.xml" xsl="${dcm.dir}/src/certificate-to-ant.xsl">
+      <nxslt inprop="tmp" outfile="${work.dir}/cert.ant.xml" xsl="${dcm.dir}/src/certificate-to-ant.xsl">
         <param ant="tmpl-file" xsl="template-file"/>
       </nxslt>
       
@@ -674,6 +678,7 @@
       <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
       <nxslt infile="${idcred.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
         <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
       </nxslt>
       <nxslt inprop="tmp" outfile="${work.dir}/idcred.ant.xml" xsl="${dcm.dir}/src/idcred-to-ant.xsl">
         <param ant="tmpl-file" xsl="template-file"/>
@@ -852,6 +857,7 @@
       </loadfile>
       <nxslt inprop="tmp" outprop="tmp2" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
         <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
       </nxslt>
       <nxslt inprop="tmp2" outprop="dcmdefinition" xsl="${dcm.dir}/src/expand-black-white-modify.xsl"/>
       
@@ -916,8 +922,12 @@
       <local name="tmpl-file"/>
       
       <!-- Generate an ant script that will do the actual work. -->
+      <nxslt infile="${key.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
+        <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
+      </nxslt>
       <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
-      <nxslt infile="${key.file}" outfile="${work.dir}/key.ant.xml" xsl="${dcm.dir}/src/key-to-ant.xsl">
+      <nxslt inprop="tmp" outfile="${work.dir}/key.ant.xml" xsl="${dcm.dir}/src/key-to-ant.xsl">
         <param ant="tmpl-file" xsl="template-file"/>
       </nxslt>
       
@@ -949,6 +959,7 @@
       <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
       <nxslt infile="${lbg.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
         <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
       </nxslt>
       <nxslt inprop="tmp" outfile="${work.dir}/lbg.ant.xml" xsl="${dcm.dir}/src/load-balancer-group-to-ant.xsl">
         <param ant="tmpl-file" xsl="template-file"/>
@@ -1006,6 +1017,7 @@
       <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
       <nxslt infile="${objects.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
         <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
       </nxslt>
       <nxslt inprop="tmp" outfile="${work.dir}/objects.ant.xml" xsl="${dcm.dir}/src/objects-to-ant.xsl">
         <param ant="tmpl-file" xsl="template-file"/>
@@ -1168,6 +1180,7 @@
       <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
       <nxslt infile="${upload.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
         <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
       </nxslt>
       <nxslt inprop="tmp" outfile="${work.dir}/upload.ant.xml" xsl="${dcm.dir}/src/upload-to-ant.xsl">
         <param ant="tmpl-file" xsl="template-file"/>
@@ -1201,6 +1214,7 @@
       <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
       <nxslt infile="${valcred.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
         <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
       </nxslt>
       <nxslt inprop="tmp" outfile="${work.dir}/valcred.ant.xml" xsl="${dcm.dir}/src/valcred-to-ant.xsl">
         <param ant="tmpl-file" xsl="template-file"/>

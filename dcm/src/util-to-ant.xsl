@@ -179,6 +179,7 @@
           <xsl:attribute name="pwd">${pwd}</xsl:attribute>
           <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
           <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
+          <xsl:attribute name="capturesoma">${capturesoma}</xsl:attribute>
           <xsl:element name="include">
             <xsl:attribute name="name"><xsl:value-of select="$fileBasename"/></xsl:attribute>
           </xsl:element>
@@ -192,6 +193,7 @@
         <xsl:attribute name="responseprop">response-create</xsl:attribute>
         <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
         <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
+        <xsl:attribute name="capturesoma">${capturesoma}</xsl:attribute>
         
         <xsl:element name="config">
           <xsl:copy-of select="$config"/>
@@ -369,6 +371,7 @@
           <xsl:attribute name="pwd">${pwd}</xsl:attribute>
           <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
           <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
+          <xsl:attribute name="capturesoma">${capturesoma}</xsl:attribute>
           <xsl:element name="include">
             <xsl:attribute name="name"><xsl:value-of select="$fileBasename"/></xsl:attribute>
           </xsl:element>
@@ -382,6 +385,7 @@
         <xsl:attribute name="responseprop">response-create</xsl:attribute>
         <xsl:attribute name="dumpinput">${dumpinput}</xsl:attribute>
         <xsl:attribute name="dumpoutput">${dumpoutput}</xsl:attribute>
+        <xsl:attribute name="capturesoma">${capturesoma}</xsl:attribute>
         
         <xsl:element name="config">
           <xsl:copy-of select="$config"/>

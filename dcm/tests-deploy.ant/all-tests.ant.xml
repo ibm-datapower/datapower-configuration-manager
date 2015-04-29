@@ -6,9 +6,9 @@
     Run all defined tests.
         
   -->
-
-  <property name="domain" value="dcm-test"/> <!-- default -->
-
+  
+  
+  <fail message="Please don't define the 'domain' property since it interferes with some of the tests." if="domain"/>
 
 
   <target name="all-tests" depends="backup-device,backup-domains,checkpoints,host-alias,import,lbg,restore,upload">
@@ -25,7 +25,9 @@
     <!--
       Ensure the target domain starts out fresh by deleting and recreating it.
     -->
-    <ant antfile="../deploy.ant.xml" target="domain-recreate"/>
+    <ant antfile="../deploy.ant.xml" target="domain-recreate">
+      <property name="domain" value="dcm-test"/>
+    </ant>
     
   </target>
 
@@ -33,6 +35,7 @@
   <target name="backup-device" depends="setup" description="Backup a device, both regular and secure">
     
     <ant antfile="../deploy.ant.xml" target="backup-device">
+      <property name="domain" value="dcm-test"/>
       <property name="device.backup.file" location="../tmp/xi52a.zip"/>
     </ant>
     
@@ -42,6 +45,7 @@
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="secure-backup-device">
+      <property name="domain" value="default"/>
       <property name="secure.backup.remote" value="temporary:///"/>
       <property name="secure.backup.objname" value="secureBackupCert"/>
     </ant>
@@ -52,11 +56,13 @@
   <target name="backup-domains" depends="setup" description="Backup domains">
     
     <ant antfile="../deploy.ant.xml" target="backup-domains">
+      <property name="domain" value="dcm-test"/>
       <property name="backup.file" location="../tmp/backup-domains-default.zip"/>
       <property name="domain" value="default"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="backup-domains">
+      <property name="domain" value="dcm-test"/>
       <property name="backup.file" location="../tmp/backup-domains-testAndDefault.zip"/>
       <property name="domains" value="default"/>
     </ant>
@@ -70,18 +76,22 @@
       Save the empty domain as a checkpoint, import, restore the checkpoint, then delete the checkpoint.
     -->
     <ant antfile="../deploy.ant.xml" target="checkpoint-save">
+      <property name="domain" value="dcm-test"/>
       <property name="checkpoint.name" value="emptyDomain"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="import-changed">
+      <property name="domain" value="dcm-test"/>
       <property name="import.file" location="../imports/basicwsp.3.8.2.11.v1.zip"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="checkpoint-restore">
+      <property name="domain" value="dcm-test"/>
       <property name="checkpoint.name" value="emptyDomain"/>
     </ant>
 
     <ant antfile="../deploy.ant.xml" target="checkpoint-delete">
+      <property name="domain" value="dcm-test"/>
       <property name="checkpoint.name" value="emptyDomain"/>
     </ant>
     
@@ -91,6 +101,7 @@
   <target name="host-alias" depends="" description="Host aliases">
     
     <ant antfile="../deploy.ant.xml" target="host-alias-set">
+      <property name="domain" value="dcm-test"/>
       <property name="host-alias.name" value="bob"/>
       <property name="host-alias.ip" value="10.11.12.13"/>
       <property name="host-alias.comment" value="Hi there!"/>
@@ -98,6 +109,7 @@
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="host-alias-remove">
+      <property name="domain" value="dcm-test"/>
       <property name="host-alias.name" value="bob"/>
       <property name="host-alias.ip" value="10.11.12.13"/>
       <property name="host-alias.comment" value="Hi there!"/>
@@ -110,10 +122,12 @@
   <target name="import" depends="setup" description="Import with changes">
 
     <ant antfile="../deploy.ant.xml" target="import-changed">
+      <property name="domain" value="dcm-test"/>
       <property name="import.file" location="../imports/basicwsp.3.8.2.11.v1.zip"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="import-changed">
+      <property name="domain" value="dcm-test"/>
       <property name="import.file" location="../imports/basicwsp.3.8.2.11.v1.zip"/>
       <property name="import.changes.file" location="import-01.dcm.xml"/>
     </ant>
@@ -124,6 +138,7 @@
   <target name="lbg" depends="setup" description="Update a load balancer group">
     
     <ant antfile="../deploy.ant.xml" target="load-balancer-group-from-def">
+      <property name="domain" value="dcm-test"/>
       <property name="lbg.file" location="load-balancer-group-from-def.01.dcm.xml"/>
     </ant>
     
@@ -133,6 +148,7 @@
   <target name="loglevel" depends="" description="Change the default log level">
     
     <ant antfile="../deploy.ant.xml" target="set-log-level">
+      <property name="domain" value="dcm-test"/>
       <property name="log.level" value="info"/>
     </ant>
     
@@ -147,22 +163,27 @@
   <target name="object-create-modify-delete" depends="setup" description="Create, modify, and delete objects">
     
     <ant antfile="../deploy.ant.xml" target="objects-from-def">
+      <property name="domain" value="dcm-test"/>
       <property name="objects.file" location="object-create-export.dcm.xml"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="objects-from-def">
+      <property name="domain" value="dcm-test"/>
       <property name="objects.file" location="object-create-copy.dcm.xml"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="objects-from-def">
+      <property name="domain" value="dcm-test"/>
       <property name="objects.file" location="object-create-inline.dcm.xml"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="objects-from-def">
+      <property name="domain" value="dcm-test"/>
       <property name="objects.file" location="object-modify-01.dcm.xml"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="objects-from-def">
+      <property name="domain" value="dcm-test"/>
       <property name="objects.file" location="object-delete.dcm.xml"/>
     </ant>
     
@@ -171,25 +192,33 @@
   
   <target name="quiesce" depends="setup" description="Quiesce/unquiesce domain, service">
     
-    <ant antfile="../deploy.ant.xml" target="domain-quiesce"/>
+    <ant antfile="../deploy.ant.xml" target="domain-quiesce">
+      <property name="domain" value="dcm-test"/>
+    </ant>
     
-    <ant antfile="../deploy.ant.xml" target="domain-unquiesce"/>
+    <ant antfile="../deploy.ant.xml" target="domain-unquiesce">
+      <property name="domain" value="dcm-test"/>
+    </ant>
     
     <ant antfile="../deploy.ant.xml" target="import-from-def">
+      <property name="domain" value="dcm-test"/>
       <property name="import.file" location="01-loopback.v1.3.8.1.7.zip"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="service-status">
+      <property name="domain" value="dcm-test"/>
       <property name="service.name" value="loopback"/>
       <property name="service.type" value="MultiProtocolGateway"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="service-quiesce">
+      <property name="domain" value="dcm-test"/>
       <property name="service.name" value="loopback"/>
       <property name="service.type" value="MultiProtocolGateway"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="service-unquiesce">
+      <property name="domain" value="dcm-test"/>
       <property name="service.name" value="loopback"/>
       <property name="service.type" value="MultiProtocolGateway"/>
     </ant>
@@ -200,6 +229,7 @@
   <target name="restore" depends="setup" description="Restore domains from device and domain backups">
     
     <ant antfile="../deploy.ant.xml" target="restore-backup">
+      <property name="domain" value="dcm-test"/>
       <property name="backup.file" location="backup-domains-testAndDefault.zip"/>
     </ant>
     
@@ -209,25 +239,30 @@
   <target name="upload" depends="" description="Upload files and directories">
     
     <ant antfile="../deploy.ant.xml" target="upload-from-def">
+      <property name="domain" value="dcm-test"/>
       <property name="upload.file" location="upload-01.dcm.xml"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="upload-from-def">
+      <property name="domain" value="dcm-test"/>
       <property name="upload.file" location="upload-02.dcm.xml"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="upload-dir">
+      <property name="domain" value="dcm-test"/>
       <property name="upload-dir.from" location="../schemas"/>
       <property name="upload-dir.to" value="local:///y"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="upload-from-def">
+      <property name="domain" value="dcm-test"/>
       <property name="upload.file" location="upload-04.dcm.xml"/>
       <property name="file" location="../schemas/XI50.5.0.0.0.dpschema.xml"/>
       <property name="remote" value="local:///z1"/>
     </ant>
 
     <ant antfile="../deploy.ant.xml" target="upload-from-def">
+      <property name="domain" value="dcm-test"/>
       <property name="upload.file" location="upload-05.dcm.xml"/>
       <property name="localdir" location="../schemas"/>
       <property name="match" value="XI50.3.8.2.11.dpschema.xml"/>
