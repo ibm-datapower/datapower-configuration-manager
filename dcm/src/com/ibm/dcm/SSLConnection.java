@@ -19,6 +19,7 @@ package com.ibm.dcm;
 
 import java.io.*;
 import java.net.*;
+import java.security.*;
 import java.security.cert.*;
 import javax.net.ssl.*;
 
@@ -50,7 +51,23 @@ public class SSLConnection {
 
   public SSLConnection() throws Exception {
     // Do all the lookups and whatnot, get the overhead out of the way.
-    context = SSLContext.getInstance("SSL");
+    try {
+      context = SSLContext.getInstance("TLSv1.2");
+    } catch (NoSuchAlgorithmException e0) {
+      try {
+        context = SSLContext.getInstance("TLSv1.1");
+      } catch (NoSuchAlgorithmException e1) {
+        try {
+          context = SSLContext.getInstance("TLSv1");
+        } catch (NoSuchAlgorithmException e2) {
+          try {
+            context = SSLContext.getInstance("SSL");
+          } catch (NoSuchAlgorithmException e3) {
+            throw e3;
+          }
+        }
+      }
+    }
     context.init(null, trustAllCerts, null);
     HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
   }
