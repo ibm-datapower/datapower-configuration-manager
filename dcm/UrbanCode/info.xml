@@ -104,7 +104,7 @@
   -->
   
   <related-info>
-    <link description="Please visit the DataPower version 7.0 support web site" title="IBM DataPower Homepage" type="WEBSITE" url="http://www-01.ibm.com/support/knowledgecenter/SS9H2Y_7.0.0/com.ibm.dp.doc/welcome.html"/>
+    <link description="Please visit the DataPower version 7.0 (or later) support web site" title="IBM DataPower Homepage" type="WEBSITE" url="http://www-01.ibm.com/support/knowledgecenter/SS9H2Y_7.0.0/com.ibm.dp.doc/welcome.html"/>
   </related-info>
   
   <!-- 
@@ -154,6 +154,7 @@
 	  
     <release-note plugin-version="1"> Initial release. </release-note>
     <release-note plugin-version="2"> Fix issue #1 - set ANT_HOME to plugin's version of Ant. </release-note>
+    <release-note plugin-version="3"> Expose UploadFromDef, GetObjectStatus, RestartDomain. </release-note>
     
   </release-notes>
 </pluginInfo>

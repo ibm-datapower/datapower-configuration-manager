@@ -53,12 +53,12 @@
   </target>
   
   
-  <target name="backup-domains" depends="setup" description="Backup domains">
+  <target name="backup-domains" description="Backup domains">
     
     <ant antfile="../deploy.ant.xml" target="backup-domains">
-      <property name="domain" value="dcm-test"/>
-      <property name="backup.file" location="../tmp/backup-domains-default.zip"/>
       <property name="domain" value="default"/>
+      <property name="backup.file" location="../tmp/backup-domains-default.zip"/>
+      <property name="saveIfNeeded" value="true"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="backup-domains">

@@ -509,7 +509,7 @@ public class Soma {
     if (params.get("domains") != null) {
 
       // Parse the list of domain names, which are merely whitespace separated.
-      String[] names = params.get("domains").split("\\s+");
+      String[] names = params.get("domains").split("[ ,]+");
 
       // Spin through all the supplied domain names.
       for (int i = 0; i < names.length; i += 1) {

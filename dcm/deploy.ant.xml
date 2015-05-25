@@ -218,7 +218,7 @@
     <!--
       Backup the specified domains on the device.
     -->
-    <backupDomains host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" domains="${domains}" local="${backup.file}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+    <backupDomains host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" domains="${domains}" local="${backup.file}"  saveIfNeeded="${saveIfNeeded}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
   </target>
   

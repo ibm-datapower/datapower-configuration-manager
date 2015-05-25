@@ -13,5 +13,6 @@
     <taskdef name="tobase64" classname="com.ibm.dcm.taskTobase64" classpath="${dcm.jar}"/>
     <taskdef name="wdp" classname="com.ibm.dcm.taskWdp" classpath="${dcm.jar}"/>
     <taskdef name="xpath" classname="com.ibm.dcm.taskXpath" classpath="${dcm.jar}"/>
-    
+    <taskdef name="forxpath" classname="com.ibm.dcm.taskForXpath" classpath="${dcm.jar}"/>
+  
 </project>
