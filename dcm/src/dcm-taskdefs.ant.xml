@@ -96,7 +96,7 @@
     <attribute name="port" default="5550"/>
     <attribute name="uid"/>
     <attribute name="pwd"/>
-    <attribute name="saveIfNeeded" default="false"/>
+    <attribute name="saveIfNeeded" default="true"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
@@ -124,10 +124,9 @@
             contains(',bob,', 'default,,angrybob,') would not match, as expected.)
           -->
           <property name="combinedNames" value=",@{domain},@{domains},"/>
-          <forxpath inprop="domainlist" xpath="/status/DomainStatus[SaveNeeded = 'on' and contains(translate('${combinedNames}', ' ', ','), concat(string(Domain), ','))]/Domain" debug="true">
+          <forxpath inprop="domainlist" xpath="/status/DomainStatus[SaveNeeded = 'on' and contains(translate('${combinedNames}', ' ', ','), concat(',', string(Domain), ','))]/Domain">
             <sequential>
-          
-              <echo>Saving @{forxpath}</echo>
+              
               <saveDomainUnconditionally host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domain="@{forxpath}" ignore-errors="@{ignore-errors}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
               
             </sequential>

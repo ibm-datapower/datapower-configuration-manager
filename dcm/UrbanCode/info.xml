@@ -124,7 +124,7 @@
   </meta-html>
     
   <!-- Do not change the release-version, the build process injects it. -->
-  <release-version>4</release-version>
+  <release-version>7</release-version>
     
     
   <release-notes>
@@ -132,29 +132,11 @@
       **release-note IS required**
       
       The plugin-version name must match the plugin version found in the plugin.xml file 
-      
-      The release-note should document the changes, improvements, or bug fixes introduced 
-      with the new plugin version 
-        
-      The release-note may contain text or reference a file in the plugin zip package
-      
-      For example your release note could be:
-      Support for was added for version 10.0 for software X
-      or 
-      releaseNotes/release1.html (where release1.html contains html formatted version information)
-      
-      To add a new release note add this with a description in it of the changes:
-      <release-note plugin-version="4">....</release-note>
-      
-      Our automated release process will replace 'LATEST' with the released version.
-      
-      If this already exists in the file, then the described changes have not been released yet and
-      you should just append to the existing 'LATEST' tag.
-      -->
+    -->
 	  
     <release-note plugin-version="1"> Initial release. </release-note>
     <release-note plugin-version="2"> Fix issue #1 - set ANT_HOME to plugin's version of Ant. </release-note>
-    <release-note plugin-version="3"> Expose UploadFromDef, GetObjectStatus, RestartDomain. </release-note>
+    <release-note plugin-version="7"> Expose UploadFromDef, GetObjectStatus, RestartDomain. </release-note>
     
   </release-notes>
 </pluginInfo>
