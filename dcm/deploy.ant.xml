@@ -263,7 +263,7 @@
       in case of an error.  Also, detects that firmware.version is already set and does nothing in that case.
       In case of an error it throws an exception or prints the SOAP response and terminates Ant.
     -->
-    <checkDeviceAccess host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" versionprop="firmware.version" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+    <checkDeviceAccess host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" versionprop="firmware.version" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     <if>
       <or>
         <not>
