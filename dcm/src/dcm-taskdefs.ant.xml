@@ -180,7 +180,8 @@
     <attribute name="ignore-errors" default="false"/>
     
     <sequential>
-      <local name="status"/>
+      <local name="statusDefault"/>
+      <local name="statusDomain"/>
       
       <if>
         <not>
@@ -189,15 +190,34 @@
         <then>
           <wdp operation="GetStatuses" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
             <statuses>FirmwareVersion</statuses>
-            <domain>@{domain}</domain>
+            <domain>default</domain>
             <hostname>@{host}</hostname>
             <port>@{port}</port>
             <uid>@{uid}</uid>
             <pwd>@{pwd}</pwd>
             <ignore-errors>@{ignore-errors}</ignore-errors>
-            <return antprop="status" somaprop="status"/>
+            <return antprop="statusDefault" somaprop="status"/>
           </wdp>
-          <xpath inprop="status" outprop="@{versionprop}" xpath="/status/FirmwareVersion/Version"/>
+          <if>
+            <equals arg1="${statusDefault}" arg2="&lt;status&gt;&lt;/status&gt;"/>
+            <then>
+              <!-- Failed to get the firmware version from the default domain so try the target domain. -->
+              <wdp operation="GetStatuses" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
+                <statuses>FirmwareVersion</statuses>
+                <domain>@{domain}</domain>
+                <hostname>@{host}</hostname>
+                <port>@{port}</port>
+                <uid>@{uid}</uid>
+                <pwd>@{pwd}</pwd>
+                <ignore-errors>@{ignore-errors}</ignore-errors>
+                <return antprop="statusDomain" somaprop="status"/>
+              </wdp>
+              <xpath inprop="statusDomain" outprop="@{versionprop}" xpath="/status/FirmwareVersion/Version"/>
+            </then>
+            <else>
+              <xpath inprop="statusDefault" outprop="@{versionprop}" xpath="/status/FirmwareVersion/Version"/>
+            </else>
+          </if>
         </then>
       </if>
     </sequential>

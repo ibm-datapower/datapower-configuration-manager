@@ -54,12 +54,12 @@ try
 
   def ch = new CommandHelper(new File('.'));
   def dcmDir = ch.getProcessBuilder().environment().get('PLUGIN_HOME') + '/dcm';
-  ch.addEnvironmentVariable('ANT_HOME', dcmDir + '/apache-ant-1.9.4/')
+  ch.addEnvironmentVariable('ANT_HOME', dcmDir + '/apache-ant-1.9.5/')
   
   // Construct the initial set of arguments for the ant command.
   def isWindows = (System.getProperty('os.name') =~ /(?i)windows/).find()
   def antexe = isWindows ? "ant.bat" : "ant"
-  def antargs = [dcmDir + '/apache-ant-1.9.4/bin/' + antexe, 
+  def antargs = [antexe, 
                  '-f', dcmDir + '/deploy.ant.xml', 
                  '-Ddcm.dir=' + dcmDir, 
                  '-Dhost=' + props['hostname'], 

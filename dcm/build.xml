@@ -86,10 +86,6 @@
       </patternset>
     </unzip>
     
-    <!-- Add the Xalan jars to Ant, just because it is an easy place to use them from. -->
-    <copy file="${lib}/xalan-2.7.2.jar" todir="tmp/dcm/apache-ant-${needed.ant.version}/lib"/>
-    <copy file="${lib}/serializer-2.7.2.jar" todir="tmp/dcm/apache-ant-${needed.ant.version}/lib"/>
-    
     <!-- Copy the base DCM implementation. -->
     <mkdir dir="tmp/dcm"/>
     <copy todir="tmp/dcm">
@@ -124,6 +120,8 @@
     
     <javac srcdir="${src}" destdir="${build}" includeantruntime="true" classpath="${lib}/xalan-${needed.xalan.version}.jar" debug="${java.debug}" target="${needed.java.version}" source="${needed.java.version}"/>
     <copy file="${src}/com/ibm/antlib.xml" todir="${build}/com/ibm"/>
+    <copy file="${lib}/xalan-${needed.xalan.version}.jar" todir="${build}/com/ibm"/>
+    <copy file="${lib}/serializer-${needed.xalan.version}.jar" todir="${build}/com/ibm"/>
     <jar destfile="${dist}/dcm.${dcm.version}.jar" basedir="${build}"/>
     
   </target>

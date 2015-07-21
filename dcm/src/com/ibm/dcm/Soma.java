@@ -2956,7 +2956,7 @@ public class Soma {
 
     statuses.append("</status>");
 
-    NamedParams result = new NamedParams();
+    NamedParams result = new NamedParams(params);
     result.set("status", statuses.toString());
 
     return result;
