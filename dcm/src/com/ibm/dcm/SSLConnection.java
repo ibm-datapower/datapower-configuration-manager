@@ -22,13 +22,16 @@ import java.net.*;
 import java.security.*;
 import java.security.cert.*;
 import javax.net.ssl.*;
-
+import javax.security.auth.x500.X500Principal;
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * This class opens, exposes, and closes an SSL connection that accepts any server.
  * 
  */
 public class SSLConnection {
+  
+  private static X509Certificate[] certChain = null;
 
   private class VeryTrustingHostNameVerifier implements HostnameVerifier {
     public boolean verify (String hostname, SSLSession session) {
@@ -42,7 +45,9 @@ public class SSLConnection {
         return null;
       } 
       public void checkClientTrusted(X509Certificate[] certs, String authType) {} 
-      public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+      public void checkServerTrusted(X509Certificate[] certs, String authType) {
+        certChain = certs;  // Remember the cert chain in case anyone cares.
+      }
     }
   };
 
@@ -60,11 +65,7 @@ public class SSLConnection {
         try {
           context = SSLContext.getInstance("TLSv1");
         } catch (NoSuchAlgorithmException e2) {
-          try {
-            context = SSLContext.getInstance("SSL");
-          } catch (NoSuchAlgorithmException e3) {
-            throw e3;
-          }
+          throw e2;
         }
       }
     }
@@ -220,4 +221,64 @@ public class SSLConnection {
 
     return result;
   }
-} 
+
+
+
+
+  /**
+   * This method retrieves the certificate chain presented by the server and 
+   * returns it in XML. 
+   * 
+   * An exception is thrown for any overt failure.
+   * 
+   */
+  public String getCertChain (String hostname, int port) throws Exception {
+
+    certChain = null;
+
+    try {
+      
+      // Create and open a socket that is configured to trust any certificate
+      // presented by the server.
+      SSLSocket socket = (SSLSocket)context.getSocketFactory().createSocket(hostname, port);
+      socket.setEnabledCipherSuites(socket.getSupportedCipherSuites());
+      socket.setSoTimeout(5000);
+      socket.startHandshake();
+    } catch (Exception e) {
+      throw e;
+    }
+    
+    StringBuilder xml = new StringBuilder();
+    xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<certchain>\n");
+    if (certChain != null) {
+      for (int i = 0; i < certChain.length; i += 1) {
+        xml.append("  <cert>\n");
+        xml.append("    <subjectDN>" + certChain[i].getSubjectX500Principal().getName() + "</subjectDN>\n");
+        xml.append("    <issuerDN>" + certChain[i].getIssuerX500Principal().getName() + "</issuerDN>\n");
+        xml.append("    <notBefore>" + certChain[i].getNotBefore().toString() + "</notBefore>\n");
+        xml.append("    <notAfter>" + certChain[i].getNotAfter().toString() + "</notAfter>\n");
+        xml.append("    <serial>" + certChain[i].getSerialNumber().toString() + "</serial>\n");
+        xml.append("    <sigalg>" + certChain[i].getSigAlgName() + "</sigalg>\n");
+        xml.append("    <pem>\n");
+        xml.append(certToPEM(certChain[i]));
+        xml.append("    </pem>\n");
+        xml.append("  </cert>\n");
+      }
+    }
+    xml.append("</certchain>\n");
+    
+    return xml.toString(); 
+  }
+  
+  private static String certToPEM(X509Certificate cert) throws Exception {
+    StringBuilder buf = new StringBuilder();
+    try {
+      buf.append("-----BEGIN CERTIFICATE-----\n");
+      buf.append(DatatypeConverter.printBase64Binary(cert.getEncoded()).replaceAll("(.{64})", "$1\n"));
+      buf.append("\n-----END CERTIFICATE-----\n");
+    } catch (Exception e) {
+      throw e;
+    }
+    return buf.toString();
+  }
+}

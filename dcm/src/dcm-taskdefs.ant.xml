@@ -19,6 +19,7 @@
   <taskdef name="dpdownload" classname="com.ibm.dcm.taskDpdownload" classpath="${dcm.jar}"/>
   <taskdef name="dpupload" classname="com.ibm.dcm.taskDpupload" classpath="${dcm.jar}"/>
   <taskdef name="frombase64" classname="com.ibm.dcm.taskFrombase64" classpath="${dcm.jar}"/>
+  <taskdef name="getservercerts" classname="com.ibm.dcm.taskGetServerCerts" classpath="${dcm.jar}"/>
   <taskdef name="if" classname="com.ibm.dcm.taskIf" classpath="${dcm.jar}"/>
   <taskdef name="nxslt" classname="com.ibm.dcm.taskNxslt" classpath="${dcm.jar}"/>
   <taskdef name="storexml" classname="com.ibm.dcm.taskStorexml" classpath="${dcm.jar}"/>
@@ -627,6 +628,81 @@
           <fail message="Failed to disable specified object(s) in domain @{domain} on @{host}."/>
         </else>
       </if>
+      
+    </sequential>
+    
+  </macrodef>
+
+
+  <!--
+    
+    Download a filestore
+    
+    Required parameters:
+      host - hostname or IP address of DataPower device
+      domain - name of domain
+      filestore - name of filestore (e.g. local:, store:)
+      local - target directory in local filesystem
+      uid - userid
+      pwd - password
+    
+    Optional parameters:
+      port - XML Management Interface port on device (defaults to 5550)
+    
+  -->
+  <macrodef name="downloadFilestore">
+    <attribute name="host"/>
+    <attribute name="port" default="5550"/>
+    <attribute name="uid"/>
+    <attribute name="pwd"/>
+    <attribute name="domain"/>
+    <attribute name="filestore"/>
+    <attribute name="local" default="."/>
+    <attribute name="dumpinput" default="false"/>
+    <attribute name="dumpoutput" default="false"/>
+    <attribute name="capturesoma" default=""/>
+    
+    <sequential>
+      <local name="rawxml"/>
+      <local name="tmp"/>
+      
+      <!--
+        Get the complete listing of all the files and directories in the filestore,
+        then convert that XML to a more useful form.
+      -->
+      <wdp operation="GetFilestore" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
+        <domain>@{domain}</domain>
+        <hostname>@{host}</hostname>
+        <port>@{port}</port>
+        <uid>@{uid}</uid>
+        <pwd>@{pwd}</pwd>
+        <filestore>@{filestore}</filestore>
+        <ignore-errors>@{ignore-errors}</ignore-errors>
+        <return antprop="rawxml" somaprop="location"/>
+      </wdp>
+      <nxslt inprop="rawxml" outprop="tmp" xsl="mbaas-downloadFilestore.xsl"/>
+      <!-- <echo>${tmp}</echo> -->
+      
+      <forxpath inprop="tmp" xpath="/downloadFilestore/directory" propname="dirname">
+        <sequential>
+          <mkdir dir="@{local}@{dirname}"/>
+        </sequential>
+      </forxpath>
+      
+      <forxpath inprop="tmp" xpath="/downloadFilestore/file" propname="filename">
+        <sequential>
+          <echo>Downloading @{filestore}@{filename} to @{local}@{filename}</echo>
+          <wdp operation="GetFile" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
+            <domain>@{domain}</domain>
+            <hostname>@{host}</hostname>
+            <port>@{port}</port>
+            <uid>@{uid}</uid>
+            <pwd>@{pwd}</pwd>
+            <local>@{local}@{filename}</local>
+            <remote>@{filestore}@{filename}</remote>
+          </wdp>
+        </sequential>
+      </forxpath>
       
     </sequential>
     
@@ -1521,8 +1597,56 @@
     </sequential>
     
   </macrodef>
-  
-  
+
+
+  <!--
+    
+    Listing of a filestore
+    
+    Required parameters:
+      host - hostname or IP address of DataPower device
+      domain - name of domain
+      filestore - name of filestore (e.g. local:, store:)
+      listprop - name of Ant property where the listing should be stored
+      uid - userid
+      pwd - password
+    
+    Optional parameters:
+      port - XML Management Interface port on device (defaults to 5550)
+      ignore-errors = true() or false()
+    
+  -->
+  <macrodef name="listFilestore">
+    <attribute name="host"/>
+    <attribute name="port" default="5550"/>
+    <attribute name="uid"/>
+    <attribute name="pwd"/>
+    <attribute name="domain"/>
+    <attribute name="filestore"/>
+    <attribute name="listprop"/>
+    <attribute name="dumpinput" default="false"/>
+    <attribute name="dumpoutput" default="false"/>
+    <attribute name="capturesoma" default=""/>
+    <attribute name="ignore-errors" default="false"/>
+    
+    <sequential>
+      
+      <wdp operation="GetFilestore" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
+        <domain>@{domain}</domain>
+        <hostname>@{host}</hostname>
+        <port>@{port}</port>
+        <uid>@{uid}</uid>
+        <pwd>@{pwd}</pwd>
+        <filestore>@{filestore}</filestore>
+        <ignore-errors>@{ignore-errors}</ignore-errors>
+        <return antprop="@{listprop}" somaprop="location"/>
+      </wdp>
+      
+    </sequential>
+    
+  </macrodef>
+
+
   <!--
     Create an object based on an existing object.
   -->

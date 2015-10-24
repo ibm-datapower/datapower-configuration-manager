@@ -225,8 +225,8 @@
         </xsl:element>
         <xsl:element name="else">
           
+          <xsl:element name="echo">Raw response for creating crypto certificate: ${response-create}</xsl:element>
           <xsl:element name="fail">
-            <xsl:element name="echo">Raw response for creating crypto certificate: ${response-create}</xsl:element>
             <xsl:attribute name="message">Failed to create the Crypto Certficate object <xsl:value-of select="$objname"/>.</xsl:attribute>
           </xsl:element>
           

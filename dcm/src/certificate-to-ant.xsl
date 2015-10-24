@@ -81,7 +81,7 @@
           </xsl:when>
           <xsl:otherwise>
             
-            <xsl:message terminate="yes">Odd.  Failed to generate an internal template and there isn't any apparent reason.</xsl:message>
+            <xsl:message terminate="yes">Odd.  Failed to generate an internal template and there isn't any apparent reason based on <xsl:value-of select="$template-file"/>.</xsl:message>
             
           </xsl:otherwise>
         </xsl:choose>

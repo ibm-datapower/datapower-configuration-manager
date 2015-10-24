@@ -963,6 +963,7 @@
       </nxslt>
       <nxslt inprop="tmp" outfile="${work.dir}/lbg.ant.xml" xsl="${dcm.dir}/src/load-balancer-group-to-ant.xsl">
         <param ant="tmpl-file" xsl="template-file"/>
+        <param ant="firmware.version" xsl="firmware-version"/>
       </nxslt>
       
       <!-- Run the little darling, inheriting all the currently-defined ant properties. -->
@@ -1255,7 +1256,7 @@
     
   </target>
   
-  
+
   <target name="-check-std-args">
     
     <fail message="The Ant property 'host' is required but not defined.  This is the hostname or IP address of a DataPower device." unless="host"/>

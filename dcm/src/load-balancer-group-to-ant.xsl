@@ -123,9 +123,25 @@
   
   
   <xsl:param name="template-file"/> <!-- filename of the Ant script template -->
+  <xsl:param name="firmware-version"/> <!-- e.g. XI52.7.2.0.0 -->
   
   <xsl:include href="util-merge-template.xsl"/>
   <xsl:include href="util-mutate-names.xsl"/>
+  
+  
+  <xsl:variable name="sevenTwoOrLater">
+    <xsl:variable name="rawNumber" select="substring-after($firmware-version, '.')"/>
+    <xsl:variable name="major" select="number(substring-before($rawNumber, '.'))"/>
+    <xsl:variable name="minor" select="number(substring-before(substring-after($rawNumber, '.'), '.'))"/>
+    <xsl:choose>
+      <xsl:when test="$major >= 7 and $minor >= 2">
+        <xsl:value-of select="'true'"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="'false'"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
   
   
   <xsl:template match="/">
@@ -513,6 +529,29 @@
               </xsl:otherwise>
             </xsl:choose>
           </xsl:element>
+          
+          <xsl:if test="$sevenTwoOrLater = 'true'">
+            
+            <xsl:element name="GatewayScriptChecks">
+              <xsl:value-of select="'off'"/>
+            </xsl:element>
+            <xsl:element name="GatewayScriptReqMethod">
+              <xsl:value-of select="'GET'"/>
+            </xsl:element>
+            <xsl:element name="GatewayScriptCustomReqMethod"/>
+            <xsl:element name="GatewayScriptReqDoc"/>
+            <xsl:element name="GatewayScriptReqContentType"/>
+            <xsl:element name="GatewayScriptRspHandlerMetadata"/>
+            <xsl:element name="GatewayScriptRspHandler"/>
+            <xsl:element name="TCPConnectionType">
+              <xsl:value-of select="'Full'"/>
+            </xsl:element>
+            <xsl:element name="SSLClientConfigType">
+              <xsl:value-of select="'client'"/>
+            </xsl:element>
+            <xsl:element name="SSLClient"/>
+            
+          </xsl:if>
           
         </xsl:element>
         

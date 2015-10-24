@@ -3700,6 +3700,8 @@ public class Soma {
   public NamedParams doQuiesceService (NamedParams params) throws Exception {
     params.insistOn (new String[] {"domain", "type", "objname", "timeout"});
 
+    boolean wait = true;
+    
     // Make the request of the XML Management Interface.
     StringBuffer body = new StringBuffer ();
     body.append("<ServiceQuiesce>");
@@ -3717,6 +3719,27 @@ public class Soma {
       try {
         result = conn.sendAndReceive (params, request);
       } catch (Exception e) {
+        wait = false;
+      }
+    }
+    
+    if (wait) {
+      NamedParams waitOnQuiesce = new NamedParams(params);
+      String serviceProp = params.get("type") + "." + params.get("objname");
+      waitOnQuiesce.set("capture." + params.get("type"), params.get("objname")); 
+      while (wait) {
+        NamedParams tmp = doGetObjectStatus(waitOnQuiesce); 
+        Node root = SomaUtils.getDOM (tmp.get(serviceProp));
+        // When not fully quiesced:
+        // <ObjectStatus><Class>MultiProtocolGateway</Class><OpState>down</OpState><AdminState>enabled</AdminState><Name>to1234</Name><EventCode>0x00000000</EventCode><ErrorCode/><ConfigState>saved</ConfigState></ObjectStatus>
+        // When fully quiesced:
+        // <ObjectStatus><Class>MultiProtocolGateway</Class><OpState>down</OpState><AdminState>enabled</AdminState><Name>to1234</Name><EventCode>0x0036003d</EventCode><ErrorCode>in quiescence</ErrorCode><ConfigState>saved</ConfigState></ObjectStatus>
+        Node nodeResponse = SomaUtils.nodeXpathFor(root, "/ObjectStatus/ErrorCode[contains(., 'quiescence')]");
+        if (nodeResponse != null) {
+          wait = false;
+        } else {
+          Thread.sleep(3000);
+        }
       }
     }
 
