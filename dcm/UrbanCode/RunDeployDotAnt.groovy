@@ -14,13 +14,13 @@
  * limitations under the License.
  **/
  
-import com.urbancode.air.AirPluginTool;
+import com.urbancode.air.AirPluginTool
 import com.urbancode.air.CommandHelper
 
 try 
 {
-  def apTool = new AirPluginTool(args[0], args[1]);
-  def props = apTool.getStepProperties();
+  def apTool = new AirPluginTool(args[0], args[1])
+  def props = apTool.getStepProperties()
 
   def debug = false
 
@@ -37,35 +37,37 @@ try
   // rewriting the arguments array.
   if (args.any{it == '-D'}) {
     println '### rewriting args'
-    def tmpargs = [];
+    def tmpargs = []
     for (int i = 0; i < args.size(); i += 1) {
       if (args[i] == '-D') {
-        tmpargs.add(args[i] + args[i+1]);
-        i += 1;
+        tmpargs.add(args[i] + args[i+1])
+        i += 1
       } else {
-        tmpargs.add(args[i]);
+        tmpargs.add(args[i])
       }
     }
-    args = tmpargs;
+    args = tmpargs
     if (debug) {
       args.each{ println 'rewritten arg ' + it }
     }
   }
 
-  def ch = new CommandHelper(new File('.'));
-  def dcmDir = ch.getProcessBuilder().environment().get('PLUGIN_HOME') + '/dcm';
-  ch.addEnvironmentVariable('ANT_HOME', dcmDir + '/apache-ant-1.9.5/')
+  def ch = new CommandHelper(new File('.'))
+  def dcmDir = ch.getProcessBuilder().environment().get('PLUGIN_HOME') + '/dcm'
+  def anthome = dcmDir + '/apache-ant-1.9.6/'
+  ch.addEnvironmentVariable('ANT_HOME', anthome)
   
   // Construct the initial set of arguments for the ant command.
   def isWindows = (System.getProperty('os.name') =~ /(?i)windows/).find()
   def antexe = isWindows ? "ant.bat" : "ant"
-  def antargs = [antexe, 
+  def antargs = [anthome + "bin/" + antexe, 
                  '-f', dcmDir + '/deploy.ant.xml', 
                  '-Ddcm.dir=' + dcmDir, 
                  '-Dhost=' + props['hostname'], 
                  '-Dport=' + props['portXMI'], 
                  '-Duid=' + props['uid'], 
-                 '-Dpwd=' + props['pwd']]
+                 '-Dpwd=' + props['pwd'],
+                 '-Dwork.dir=' + ch.getProcessBuilder().directory().getAbsolutePath() + '/tmp']
 
   // When addlProperties != '' then we pick out one or more mappings from UCD properties
   // to additional ant properties.  For example, crypto.dir=${p:resource/work.dir}${p:component.name}/ucdDemo/crypto
@@ -92,7 +94,7 @@ try
   // Arguments 2-N on the command line are passed to deploy.ant.xml after replacing any @xxx@ values,
   // where xxx is the name of some property (e.g. domainName or environment).
   for (int i = 2; i < args.size(); i += 1) {
-    def arg = args[i];
+    def arg = args[i]
     if (debug) {
       println '### arg[' + i + ']=' + arg
     }
@@ -122,7 +124,7 @@ try
       }
     }
   }
-  ch.runCommand(antargs.join(' '), antargs);
+  ch.runCommand(antargs.join(' '), antargs)
 } catch (e) {
   println e
   System.exit 1

@@ -49,7 +49,7 @@
   <property name="needed.xalan.version" value="2.7.2"/>
   
   <!-- Which Ant version to include -->
-  <property name="needed.ant.version" value="1.9.5"/>
+  <property name="needed.ant.version" value="1.9.6"/>
   
   
   
@@ -87,7 +87,6 @@
     </unzip>
     
     <!-- Copy the base DCM implementation. -->
-    <mkdir dir="tmp/dcm"/>
     <copy todir="tmp/dcm">
       <fileset dir=".">
         <include name="Apache*.txt"/>
@@ -102,7 +101,13 @@
         <include name="**"/>
       </fileset>
     </copy>
-
+    <copy todir="tmp/dcm/apache-ant-${needed.ant.version}/lib">
+      <fileset dir="${lib}">
+        <include name="xalan-${needed.xalan.version}.jar"/>
+        <include name="serializer-${needed.xalan.version}.jar"/>
+      </fileset>
+    </copy>
+    
     <!-- Zip the tmp dir to produce the final plugin file. -->
     <zip basedir="tmp" destfile="${dist}/dcm.${dcm.version}.plugin.zip"/>
     
