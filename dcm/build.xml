@@ -125,8 +125,8 @@
     
     <javac srcdir="${src}" destdir="${build}" includeantruntime="true" classpath="${lib}/xalan-${needed.xalan.version}.jar" debug="${java.debug}" target="${needed.java.version}" source="${needed.java.version}"/>
     <copy file="${src}/com/ibm/antlib.xml" todir="${build}/com/ibm"/>
-    <copy file="${lib}/xalan-${needed.xalan.version}.jar" todir="${build}/com/ibm"/>
-    <copy file="${lib}/serializer-${needed.xalan.version}.jar" todir="${build}/com/ibm"/>
+    <unzip src="${lib}/xalan-${needed.xalan.version}.jar" dest="${build}"/>
+    <unzip src="${lib}/serializer-${needed.xalan.version}.jar" dest="${build}"/>
     <jar destfile="${dist}/dcm.${dcm.version}.jar" basedir="${build}"/>
     
   </target>
