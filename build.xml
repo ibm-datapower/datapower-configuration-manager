@@ -32,12 +32,12 @@
   
   <description>Build DCM components</description>
   
-  <property name="dcm.version" value="1"/>  <!-- default -->
+  <property name="dcm.version" value="dev"/>  <!-- default -->
   
   <!-- Locations of directories so we don't hard code them all over the file. -->
   <property name="build" value="build/locale"/>
   <property name="dist" value="dist"/>
-  <property name="distro" location="dcm-distros/dcm_${dcm.version}"/>
+  <property name="distro" location="dcm-distros/dcm-${dcm.version}"/>
   <property name="lib" value="lib"/>
   <property name="src" value="src"/>
   
