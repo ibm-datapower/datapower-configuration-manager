@@ -28,7 +28,7 @@
   directories from github.
   
 -->
-<project name="dcm" basedir=".">
+<project name="dcm" basedir="." default="distro">
   
   <description>Build DCM components</description>
   
@@ -93,11 +93,12 @@
         <include name="deploy.ant.xml"/>
         <include name="dist/**"/>
         <include name="src/*.x*"/>
+        <exclude name="src/main/**"/>
       </fileset>
     </copy>
     <replace file="tmp/dcm/deploy.ant.xml" token="value=&quot;1&quot;" value="value=&quot;${dcm.version}&quot;"/>
     <copy todir="tmp">
-      <fileset dir="UrbanCode">
+      <fileset dir="src/main/zip">
         <include name="**"/>
       </fileset>
     </copy>
