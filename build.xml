@@ -110,7 +110,7 @@
     </copy>
     
     <!-- Zip the tmp dir to produce the final plugin file. -->
-    <zip basedir="tmp" destfile="${dist}/dcm.${dcm.version}.plugin.zip"/>
+    <zip basedir="tmp" destfile="${dist}/dcm-${dcm.version}.zip"/>
     
     <delete dir="tmp"/>
     
