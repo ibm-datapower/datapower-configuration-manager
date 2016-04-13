@@ -647,6 +647,15 @@
             </xsl:choose>
           </xsl:element>
           
+          <xsl:if test="$sevenTwoOrLater = 'true'">
+            
+            <xsl:element name="InsertionAttributes">
+              <xsl:element name="secure">off</xsl:element>
+              <xsl:element name="httponly">off</xsl:element>
+            </xsl:element>
+            
+          </xsl:if>
+          
         </xsl:element>
         
         <xsl:for-each select="$affinity/dcm:monitored[@cookie-name != '']">

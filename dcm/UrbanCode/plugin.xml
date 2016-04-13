@@ -19,8 +19,8 @@
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <header>
-    <identifier version="8" id="com.ibm.datapower" name="DataPower"/>
-    <description>The IBM WebSphere DataPower plugin deploys DataPower services.</description>
+    <identifier version="10" id="com.ibm.datapower" name="DataPower"/>
+    <description>The IBM DataPower plugin deploys DataPower services.</description>
     <tag>Infrastructure/WebSphere DataPower</tag>
   </header>
 
