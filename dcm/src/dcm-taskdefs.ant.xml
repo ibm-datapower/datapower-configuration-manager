@@ -2711,13 +2711,17 @@
               <mkdir dir="@{workdir}/rewritten_export"/>
               <unzip src="@{inputfile}" dest="@{workdir}/rewritten_export"/>
               <move file="@{workdir}/rewritten_export/export.xml" tofile="@{workdir}/rewritten_export/orig.xml"/>
-              <xalan in="@{workdir}/rewritten_export/orig.xml" out="@{workdir}/rewritten_export/export.xml" xsl="@{dcmdir}/src/rewrite-xmlconfig.xsl" param1="@{workdir}/dcmpolicy.xml"/>
+              <nxslt infile="@{workdir}/rewritten_export/orig.xml" outfile="@{workdir}/rewritten_export/export.xml" xsl="@{dcmdir}/src/rewrite-xmlconfig.xsl">
+                <param xsl="param1" ant="@{workdir}/dcmpolicy.xml"/>
+              </nxslt>
               <zip destfile="@{workdir}/rewritten_export.zip" basedir="@{workdir}/rewritten_export" excludes="orig.xml"/>
               <copy file="${work.dir}/rewritten_export.zip" tofile="@{outputfile}" overwrite="true"/>
             </then>
             <else>
               <!-- Appears to be an XML (xcfg) DataPower export. -->
-              <xalan in="@{inputfile}" out="@{outputfile}" xsl="@{dcmdir}/src/rewrite-xmlconfig.xsl" param1="@{workdir}/dcmpolicy.xml"/>
+              <nxslt infile="@{inputfile}" outfile="@{outputfile}" xsl="@{dcmdir}/src/rewrite-xmlconfig.xsl">
+                <param xsl="param1" ant="@{workdir}/dcmpolicy.xml"/>
+              </nxslt>
             </else>
           </if>
         </then>

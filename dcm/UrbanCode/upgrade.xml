@@ -247,5 +247,5 @@
     <migrate-command  name="Upload Directory"/>
     <migrate-command  name="Upload From Definition"/>
   </migrate>
-  
+
 </plugin-upgrade>

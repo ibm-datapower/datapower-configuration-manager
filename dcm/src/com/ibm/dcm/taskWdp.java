@@ -251,7 +251,7 @@ public class taskWdp extends XMLFragment {
             if ((node.getNodeType() == Node.ELEMENT_NODE) && node.getNodeName().equals("return")) {
               String antname = ((Element)node).getAttribute("antprop");
               String somaname = ((Element)node).getAttribute("somaprop");
-              if (antname.length() > 0 && somaname.length() > 0) {
+              if (antname.length() > 0 && somaname.length() > 0 && result.get(somaname) != null) {
                 proj.setProperty(antname, result.get(somaname));
               }
             }
