@@ -37,7 +37,6 @@
   <!-- Locations of directories so we don't hard code them all over the file. -->
   <property name="build" value="build/locale"/>
   <property name="dist" value="dist"/>
-  <property name="distro" location="dcm-distros/datapower-${version}"/>
   <property name="lib" value="lib"/>
   <property name="src" value="src"/>
   
@@ -110,7 +109,6 @@
     </copy>
     
     <!-- Zip the tmp dir to produce the final plugin file. -->
-    <zip basedir="tmp" destfile="${dist}/datapower-${version}.zip"/>
     
     <delete dir="tmp"/>
     
@@ -128,7 +126,6 @@
     <copy file="${src}/com/ibm/antlib.xml" todir="${build}/com/ibm"/>
     <unzip src="${lib}/xalan-${needed.xalan.version}.jar" dest="${build}"/>
     <unzip src="${lib}/serializer-${needed.xalan.version}.jar" dest="${build}"/>
-    <jar destfile="${dist}/datapower-${version}.jar" basedir="${build}"/>
     
   </target>
   
