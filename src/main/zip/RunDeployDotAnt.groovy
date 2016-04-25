@@ -54,7 +54,7 @@ try
 
   def ch = new CommandHelper(new File('.'))
   def dcmDir = ch.getProcessBuilder().environment().get('PLUGIN_HOME') + '/dcm'
-  def anthome = dcmDir + '/apache-ant-1.9.6/'
+  def anthome = dcmDir + '/apache-ant-1.9.7/'
   ch.addEnvironmentVariable('ANT_HOME', anthome)
   
   // Construct the initial set of arguments for the ant command.
