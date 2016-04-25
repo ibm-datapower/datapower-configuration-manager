@@ -15,7 +15,7 @@ After you obtain the source either via a Git client or by downloading the reposi
 you can build the code using Apache Ant. Enter the dcm directory and issue the command below (assumes
 Apache Ant is in the path):
 
-    ant
+    ant clean distro
 
 The UCD plugin will be found in dist/datapower-dev.zip
 
