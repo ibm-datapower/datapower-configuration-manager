@@ -59,6 +59,8 @@
           [ domain="..." ]
           [ wlm-override="true|false" ]
           [ mode="active|activeConditional" ]>
+          [ secure="on|off" ]>
+          [ httponly="on|off" ]>
           <dcm:monitored cookie-name="..."/>
         </dcm:affinity>
       ]
@@ -101,6 +103,8 @@
     @domain = .datapower.com
     @wlm-override = false
     @mode = activeConditional
+    @secure = off
+    @httponly = off
   
   The "template-file" stylesheet parameter is the name of an Ant script template file (e.g. _quickie.template.ant.xml).
   
@@ -650,8 +654,26 @@
           <xsl:if test="$sevenTwoOrLater = 'true'">
             
             <xsl:element name="InsertionAttributes">
-              <xsl:element name="secure">off</xsl:element>
-              <xsl:element name="httponly">off</xsl:element>
+              <xsl:element name="secure">
+                <xsl:choose>
+                  <xsl:when test="$affinity/@secure != ''">
+                    <xsl:value-of select="$affinity/@secure"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="'off'"/>
+                  </xsl:otherwise>
+                </xsl:choose>
+              </xsl:element>
+              <xsl:element name="httponly">
+                <xsl:choose>
+                  <xsl:when test="$affinity/@httponly != ''">
+                    <xsl:value-of select="$affinity/@httponly"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="'off'"/>
+                  </xsl:otherwise>
+                </xsl:choose>
+              </xsl:element>
             </xsl:element>
             
           </xsl:if>
