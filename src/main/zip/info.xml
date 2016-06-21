@@ -124,7 +124,7 @@
   </meta-html>
     
   <!-- Do not change the release-version, the build process injects it. -->
-  <release-version>8</release-version>
+  <release-version>9</release-version>
     
     
   <release-notes>
@@ -138,6 +138,7 @@
     <release-note plugin-version="2"> Fix issue #1 - set ANT_HOME to plugin's version of Ant. </release-note>
     <release-note plugin-version="7"> Expose UploadFromDef, GetObjectStatus, RestartDomain. </release-note>
     <release-note plugin-version="8"> Move xalan to apache-ant/lib, use current version of ant (1.9.7). </release-note>
+    <release-note plugin-version="9"> Export Object </release-note>
     
   </release-notes>
 </pluginInfo>
