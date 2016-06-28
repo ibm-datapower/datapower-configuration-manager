@@ -40,6 +40,8 @@
   domain-restart - restart the domain
   domain-unquiesce - unquiesce all the services in the domain
   
+  export-object - export an object i.e. service
+  
   host-alias-remove - remove a specific host alias
   host-alias-set - create/overwrite a host alias
   
@@ -591,6 +593,38 @@
   
   
   <!--
+      Export an object from a domain on the device.
+  -->
+  <target name="export-object" depends="-init-dir, check-access">
+    
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'object.class' is required but not defined.  This is the object's class." unless="object.class"/>
+    <fail message="The Ant property 'object.name' is required but not defined.  This is the name of the target object on the DataPower device." unless="object.name"/>
+    <fail message="The Ant property 'export.file' is required but not defined.  This is the filename where the backup will be written." unless="export.file"/>
+    
+    <sequential>
+      <local name="dirname"/>
+      <dirname property="dirname" file="${export.file}"/>
+      <if>
+        <not>
+          <isfileselected file="${dirname}">
+            <writable/>
+          </isfileselected>
+        </not>
+        <then>
+          <fail message="No permission to write ${export.file} into folder ${dirname}"/>
+        </then>
+      </if>
+    </sequential>
+    
+    <exportObject host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" local="${export.file}" 
+      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}" 
+      objclass="${object.class}" objname="${object.name}" refobjs="${ref.objects}" reffiles="${ref.files}" />
+    
+  </target>
+  
+	
+	<!--
     Rollback to the previous firmware (and filesystem contents!).
   -->
   <target name="firmware-rollback" depends="-init-dir, check-access">
