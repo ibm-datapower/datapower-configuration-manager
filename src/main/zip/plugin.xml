@@ -19,8 +19,8 @@
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <header>
-    <identifier version="10" id="com.ibm.datapower" name="DataPower"/>
-    <description>The IBM DataPower plugin deploys DataPower services.</description>
+    <identifier version="9" id="com.ibm.datapower" name="DataPower"/>
+    <description>The IBM WebSphere DataPower plugin deploys DataPower services.</description>
     <tag>Infrastructure/WebSphere DataPower</tag>
   </header>
 
@@ -477,6 +477,69 @@
 
 
 
+  <step-type name="Export Object">
+    <description>Export an object from a domain on a device</description>
+    <properties>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the first domain to backup"/>
+      </property>
+      <property name="objectClass">
+        <property-ui type="textBox" default-value="" label="Object Class" description="Object class e.g. MultiProtocolGateway or WSGateway"/>
+      </property>
+      <property name="objectName">
+        <property-ui type="textBox" default-value="" label="Object Name" description="Object name e.g. name of service"/>
+      </property>
+      <property name="refObjects">
+        <property-ui type="checkBox" default-value="true" label="Include reference objects?" description="Include referenced objects when exporting?"/>
+      </property>
+      <property name="refFiles">
+        <property-ui type="checkBox" default-value="true" label="Include reference files?" description="Include referenced files when exporting?"/>
+      </property>
+      <property name="exportFile">
+        <property-ui type="textBox" default-value="" label="Export file" description="DataPower export file to create/overwrite"/>
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true"/>
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true"/>
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true"/>
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true"/>
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg file="classes"/>
+      <arg file="RunDeployDotAnt.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Dobject.class=@objectClass@"/>
+      <arg value="-Dobject.name=@objectName@"/>
+      <arg value="-Dref.objects=@refObjects@"/>
+      <arg value="-Dref.files=@refFiles@"/>
+      <arg value="-Dexport.file=@exportFile@"/>
+      <arg value="export-object"/>
+    </command>
+  </step-type>
+  
+  
+  
   <step-type name="Host Alias Remove">
     <description>Remove a host alias</description>
     <properties>
