@@ -1,7 +1,7 @@
 # DataPower Configuration Manager (DCM)
 
 DCM is a package for dealing with IBM DataPower configuration management.
-It provides an Ant-based command line tool and a plugin for IBM Rational UrbanCode 
+It provides an Ant-based command line tool and a plugin for IBM UrbanCode 
 Deploy (UCD).
 
 ## Prerequisites
@@ -15,9 +15,9 @@ After you obtain the source either via a Git client or by downloading the reposi
 you can build the code using Apache Ant. Enter the dcm directory and issue the command below (assumes
 Apache Ant is in the path):
 
-    ant clean distro
+    ant
 
-The UCD plugin will be found in dist/dcm.1.plugin.zip
+The UCD plugin will be found in dist/datapower-dev.zip
 
 See Quick Start in the wiki for more details on installation.
 
