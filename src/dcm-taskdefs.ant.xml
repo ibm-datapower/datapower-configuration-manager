@@ -726,6 +726,7 @@
     <attribute name="domain"/>
     <attribute name="filestore"/>
     <attribute name="local" default="."/>
+    <attribute name="dcmdir"/> <!-- directory where DCM is found -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
@@ -748,7 +749,7 @@
         <ignore-errors>@{ignore-errors}</ignore-errors>
         <return antprop="rawxml" somaprop="location"/>
       </wdp>
-      <nxslt inprop="rawxml" outprop="tmp" xsl="mbaas-downloadFilestore.xsl"/>
+      <nxslt inprop="rawxml" outprop="tmp" xsl="@{dcmdir}/src/downloadFilestore.xsl"/>
       <!-- <echo>${tmp}</echo> -->
       
       <forxpath inprop="tmp" xpath="/downloadFilestore/directory" propname="dirname">
