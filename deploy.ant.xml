@@ -62,7 +62,9 @@
   main (default target) - execute the import-changed and save targets (in that order)
   
   objects-from-def - create, delete, or modify objects based on dcm:object-* elements
-  
+
+  raw-soma-call - make a raw SOMA call based on raw request file input
+
   save - save the domain
 
   secure-backup-device - secure backup of device
@@ -76,8 +78,6 @@
   
   valcred-from-def - create a valcred object based on a dcm:definition
   valcred-from-dir - create a valcred object from a set of certificates in a directory
-
-  raw-soma-call - make a raw SOMA call based on raw request file input
 
   This script relies on the following ANT properties:
   

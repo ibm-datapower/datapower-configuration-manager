@@ -32,7 +32,7 @@
   
   <description>Build DCM components</description>
   
-  <property name="version" value="dev"/>  <!-- default -->
+  <property name="version" value="1"/>  <!-- default -->
   
   <!-- Locations of directories so we don't hard code them all over the file. -->
   <property name="build" value="build/locale"/>
