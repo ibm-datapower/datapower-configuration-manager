@@ -31,13 +31,11 @@
 <project name="dcm" basedir="." default="distro">
   
   <description>Build DCM components</description>
-  
-  <property name="version" value="1"/>  <!-- default -->
-  
+
   <!-- Locations of directories so we don't hard code them all over the file. -->
   <property name="build" value="build/locale"/>
   <property name="dist" value="dist"/>
-  <property name="distro" location="dcm-distros/dcm.${version}"/>
+  <property name="distro" location="dcm-distros/dcm"/>
   <property name="lib" value="lib"/>
   <property name="src" value="src"/>
   
@@ -50,10 +48,8 @@
   
   <!-- Which Ant version to include -->
   <property name="needed.ant.version" value="1.9.7"/>
-  
-  
-  
-  <target name="distro" description="Produce a new distribution - requires version" depends="clean,plugin">
+
+  <target name="distro" description="Produce a new distribution" depends="clean,plugin">
 
     <mkdir dir="${distro}"/>
 
@@ -76,7 +72,7 @@
     
   </target>
   
-  <target name="plugin" description="Produce an UrbanCode Deploy DataPower plugin - requires version" depends="-get-ant,commandline">
+  <target name="plugin" description="Produce an UrbanCode Deploy DataPower plugin" depends="-get-ant,commandline">
     
     <!-- Extract the Ant distribution into the tmp directory, where we are collecting the files for the plugin. -->
     <mkdir dir="tmp"/>
@@ -96,7 +92,6 @@
         <exclude name="src/main/**"/>
       </fileset>
     </copy>
-    <replace file="tmp/dcm/deploy.ant.xml" token="value=&quot;1&quot;" value="value=&quot;${version}&quot;"/>
     <copy todir="tmp">
       <fileset dir="src/main/zip">
         <include name="**"/>
@@ -110,13 +105,13 @@
     </copy>
     
     <!-- Zip the tmp dir to produce the final plugin file. -->
-    <zip basedir="tmp" destfile="${dist}/datapower-${version}.zip"/>
+    <zip basedir="tmp" destfile="${dist}/datapower.zip"/>
     
     <delete dir="tmp"/>
     
   </target>
   
-  <target name="commandline" description="Produce a DCM zip file for command line support - requires version" depends="clean">
+  <target name="commandline" description="Produce a DCM zip file for command line support" depends="clean">
 
     <mkdir dir="${build}"/>
     <mkdir dir="${dist}"/>
@@ -128,14 +123,15 @@
     <copy file="${src}/com/ibm/antlib.xml" todir="${build}/com/ibm"/>
     <unzip src="${lib}/xalan-${needed.xalan.version}.jar" dest="${build}"/>
     <unzip src="${lib}/serializer-${needed.xalan.version}.jar" dest="${build}"/>
-    <jar destfile="${dist}/dcm.${version}.jar" basedir="${build}"/>
-    
+    <jar destfile="${dist}/dcm.jar" basedir="${build}"/>
+
   </target>
 
 	<target name="clean" description="Delete all generated files and directories.">
-		<delete dir="${build}" />
-		<delete dir="${dist}" />
-		<delete dir="${distro.dir}" />
+		<delete dir="build" />
+		<delete dir="dist" />
+		<delete dir="distro" />
+		<delete dir="dcm-distros" />
 		<delete dir="tmp" />
 	</target>
 
