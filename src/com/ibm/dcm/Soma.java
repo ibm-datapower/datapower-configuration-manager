@@ -218,6 +218,8 @@ public class Soma {
       result = doQuiesceFSH(params);
     } else if (somaOp.equals("QuiesceService")) {
       result = doQuiesceService(params);
+    } else if (somaOp.equals("RawSomaCall")) {
+        result = doRawSomaCall(params);
     } else if (somaOp.equals("RefreshDocument")) {
       result = doRefreshDocument(params);
     } else if (somaOp.equals("RefreshStylesheet")) {
@@ -306,8 +308,6 @@ public class Soma {
       result = doValCredAddCertsFromDir(params);
     } else if (somaOp.equals("WSRRSynchronize")) {
       result = doWSRRSynchronize(params);
-    } else if (somaOp.equals("RawSomaCall")) {
-        result = doRawSomaCall(params);
     } else {
       throw new UnsupportedOperationException ("soma=" + somaOp + " is not a recognized SOMA operation.");
     }

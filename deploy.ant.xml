@@ -62,7 +62,9 @@
   main (default target) - execute the import-changed and save targets (in that order)
   
   objects-from-def - create, delete, or modify objects based on dcm:object-* elements
-  
+
+  raw-soma-call - make a raw SOMA call based on raw request file input
+
   save - save the domain
 
   secure-backup-device - secure backup of device
@@ -76,8 +78,6 @@
   
   valcred-from-def - create a valcred object based on a dcm:definition
   valcred-from-dir - create a valcred object from a set of certificates in a directory
-
-  raw-soma-call - make a raw SOMA call based on raw request file input
 
   This script relies on the following ANT properties:
   
@@ -128,16 +128,14 @@
 <project name="deploy" default="main" xmlns:props="antlib:ibm">
 
   <description>Implement various DataPower deployment operations.</description>
-  
-  <property name="dcm.build.version" value="1"/>
-  
+    
   <!-- Ensure we know where DCM is located. -->
   <fail message="Please define the ANT property 'dcm.dir', which points to the directory where DCM is installed." unless="dcm.dir"/>
-  <available filepath="${dcm.dir}" file="dist/dcm.${dcm.build.version}.jar" property="dcm.dir.good"/>
-  <fail message="The Ant property 'dcm.dir' doesn't seem to point to DCM since ${dcm.dir}/dist/dcm.${dcm.build.version}.jar is not found." unless="dcm.dir.good"/>
+  <available filepath="${dcm.dir}" file="dist/dcm.jar" property="dcm.dir.good"/>
+  <fail message="The Ant property 'dcm.dir' doesn't seem to point to DCM since ${dcm.dir}/dist/dcm.jar is not found." unless="dcm.dir.good"/>
   
   <!-- Provide reasonable defaults for some optional properties. -->
-  <property name="dcm.jar" location="${dcm.dir}/dist/dcm.${dcm.build.version}.jar"/>
+  <property name="dcm.jar" location="${dcm.dir}/dist/dcm.jar"/>
   <property name="work.dir" location="./tmp"/>
   <property name="schema.dir" location="${dcm.dir}/schemas"/>
   <property name="capturesoma" value=""/>
