@@ -73,14 +73,18 @@ public class SSLConnection {
     HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
   }
 
-
+  // default to SOMA method for backwards compatibility
   public NamedParams sendAndReceive (NamedParams params, String request) throws Exception {
+	  return sendAndReceive(params, request, "/service/mgmt/current");
+  }
+
+  public NamedParams sendAndReceive (NamedParams params, String request, String method) throws Exception {
     String hostname = params.get("hostname");
     if (params.get("host") != null) {
       // Code is inconsistent in using "host" or "hostname".  Oh well.
       hostname = params.get("host");
     }
-    String url = "https://" + hostname + ":" + params.get("port") + "/service/mgmt/current";
+    String url = "https://" + hostname + ":" + params.get("port") + method;
     boolean dumpinput = false;
     if (params.get("dumpinput") != null && params.get("dumpinput").equals("true"))
       dumpinput = true;

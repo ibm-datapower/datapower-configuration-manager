@@ -218,8 +218,8 @@ public class Soma {
       result = doQuiesceFSH(params);
     } else if (somaOp.equals("QuiesceService")) {
       result = doQuiesceService(params);
-    } else if (somaOp.equals("RawSomaCall")) {
-        result = doRawSomaCall(params);
+    } else if (somaOp.equals("RawMgmtCall")) {
+        result = doRawMgmtCall(params);
     } else if (somaOp.equals("RefreshDocument")) {
       result = doRefreshDocument(params);
     } else if (somaOp.equals("RefreshStylesheet")) {
@@ -322,16 +322,20 @@ public class Soma {
    * 
    * request= ... the request file name ... 
    * response= ... the request file name ... 
-   * 
+   *
+   * The params may contain:
+   *
+   * method= ... the management method (default is '/service/mgmt/current' - i.e. SOMA) ...
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
    */
-	public NamedParams doRawSomaCall(NamedParams params) throws Exception {
+	public NamedParams doRawMgmtCall(NamedParams params) throws Exception {
 		params.insistOn(new String[] { "request", "response" });
 		String request = readFile(params.get("request"));
 		NamedParams result = params;
-		result = conn.sendAndReceive(params, request);
+		result = conn.sendAndReceive(params, request, params.get("method"));
 		String raw = result.get("rawresponse");
 		String responseFileName = params.get("response");
 		PrintWriter out = new PrintWriter(responseFileName);
