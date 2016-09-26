@@ -2914,7 +2914,7 @@
           <echo>Saved checkpoint @{checkpoint-name} in @{domain} on @{host}.</echo>
         </then>
         <else>
-          <echo>Raw response for saving checkpoint: ${savecheckpoint_response}</echo>
+          <echo>Raw response for saving checkpoint: @{savecheckpoint_response}</echo>
           <fail message="Failed to save checkpoint @{checkpoint-name} in @{domain} on @{host} after failing to import."/>
         </else>
       </if>
