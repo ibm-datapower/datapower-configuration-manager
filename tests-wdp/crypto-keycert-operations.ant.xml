@@ -61,8 +61,8 @@
         
         <echo>Successfully exported a certificate in ${domain} on ${hostname}</echo>
         
-        
         <!-- Delete the certificate so that we can import it again. -->
+<!--        
         <wdp operation="DeleteConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <classname>CryptoCertificate</classname>
             <objname>simple</objname>
@@ -83,7 +83,7 @@
         </wdp>
         
         <echo>Successfully imported a certificate in ${domain} on ${hostname}</echo>
-        
+-->
     </target>
     
 </project>

@@ -82,7 +82,7 @@
         
         <echo>Successfully unquiesced FSH HTTPSourceProtocolHandler/loopback-http-fsh in service MultiProtocolGateway/loopback in domain ${domain} on ${hostname}</echo>
 -->
-
+<!--  This hangs in 7.2.0.8 - the firmware shows the service as down but not quiesced...
         <wdp operation="QuiesceService" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <type>MultiProtocolGateway</type>
             <objname>loopback</objname>
@@ -94,7 +94,7 @@
         </wdp>
         
         <echo>Successfully quiesced service MultiProtocolGateway/loopback in domain ${domain} on ${hostname}</echo>
-        
+-->        
         <wdp operation="UnquiesceService" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
             <type>MultiProtocolGateway</type>
             <objname>loopback</objname>

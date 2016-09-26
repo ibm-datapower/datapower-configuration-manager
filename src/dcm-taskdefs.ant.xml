@@ -726,6 +726,7 @@
     <attribute name="domain"/>
     <attribute name="filestore"/>
     <attribute name="local" default="."/>
+    <attribute name="dcmdir"/> <!-- directory where DCM is found -->
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
@@ -748,7 +749,7 @@
         <ignore-errors>@{ignore-errors}</ignore-errors>
         <return antprop="rawxml" somaprop="location"/>
       </wdp>
-      <nxslt inprop="rawxml" outprop="tmp" xsl="mbaas-downloadFilestore.xsl"/>
+      <nxslt inprop="rawxml" outprop="tmp" xsl="@{dcmdir}/src/downloadFilestore.xsl"/>
       <!-- <echo>${tmp}</echo> -->
       
       <forxpath inprop="tmp" xpath="/downloadFilestore/directory" propname="dirname">
@@ -2350,8 +2351,29 @@
       </if>
     </sequential>
   </macrodef>
-  
-  
+
+	<!--
+		Make a raw SOMA call
+	-->
+	<macrodef name="rawSomaCall">
+		<attribute name="host"/>
+		<attribute name="port" default="5550"/>
+		<attribute name="uid"/>
+		<attribute name="pwd"/>
+		<attribute name="request"/>
+		<attribute name="response"/>
+		<sequential>
+			<wdp operation="RawSomaCall" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
+				<hostname>@{host}</hostname>
+				<port>@{port}</port>
+				<uid>@{uid}</uid>
+				<pwd>@{pwd}</pwd>
+				<request>@{request}</request>
+				<response>@{response}</response>
+			</wdp>
+		</sequential>
+	</macrodef>
+
   <!--
     Remove a checkpoint
   -->
@@ -3521,8 +3543,7 @@
       </if>
     </sequential>
   </macrodef>
-  
-  
+
   <!-- Convenient definition for using Xalan, specifically, to process XSLT. -->
   <macrodef name="xalan">
     <attribute name="in"/>

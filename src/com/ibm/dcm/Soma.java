@@ -218,6 +218,8 @@ public class Soma {
       result = doQuiesceFSH(params);
     } else if (somaOp.equals("QuiesceService")) {
       result = doQuiesceService(params);
+    } else if (somaOp.equals("RawSomaCall")) {
+        result = doRawSomaCall(params);
     } else if (somaOp.equals("RefreshDocument")) {
       result = doRefreshDocument(params);
     } else if (somaOp.equals("RefreshStylesheet")) {
@@ -313,6 +315,48 @@ public class Soma {
     return result;
   }
 
+  /**
+   * This method implements the SomaCall operation.
+   * 
+   * The params must contain:
+   * 
+   * request= ... the request file name ... 
+   * response= ... the request file name ... 
+   * 
+   * @param params
+   * @return NamedParams "rawresponse".
+   * @throws Exception
+   */
+	public NamedParams doRawSomaCall(NamedParams params) throws Exception {
+		params.insistOn(new String[] { "request", "response" });
+		String request = readFile(params.get("request"));
+		NamedParams result = params;
+		result = conn.sendAndReceive(params, request);
+		String raw = result.get("rawresponse");
+		String responseFileName = params.get("response");
+		PrintWriter out = new PrintWriter(responseFileName);
+		out.println(raw);
+		out.close();
+		return result;
+	}
+
+	private static String readFile(String file) throws IOException {
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		String line = null;
+		StringBuilder stringBuilder = new StringBuilder();
+		String ls = System.getProperty("line.separator");
+
+		try {
+			while ((line = reader.readLine()) != null) {
+				stringBuilder.append(line);
+				stringBuilder.append(ls);
+			}
+
+			return stringBuilder.toString();
+		} finally {
+			reader.close();
+		}
+	}
 
   /**
    * This method implements the AddKnownHost operation.

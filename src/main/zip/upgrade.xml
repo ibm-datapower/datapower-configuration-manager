@@ -193,6 +193,60 @@
     <migrate-command  name="Upload Directory"/>
     <migrate-command  name="Upload From Definition"/>
   </migrate>
+  
+  <migrate to-version="9">
+    <migrate-command  name="Backup Device"/>
+    <migrate-command  name="Backup Domains"/>
+    <migrate-command  name="Checkpoint Delete"/>
+    <migrate-command  name="Checkpoint Restore"/>
+    <migrate-command  name="Checkpoint Save"/>
+    <migrate-command  name="Create Domain"/>
+    <migrate-command  name="Crypto Identity Credential from Definition"/>
+    <migrate-command  name="Crypto Validation Credential from Definition"/>
+    <migrate-command  name="Delete Domain"/>
+    <migrate-command  name="Host Alias Remove"/>
+    <migrate-command  name="Host Alias Set"/>
+    <migrate-command  name="Import (Basic)"/>
+    <migrate-command  name="Import (Definition)"/>
+    <migrate-command  name="Import (Deployment Policy Object)"/>
+    <migrate-command  name="Invoke any deploy.ant.xml target"/>
+    <migrate-command  name="Load Balancer Group from Definition"/>
+    <migrate-command  name="Quiesce Domain"/>
+    <migrate-command  name="Restart Domain"/>
+    <migrate-command  name="Restore Backup"/>
+    <migrate-command  name="Save Configuration"/>
+    <migrate-command  name="Set Log Level"/>
+    <migrate-command  name="Unquiesce Domain"/>
+    <migrate-command  name="Upload Directory"/>
+    <migrate-command  name="Upload From Definition"/>
+  </migrate>
+  
+  <migrate to-version="10">
+    <migrate-command  name="Backup Device"/>
+    <migrate-command  name="Backup Domains"/>
+    <migrate-command  name="Checkpoint Delete"/>
+    <migrate-command  name="Checkpoint Restore"/>
+    <migrate-command  name="Checkpoint Save"/>
+    <migrate-command  name="Create Domain"/>
+    <migrate-command  name="Crypto Identity Credential from Definition"/>
+    <migrate-command  name="Crypto Validation Credential from Definition"/>
+    <migrate-command  name="Delete Domain"/>
+    <migrate-command  name="Host Alias Remove"/>
+    <migrate-command  name="Host Alias Set"/>
+    <migrate-command  name="Import (Basic)"/>
+    <migrate-command  name="Import (Definition)"/>
+    <migrate-command  name="Import (Deployment Policy Object)"/>
+    <migrate-command  name="Invoke any deploy.ant.xml target"/>
+    <migrate-command  name="Load Balancer Group from Definition"/>
+    <migrate-command  name="Quiesce Domain"/>
+    <migrate-command  name="Restart Domain"/>
+    <migrate-command  name="Restore Backup"/>
+    <migrate-command  name="Save Configuration"/>
+    <migrate-command  name="Set Log Level"/>
+    <migrate-command  name="Unquiesce Domain"/>
+    <migrate-command  name="Upload Directory"/>
+    <migrate-command  name="Upload From Definition"/>
+  </migrate>
 
   <migrate to-version="9">
     <migrate-command  name="Backup Device"/>

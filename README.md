@@ -17,7 +17,7 @@ Apache Ant is in the path):
 
     ant
 
-The UCD plugin will be found in dist/datapower-dev.zip
+The UCD plugin will be found in dist/datapower.zip
 
 See Quick Start in the wiki for more details on installation.
 

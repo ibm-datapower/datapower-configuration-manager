@@ -3,3 +3,6 @@
 /dcm-distros
 /dist
 /lib
+/.project
+
+/target/
