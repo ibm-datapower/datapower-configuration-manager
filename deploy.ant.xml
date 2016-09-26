@@ -63,7 +63,7 @@
   
   objects-from-def - create, delete, or modify objects based on dcm:object-* elements
 
-  raw-soma-call - make a raw SOMA call based on raw request file input
+  raw-mgmt-call - make a raw management (SOMA or AMP etc) call based on raw request file input
 
   save - save the domain
 
@@ -141,8 +141,8 @@
   <property name="capturesoma" value=""/>
   <property name="dumpinput" value="false"/>
   <property name="dumpoutput" value="false"/>
-  
-  
+  <property name="mgmt.method" value="/service/mgmt/current"/>
+
   <!--
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
       Provide necessary definitions
@@ -1289,10 +1289,10 @@
     
   </target>
 
-	<target name="raw-soma-call" depends="-init-dir, -check-std-args">
-		<fail message="The Ant property 'soma.request' is required but not defined. This is the raw SOMA request filename." unless="soma.request"/>
-		<fail message="The Ant property 'soma.response' is required but not defined. This is the raw SOMA response filename." unless="soma.response"/>
-		<rawSomaCall host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" request="${soma.request}" response="${soma.response}"/>
+	<target name="raw-mgmt-call" depends="-init-dir, -check-std-args">
+		<fail message="The Ant property 'mgmt.request' is required but not defined. This is the raw management request filename." unless="mgmt.request"/>
+		<fail message="The Ant property 'mgmt.response' is required but not defined. This is the raw management response filename." unless="mgmt.response"/>
+		<rawMgmtCall host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" request="${mgmt.request}" response="${mgmt.response}" method="${mgmt.method}"/>
 	</target>
 
   <target name="-check-std-args">

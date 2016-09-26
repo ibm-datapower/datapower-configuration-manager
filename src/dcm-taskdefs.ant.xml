@@ -2353,23 +2353,25 @@
   </macrodef>
 
 	<!--
-		Make a raw SOMA call
+		Make a raw XML management call
 	-->
-	<macrodef name="rawSomaCall">
+	<macrodef name="rawMgmtCall">
 		<attribute name="host"/>
 		<attribute name="port" default="5550"/>
 		<attribute name="uid"/>
 		<attribute name="pwd"/>
 		<attribute name="request"/>
 		<attribute name="response"/>
+		<attribute name="method"/>
 		<sequential>
-			<wdp operation="RawSomaCall" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
+			<wdp operation="RawMgmtCall" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
 				<hostname>@{host}</hostname>
 				<port>@{port}</port>
 				<uid>@{uid}</uid>
 				<pwd>@{pwd}</pwd>
 				<request>@{request}</request>
 				<response>@{response}</response>
+				<method>@{method}</method>
 			</wdp>
 		</sequential>
 	</macrodef>
