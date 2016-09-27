@@ -75,7 +75,7 @@ public class SSLConnection {
 
   // default to SOMA method for backwards compatibility
   public NamedParams sendAndReceive (NamedParams params, String request) throws Exception {
-	  return sendAndReceive(params, request, "/service/mgmt/current");
+    return sendAndReceive(params, request, "/service/mgmt/current");
   }
 
   public NamedParams sendAndReceive (NamedParams params, String request, String method) throws Exception {
@@ -149,6 +149,7 @@ public class SSLConnection {
         capture.flush();
       }
 
+      long beginRequestMillis = System.currentTimeMillis();
       conn = (HttpsURLConnection)(new URL(dpurl)).openConnection();
       conn.setHostnameVerifier(new VeryTrustingHostNameVerifier());
 
@@ -169,6 +170,7 @@ public class SSLConnection {
       out = new OutputStreamWriter(conn.getOutputStream());
       out.write(request); 
       out.flush();
+      long endRequestMillis = System.currentTimeMillis();
 
       // Gather the response.  (This is actually the moment when the send/receive takes place.)
       in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -183,6 +185,7 @@ public class SSLConnection {
         }
       }
       result = sb.toString();
+      long endResponseMillis = System.currentTimeMillis();
 
       if (dumpoutput) {
         System.out.println("SSLConnection.sendAndReceive received:");
@@ -190,7 +193,7 @@ public class SSLConnection {
       }
       
       if (capture != null) {
-        capture.write("\r\n{{ b48397ae-5fff-4438-97c0-d79f88bb243e }}\r\n[[response " + conn.getResponseMessage() + "]]\r\n");
+        capture.write("\r\n{{ b48397ae-5fff-4438-97c0-d79f88bb243e }}\r\n[[response (req " + (endRequestMillis - beginRequestMillis) + " ms, resp " + (endResponseMillis - endRequestMillis) + " ms) msg=" + conn.getResponseMessage() + "]]\r\n");
         capture.write(result);
         capture.close();
       }
