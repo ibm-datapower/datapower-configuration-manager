@@ -704,6 +704,63 @@
 
   <!--
     
+    Download target files from filestore 
+    
+    Required parameters:
+      host - hostname or IP address of DataPower device
+      domain - name of domain
+      filestore - name of filestore (e.g. local:, store:)
+      files - target files to download from the filestore
+      local - target directory in local filesystem
+      uid - userid
+      pwd - password
+    
+    Optional parameters:
+      port - XML Management Interface port on device (defaults to 5550)
+    
+  -->
+  <macrodef name="downloadFiles">
+    <attribute name="host"/>
+    <attribute name="port" default="5550"/>
+    <attribute name="uid"/>
+    <attribute name="pwd"/>
+    <attribute name="domain"/>
+    <attribute name="filestore"/>
+    <attribute name="files"/>
+    <attribute name="local" default="."/>
+    <attribute name="dumpinput" default="false"/>
+    <attribute name="dumpoutput" default="false"/>
+    <attribute name="capturesoma" default=""/>
+
+    <sequential>
+      <echo>Download target files: @{files}</echo>
+      <echo>from @{filestore} to @{local}</echo>
+
+      <forxpath inprop="files" xpath="/downloadFiles/file" propname="filename">
+        <sequential>
+          <dirname property="dirpath" file="@{local}@{filename}"/>
+          <mkdir dir="${dirpath}"/>
+
+          <echo>Downloading @{filestore}@{filename} to @{local}@{filename}</echo>
+          <wdp operation="GetFile" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
+            <domain>@{domain}</domain>
+            <hostname>@{host}</hostname>
+            <port>@{port}</port>
+            <uid>@{uid}</uid>
+            <pwd>@{pwd}</pwd>
+            <local>@{local}@{filename}</local>
+            <remote>@{filestore}@{filename}</remote>
+          </wdp>
+        </sequential>
+      </forxpath>
+      
+    </sequential>
+    
+  </macrodef>
+
+	
+	<!--
+    
     Download a filestore
     
     Required parameters:
@@ -732,6 +789,8 @@
     <attribute name="capturesoma" default=""/>
     
     <sequential>
+      <echo>Download all files from @{filestore} to @{local}</echo>
+    	
       <local name="rawxml"/>
       <local name="tmp"/>
       
