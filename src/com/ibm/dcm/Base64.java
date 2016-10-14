@@ -79,7 +79,9 @@ public class Base64 {
 
     // Ensure the output buffer is of sufficient size.  Allow for padding that
     // will be added to bring the output up to a multiple of 4 bytes.
-    int needed = (((in.length * 4 / 3) + 3) / 4) * 4;
+    // int needed = (((in.length * 4 / 3) + 3) / 4) * 4;
+    int needed = (((int)((long)in.length * 4 / 3) + 3) / 4) * 4;
+    // System.out.println("### in.length=" + in.length + ", needed=" + needed);
     byte[] result = out;
     if ((result == null) || (needed > result.length))
       result = new byte[needed];

@@ -601,6 +601,9 @@
     <fail message="The Ant property 'object.name' is required but not defined.  This is the name of the target object on the DataPower device." unless="object.name"/>
     <fail message="The Ant property 'export.file' is required but not defined.  This is the filename where the backup will be written." unless="export.file"/>
     
+    <property name="ref.objects" value="true"/> <!-- provide defaults if not specified by user -->
+    <property name="ref.files" value="true"/>
+    
     <sequential>
       <local name="dirname"/>
       <dirname property="dirname" file="${export.file}"/>
