@@ -1,0 +1,12 @@
+language: groovy
+rvm:
+- 1.8.8
+before_script:
+- export VERSION=${TRAVIS_TAG}.${TRAVIS_COMMIT:0:7}
+script:
+- ant -Dplugin.version=${VERSION}
+jdk:
+- oraclejdk8
+- oraclejdk7
+- openjdk7
+- openjdk6

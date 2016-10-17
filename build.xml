@@ -17,19 +17,19 @@
  **/
 -->
 <!--
-  
+
   This build file can:
-  
+
     1. Produce a DCM command-line zip file
     2. Produce an UrbanCode Deploy DataPower plugin
     3. Produce a new distribution of the whole DCM (command line plus UCD plugin)
-  
+
   The current directory must be "dcm", containing "src", "UrbanCode", and the other
   directories from github.
-  
+
 -->
 <project name="dcm" basedir="." default="distro">
-  
+
   <description>Build DCM components</description>
 
   <!-- Locations of directories so we don't hard code them all over the file. -->
@@ -38,16 +38,19 @@
   <property name="distro" location="dcm-distros/dcm"/>
   <property name="lib" value="lib"/>
   <property name="src" value="src"/>
-  
+
   <!-- Java-related defaults -->
   <property name="java.debug" value="true"/>
   <property name="needed.java.version" value="1.6"/>
-  
+
   <!-- Which Xalan version to include -->
   <property name="needed.xalan.version" value="2.7.2"/>
-  
+
   <!-- Which Ant version to include -->
   <property name="needed.ant.version" value="1.9.7"/>
+
+  <!-- Plugin version during build time -->
+  <property name="plugin.version" value="dev"/>
 
   <target name="distro" description="Produce a new distribution" depends="clean,plugin">
 
@@ -69,11 +72,11 @@
 
     <!-- Create the .zip file for the entire distribution. -->
     <zip basedir="${distro}" destfile="${distro}.zip"/>
-    
+
   </target>
-  
+
   <target name="plugin" description="Produce an UrbanCode Deploy DataPower plugin" depends="-get-ant,commandline">
-    
+
     <!-- Extract the Ant distribution into the tmp directory, where we are collecting the files for the plugin. -->
     <mkdir dir="tmp"/>
     <unzip src="${lib}/ant.zip" dest="tmp/dcm">
@@ -81,7 +84,7 @@
         <exclude name="apache-ant-*/manual/**" />
       </patternset>
     </unzip>
-    
+
     <!-- Copy the base DCM implementation. -->
     <copy todir="tmp/dcm">
       <fileset dir=".">
@@ -103,14 +106,17 @@
         <include name="serializer-${needed.xalan.version}.jar"/>
       </fileset>
     </copy>
-    
+
+    <!-- Update the info.xml version with the ${plugin.version} value. Used in Travis CI builds -->
+    <replace file="tmp/info.xml" token="#DEV_VERSION#" value="${plugin.version}" />
+
     <!-- Zip the tmp dir to produce the final plugin file. -->
-    <zip basedir="tmp" destfile="${dist}/datapower.zip"/>
-    
+    <zip basedir="tmp" destfile="${dist}/datapower-v${plugin.version}.zip"/>
+
     <delete dir="tmp"/>
-    
+
   </target>
-  
+
   <target name="commandline" description="Produce a DCM zip file for command line support" depends="clean">
 
     <mkdir dir="${build}"/>
@@ -118,7 +124,7 @@
     <mkdir dir="${lib}"/>
     <get src="http://search.maven.org/remotecontent?filepath=xalan/xalan/${needed.xalan.version}/xalan-${needed.xalan.version}.jar" dest="${lib}/xalan-${needed.xalan.version}.jar" skipexisting="true"/>
     <get src="http://search.maven.org/remotecontent?filepath=xalan/serializer/${needed.xalan.version}/serializer-${needed.xalan.version}.jar" dest="${lib}/serializer-${needed.xalan.version}.jar" skipexisting="true"/>
-    
+
     <javac srcdir="${src}" destdir="${build}" includeantruntime="true" classpath="${lib}/xalan-${needed.xalan.version}.jar" debug="${java.debug}" target="${needed.java.version}" source="${needed.java.version}"/>
     <copy file="${src}/com/ibm/antlib.xml" todir="${build}/com/ibm"/>
     <unzip src="${lib}/xalan-${needed.xalan.version}.jar" dest="${build}"/>
