@@ -10,13 +10,17 @@ jdk:
 - oraclejdk7
 - openjdk7
 - openjdk6
+notifications:
+    email:
+        on_success: change
+        on_failure: change
 deploy:
   provider: releases
   api_key:
     secure: yRs4+JRgczch6D+82Z4LVWK4YoaKzMRuVh2unQN2HafXjAMC6ecGXt47FjXKEFPpY7uxmk1MK6N7ClLePge6Fg6SctacY/KmuOAACb3AuRyUTFdKLsn5IAMdlME/Wubn2P6Z80haCZyZ7MTiGRreLEKcGPUHFT1Pl5KTJksWDFbP43m1sBpeBrVvTbN9zGMw7xsvtQ+ybsmZT9q84kvwRDHOIfiGZ0ospH7DsHHt0c/x7FoDNMpWalb6yT6qy71Rq/JZ1OeOwLVCQNAhDcbCWJ8bVFzfhrypxTgm9Hw3A4m8SSON//KA8Ov/IfQL9CrplZrRRkfc4VF9giGxpLyGx4lrC+J+ZpfYzhHyiq/wSL6xWViPjs+bXBxzZKhikhMOw1+++d2+VbRO/65CVJ+3XrCBzfqyM6TFJUxm/nITHwi0hWmLfTrlfH7/kiCcEmgQxTuebUE6yomOsYVM4L9qKdlJo4Rz/5Zha7dGgkoKI0NriE4tyoFGR7gZjWgZmeIcqpXkvxFURdlFuC0zjdycvuoqWnOvlcf2dV2TF+H7GPl/SmrKxp33B4O/twY5AjW+OlDMecyQi+IluHASCz2ttsDLkCBrrSPl0ZpKEt1lKKNFatk9GTpvFjTe/QIg1r0IdfNk1yfI7nduUTp6/aWfHLRltcfPGAn8kIsTaJ365AI=
   file_glob: true
   file:
-      - dist/datapower.*.zip
+      - dist/datapower-v*.zip
       - dist/dcm.jar
   skip_cleanup: true
   on:
