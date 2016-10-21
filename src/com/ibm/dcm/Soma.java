@@ -315,6 +315,12 @@ public class Soma {
     return result;
   }
 
+  private static boolean DEBUG = true;
+  
+  private static void debug(String msg) {
+	  if (DEBUG) System.out.println("[debug] Soma: " + msg);
+  }
+
   /**
    * This method implements the SomaCall operation.
    * 
@@ -332,19 +338,22 @@ public class Soma {
    * @throws Exception
    */
 	public NamedParams doRawMgmtCall(NamedParams params) throws Exception {
-		params.insistOn(new String[] { "request", "response" });
-		String request = readFile(params.get("request"));
+		params.insistOn(new String[] { "request", "response" });		
+		File requestFile = new File(params.get("request"));
+		debug("requestFile: "+ requestFile.getAbsolutePath());
+		String request = readFile(requestFile);
 		NamedParams result = params;
 		result = conn.sendAndReceive(params, request, params.get("method"));
 		String raw = result.get("rawresponse");
-		String responseFileName = params.get("response");
-		PrintWriter out = new PrintWriter(responseFileName);
+		File responseFile = new File(params.get("response"));
+		debug("responseFile: "+ responseFile.getAbsolutePath());
+		PrintWriter out = new PrintWriter(responseFile);
 		out.println(raw);
 		out.close();
 		return result;
 	}
 
-	private static String readFile(String file) throws IOException {
+	private static String readFile(File file) throws IOException {
 		BufferedReader reader = new BufferedReader(new FileReader(file));
 		String line = null;
 		StringBuilder stringBuilder = new StringBuilder();
