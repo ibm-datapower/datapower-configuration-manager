@@ -126,7 +126,6 @@
   <!-- Do not change the release-version, the build process injects it. -->
   <release-version>#DEV_VERSION#</release-version>
 
-
   <release-notes>
     <!--
       **release-note IS required**
@@ -139,6 +138,7 @@
     <release-note plugin-version="7"> Expose UploadFromDef, GetObjectStatus, RestartDomain. </release-note>
     <release-note plugin-version="8"> Move xalan to apache-ant/lib, use current version of ant (1.9.7). </release-note>
     <release-note plugin-version="9"> Export Object </release-note>
-
+    <release-note plugin-version="10"> Download Files </release-note>
+    
   </release-notes>
 </pluginInfo>

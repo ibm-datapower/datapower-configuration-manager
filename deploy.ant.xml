@@ -589,8 +589,35 @@
     <unquiesceDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
     
   </target>
-  
-  
+
+	
+  <!--
+      Download target files or all files from a filestore
+  -->
+  <target name="download-files" depends="-init-dir, check-access">
+    
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'filestore' is required but not defined.  This is filestore in the device." unless="filestore"/>
+  	<fail message="The Ant property 'download-dir.to' is required but not defined. This local directory will contain the downloaded files." unless="download-dir.to"/>
+  	
+    <if>
+      <isset property="files"/>
+      <then>
+      	<!-- download target files -->
+        <downloadFiles host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" 
+          dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"  
+          filestore="${filestore}" local="${download-dir.to}" files="${files}" />
+      </then>
+      <else>
+        <!-- download all files from the target filestore -->
+        <downloadFilestore host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" 
+          dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"  
+          filestore="${filestore}" local="${download-dir.to}" dcmdir="${dcm.dir}" />
+      </else>
+    </if>
+  </target> 
+	
+	
   <!--
       Export an object from a domain on the device.
   -->

@@ -19,7 +19,7 @@
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <header>
-    <identifier version="9" id="com.ibm.datapower" name="DataPower"/>
+    <identifier version="10" id="com.ibm.datapower" name="DataPower"/>
     <description>The IBM WebSphere DataPower plugin deploys DataPower services.</description>
     <tag>Infrastructure/WebSphere DataPower</tag>
   </header>
@@ -472,6 +472,61 @@
       <arg value="-Ddomain=@domainName@"/>
       <arg value="-Denvironment=@environment@"/>
       <arg value="domain-delete"/>
+    </command>
+  </step-type>
+
+
+
+  <step-type name="Download Files">
+    <description>Download target files or all files from a filestore</description>
+    <properties>
+      <property name="domainName" required="true">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the target domain"/>
+      </property>
+      <property name="filestore" required="true">
+        <property-ui type="textBox" default-value="local:" label="Filestore name" description="Name of filestore (e.g. local:, store:)"/>
+      </property>
+      <property name="files">
+        <property-ui type="textBox" default-value="" label="Target files (blank means all)" description="All files if empty or target files e.g. &lt;downloadFiles&gt;&lt;file&gt;/folderA/fileA.xml&lt;/file&gt;&lt;/downloadFiles&gt;"/>
+      </property>
+      <property name="toDir" required="true">
+        <property-ui type="textBox" default-value="" label="To directory" description="This local directory will contain the downloaded files"/>
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true"/>
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true"/>
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true"/>
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true"/>
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg file="classes"/>
+      <arg file="RunDeployDotAnt.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Dfilestore=@filestore@"/>
+      <arg value="-Dfiles=@files@"/>
+      <arg value="-Ddownload-dir.to=@toDir@"/>
+      <arg value="download-files"/>
     </command>
   </step-type>
 
