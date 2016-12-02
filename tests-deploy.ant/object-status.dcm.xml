@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+	<dcm:object-state-manifest>
+		<!-- these objects should be present and up by default in any domain so 
+			should be safe choices for positive test case -->
+		<dcm:object-state class="HTTPUserAgent" name="default"
+			op-state="up" />
+		<dcm:object-state class="StylePolicy"
+			name="default-accept-service-providers" op-state="up" />
+	</dcm:object-state-manifest>
+</dcm:definition>

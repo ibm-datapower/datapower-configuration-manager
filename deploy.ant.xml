@@ -63,6 +63,8 @@
   
   objects-from-def - create, delete, or modify objects based on dcm:object-* elements
 
+  object-status - check the opstate of objects are as required based on a dcm:definition file
+
   raw-mgmt-call - make a raw management (SOMA or AMP etc) call based on raw request file input
 
   save - save the domain
@@ -72,7 +74,7 @@
   service-quiesce - quiesce a service
   service-unquiesce -unquiesce a service
   service-status - get the opstate of a service
-
+  
   upload-dir - upload an entire directory
   upload-from-def - upload files specified in dcm:definition/dcm:upload elements
   
@@ -1093,6 +1095,52 @@
     
   </target>
   
+	<!-- object-status - check the opstate of objects are as required based on a dcm:definition file -->
+	<target name="object-status" depends="-init-dir, check-access">
+
+		<fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+		<fail message="The Ant property 'object-status.file' is required but not defined.  This is the file containing the dcm:definition/dcm:object-status definition(s)." unless="object-status.file"/>
+		<if>
+			<not>
+				<available file="${object-status.file}"/>
+			</not>
+			<then>
+				<fail message="Unable to see the file containing the object definitions : ${object-status.file}"/>
+			</then>
+		</if>
+
+		<sequential>
+
+			<!-- firstly generate a SOMA object status request xml file -->
+			<property name="object-status-request" value="${work.dir}/object-status-request.xml"/>
+			<nxslt infile="${object-status.file}" outfile="${object-status-request}" xsl="${dcm.dir}/src/object-status-request.xsl">
+				<param ant="domain" xsl="domain"/>
+			</nxslt>
+
+			<!-- Now do SOMA object status request call -->
+			<property name="object-status-response" value="${work.dir}/object-status-response.xml"/>
+			<rawMgmtCall host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" request="${object-status-request}"
+					response="${object-status-response}" method="${mgmt.method}"/>
+
+			<!-- Now process SOMA object status response, cross-checking against required object states, capturing results in tmp property -->
+			<local name="tmp"/>
+			<nxslt infile="${object-status-response}" outprop="tmp" xsl="${dcm.dir}/src/object-status-response.xsl">
+				<param ant="${object-status.file}" xsl="manifest-file"/>
+			</nxslt>
+
+			<!-- log results to console -->
+			<echo message="${tmp}" />
+
+			<!-- fail build if any object staus checks failed -->
+			<if>
+			    <contains string="${tmp}" substring="[FAIL]" />
+			    <then>
+					<fail message="Object status checks failed (see above output for details)"/>
+			    </then>
+			</if>
+		</sequential>
+
+	</target>
   
   <!--
     Restore domains from a device or multiple-domains backup.
