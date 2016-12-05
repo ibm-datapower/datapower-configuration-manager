@@ -144,6 +144,7 @@
   <property name="dumpinput" value="false"/>
   <property name="dumpoutput" value="false"/>
   <property name="mgmt.method" value="/service/mgmt/current"/>
+  <property name="reboot.mode" value="reboot"/>
 
   <!--
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1095,11 +1096,14 @@
     
   </target>
   
-	<!-- object-status - check the opstate of objects are as required based on a dcm:definition file -->
+	<!--
+		Check the opstate of objects are as required based on a dcm:definition file.
+	-->
 	<target name="object-status" depends="-init-dir, check-access">
 
+		<!-- Validate input parameters -->
 		<fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
-		<fail message="The Ant property 'object-status.file' is required but not defined.  This is the file containing the dcm:definition/dcm:object-status definition(s)." unless="object-status.file"/>
+		<fail message="The Ant property 'object-status.file' is required but not defined.  This is the file containing the dcm:definition/dcm:object-state-manifest definition(s)." unless="object-status.file"/>
 		<if>
 			<not>
 				<available file="${object-status.file}"/>
@@ -1111,37 +1115,79 @@
 
 		<sequential>
 
-			<!-- firstly generate a SOMA object status request xml file -->
+			<!-- Generate a SOMA object status request xml file -->
 			<property name="object-status-request" value="${work.dir}/object-status-request.xml"/>
-			<nxslt infile="${object-status.file}" outfile="${object-status-request}" xsl="${dcm.dir}/src/object-status-request.xsl">
-				<param ant="domain" xsl="domain"/>
+			<nxslt infile="${dcm.dir}/src/dummy-input.xml" outfile="${object-status-request}" xsl="${dcm.dir}/src/object-status-request.xsl">
+				<param xsl="domain" ant="${domain}"/>
 			</nxslt>
 
-			<!-- Now do SOMA object status request call -->
+			<!-- Do SOMA object status request call -->
 			<property name="object-status-response" value="${work.dir}/object-status-response.xml"/>
 			<rawMgmtCall host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" request="${object-status-request}"
 					response="${object-status-response}" method="${mgmt.method}"/>
 
-			<!-- Now process SOMA object status response, cross-checking against required object states, capturing results in tmp property -->
+			<!-- Process SOMA object status response, cross-checking against required object states, capturing results in tmp property -->
 			<local name="tmp"/>
 			<nxslt infile="${object-status-response}" outprop="tmp" xsl="${dcm.dir}/src/object-status-response.xsl">
-				<param ant="${object-status.file}" xsl="manifest-file"/>
+				<param xsl="manifest-file" ant="${object-status.file}"/>
 			</nxslt>
 
-			<!-- log results to console -->
+			<!-- Log results to console -->
 			<echo message="${tmp}" />
 
-			<!-- fail build if any object staus checks failed -->
+			<!-- Fail build if any object staus checks failed -->
 			<if>
 			    <contains string="${tmp}" substring="[FAIL]" />
 			    <then>
-					<fail message="Object status checks failed (see above output for details)"/>
+					<fail message="Object status check(s) failed (see above output for details)"/>
 			    </then>
 			</if>
 		</sequential>
 
 	</target>
   
+	<!--
+		Reboot appliance request.
+	-->
+	<target name="reboot" depends="-init-dir, check-access">
+
+		<!-- Validate input parameters -->
+		<fail message="The Ant property 'reboot.mode' is required but not defined. Valid options are 'reboot' or 'reload'. The default is 'reboot'." unless="reboot.mode"/>
+
+		<!-- NB: always prefer to use the OLDEST AMP version (1.0) to provide greatest 
+			backwards compatibility with older firmware versions unless there is a good 
+			reason not to -->
+
+		<!-- Generate an AMP reset request xml file -->
+		<local name="tmp"/>
+		<property name="reboot-request" value="${work.dir}/reboot-request.xml"/>
+		<nxslt infile="${dcm.dir}/src/dummy-input.xml" outfile="${reboot-request}" xsl="${dcm.dir}/src/reboot-request.xsl">
+			<param xsl="mode" ant="reboot.mode"/>
+		</nxslt>
+
+		<!-- Do AMP reboot request -->
+		<property name="reboot-response" value="${work.dir}/reboot-response.xml"/>
+		<rawMgmtCall host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" request="${reboot-request}"
+				response="${reboot-response}" method="/service/mgmt/amp/1.0"/>
+
+		<!-- Process AMP reboot response extracting status for the record -->
+		<local name="tmp"/>
+		<nxslt infile="${reboot-response}" outprop="tmp" xsl="${dcm.dir}/src/reboot-response.xsl">
+		</nxslt>
+
+		<!-- Log results to console -->
+		<echo message="${tmp}" />
+
+		<!-- Fail build if there was a problem -->
+		<if>
+		    <contains string="${tmp}" substring="[FAIL]" />
+		    <then>
+				<fail message="Reboot failed (see above output for details)"/>
+		    </then>
+		</if>
+
+	</target>
+	
   <!--
     Restore domains from a device or multiple-domains backup.
   -->

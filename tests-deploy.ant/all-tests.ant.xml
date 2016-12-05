@@ -2,12 +2,12 @@
 <project name="all-tests" basedir="." default="all-tests">
 
   <!-- 
-        
+
     Run all defined tests.
 
 	Optional parameters:
-	
-		test.skip-setup:	if set (to any value) skip setup target (useful ad-hoc when not 
+
+		test.skip-setup:	if set (to any value) skip setup target (useful ad-hoc when not
 							required by some tests to shorcut execution)
   -->
 
@@ -16,11 +16,17 @@
   <fail message="Please don't define the 'domain' property since it interferes with some of the tests." if="domain"/>
 
 
-  <target name="all-tests" depends="backup-device,backup-domains,checkpoints,host-alias,import,lbg,restore,upload,object-status">
+	<target name="all-tests" depends="backup-device,backup-domains,checkpoints,host-alias,import,lbg,restore,upload,object-status">
+		<!--
+  			NOTE: some test cases are NOT included in all-tests for various reasons, namely:
 
-    <echo>*** All tests have been successfully run.</echo>
+  				reboot: not included because device reboot may surprise people when running unit tests
+  				secure-backup-device: currently fails with little explanation (probably just needs some tlc)
 
-  </target>
+  			These should all be validated prior to delivering changes.
+		-->
+		<echo>*** All tests have been successfully run.</echo>
+	</target>
 
 	<target name="-init">
 		<delete dir="tmp"/>
@@ -253,10 +259,15 @@
       <property name="domain" value="dcm-test"/>
       <property name="backup.file" location="backup-domains-testAndDefault.zip"/>
     </ant>
-    
+
   </target>
-  
-  
+
+	<target name="reboot" description="Reboot the device">
+		<ant antfile="../deploy.ant.xml" target="reboot">
+			<property name="reboot.mode" value="reboot"/>
+		</ant>
+	</target>
+
   <target name="upload" depends="" description="Upload files and directories">
     
     <ant antfile="../deploy.ant.xml" target="upload-from-def">

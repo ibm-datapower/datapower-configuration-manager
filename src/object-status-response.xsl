@@ -18,11 +18,11 @@
 			<xsl:choose>
 				<xsl:when test="$op-state=$required-op-state">
 					<xsl:value-of
-						select="concat('[OK] expected state: ', $required-op-state, ', found: ', $op-state, ' (', $name, '); ')" />
+						select="concat('[OK](', $name, ') expected state: ', $required-op-state, ', found: ', $op-state, '; ')" />
 				</xsl:when>
 				<xsl:when test="$op-state!=$required-op-state">
 					<xsl:value-of
-						select="concat('[FAIL] expected state: ', $required-op-state, ', found: ', $op-state, ' (', $name, '); ')" />
+						select="concat('[FAIL](', $name, ') expected state: ', $required-op-state, ', found: ', $op-state, '; ')" />
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of select="concat('[FAIL] missing object: ', $name, '; ')" />
