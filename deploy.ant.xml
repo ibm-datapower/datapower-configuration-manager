@@ -67,6 +67,8 @@
 
   raw-mgmt-call - make a raw management (SOMA or AMP etc) call based on raw request file input
 
+  reboot - make an appliance reboot request
+
   save - save the domain
 
   secure-backup-device - secure backup of device
