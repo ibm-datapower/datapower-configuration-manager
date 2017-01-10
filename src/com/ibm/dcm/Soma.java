@@ -314,8 +314,9 @@ public class Soma {
 
     return result;
   }
-
-  private static boolean DEBUG = true;
+  
+  // TODO: revisit debug logging properly later..
+  private static boolean DEBUG = false;
   
   private static void debug(String msg) {
 	  if (DEBUG) System.out.println("[debug] Soma: " + msg);
