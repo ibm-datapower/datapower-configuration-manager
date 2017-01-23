@@ -2,26 +2,39 @@
 <project name="all-tests" basedir="." default="all-tests">
 
   <!-- 
-        
+
     Run all defined tests.
-        
+
+	Optional parameters:
+
+		test.skip-setup:	if set (to any value) skip setup target (useful ad-hoc when not
+							required by some tests to shorcut execution)
   -->
-  
-  
+
+	<property name="tmp.dir" location="tmp"/>
+
   <fail message="Please don't define the 'domain' property since it interferes with some of the tests." if="domain"/>
 
 
-  <target name="all-tests" depends="backup-device,backup-domains,checkpoints,host-alias,import,lbg,restore,upload">
+	<target name="all-tests" depends="backup-device,backup-domains,checkpoints,host-alias,import,lbg,restore,upload,object-status">
+		<!--
+  			NOTE: some test cases are NOT included in all-tests for various reasons, namely:
 
-    <echo>*** All tests have been successfully run.</echo>
+  				reboot: not included because device reboot may surprise people when running unit tests
+  				secure-backup-device: currently fails with little explanation (probably just needs some tlc)
 
-  </target>
+  			These should all be validated prior to delivering changes.
+		-->
+		<echo>*** All tests have been successfully run.</echo>
+	</target>
 
+	<target name="-init">
+		<delete dir="tmp"/>
+		<mkdir dir="tmp"/>
+	</target>
 
+  <target name="setup" depends="-init" unless="test.skip-setup">
 
-
-  <target name="setup">
-    
     <!--
       Ensure the target domain starts out fresh by deleting and recreating it.
     -->
@@ -32,38 +45,45 @@
   </target>
 
 
-  <target name="backup-device" depends="setup" description="Backup a device, both regular and secure">
+  <target name="backup-device" depends="setup" description="Backup a device">
     
     <ant antfile="../deploy.ant.xml" target="backup-device">
       <property name="domain" value="dcm-test"/>
-      <property name="device.backup.file" location="../tmp/xi52a.zip"/>
+      <property name="device.backup.file" location="${tmp.dir}/xi52a.zip"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="certificate-from-def">
       <property name="domain" value="default"/>
       <property name="cert.file" location="secure-backup-cert.dcm.xml"/>
     </ant>
-    
-    <ant antfile="../deploy.ant.xml" target="secure-backup-device">
-      <property name="domain" value="default"/>
-      <property name="secure.backup.remote" value="temporary:///"/>
-      <property name="secure.backup.objname" value="secureBackupCert"/>
-    </ant>
-    
   </target>
+
+	<!-- 
+		TODO: fix this and and add to all-tests (it currently fails with little explanation)
+	-->
+	  <target name="secure-backup-device" depends="setup" description="Secure backup a device">	    
+	    <ant antfile="../deploy.ant.xml" target="certificate-from-def">
+	      <property name="domain" value="default"/>
+	      <property name="cert.file" location="secure-backup-cert.dcm.xml"/>
+	    </ant>
+	    <ant antfile="../deploy.ant.xml" target="secure-backup-device">
+	      <property name="domain" value="default"/>
+	      <property name="secure.backup.remote" value="temporary:///"/>
+	      <property name="secure.backup.objname" value="secureBackupCert"/>
+	    </ant>
+	  </target>
   
-  
-  <target name="backup-domains" description="Backup domains">
+  <target name="backup-domains" depends="-init" description="Backup domains">
     
     <ant antfile="../deploy.ant.xml" target="backup-domains">
       <property name="domain" value="default"/>
-      <property name="backup.file" location="../tmp/backup-domains-default.zip"/>
+      <property name="backup.file" location="${tmp.dir}/backup-domains-default.zip"/>
       <property name="saveIfNeeded" value="true"/>
     </ant>
     
     <ant antfile="../deploy.ant.xml" target="backup-domains">
       <property name="domain" value="dcm-test"/>
-      <property name="backup.file" location="../tmp/backup-domains-testAndDefault.zip"/>
+      <property name="backup.file" location="${tmp.dir}/backup-domains-testAndDefault.zip"/>
       <property name="domains" value="default"/>
     </ant>
     
@@ -98,7 +118,7 @@
   </target>
   
   
-  <target name="host-alias" depends="" description="Host aliases">
+  <target name="host-alias" depends="-init" description="Host aliases">
     
     <ant antfile="../deploy.ant.xml" target="host-alias-set">
       <property name="domain" value="dcm-test"/>
@@ -189,7 +209,14 @@
     
   </target>
   
-  
+	<target name="object-status" depends="setup" description="Object Status">
+		<!-- TODO: add negative test cases; this is only positive -->
+		<ant antfile="../deploy.ant.xml" target="object-status">
+			<property name="domain" value="dcm-test"/>
+			<property name="object-status.file" location="object-status.dcm.xml"/>
+		</ant>
+	</target>
+
   <target name="quiesce" depends="setup" description="Quiesce/unquiesce domain, service">
     
     <ant antfile="../deploy.ant.xml" target="domain-quiesce">
@@ -232,10 +259,15 @@
       <property name="domain" value="dcm-test"/>
       <property name="backup.file" location="backup-domains-testAndDefault.zip"/>
     </ant>
-    
+
   </target>
-  
-  
+
+	<target name="reboot" description="Reboot the device">
+		<ant antfile="../deploy.ant.xml" target="reboot">
+			<property name="reboot.mode" value="reboot"/>
+		</ant>
+	</target>
+
   <target name="upload" depends="" description="Upload files and directories">
     
     <ant antfile="../deploy.ant.xml" target="upload-from-def">
@@ -272,26 +304,23 @@
   </target>
   
   
-  <target name="unit-test-remove-unwanted" depends="" description="unit test the remove-unwanted-elements.xsl stylesheet">
+  <target name="unit-test-remove-unwanted" depends="-init" description="unit test the remove-unwanted-elements.xsl stylesheet">
     
-    <delete dir="tmp"/>
-    <mkdir dir="tmp"/>
-    
-    <xslt in="testdata/remove-unwanted.xml" out="tmp/remove-unwanted-processed-1.xml" style="../src/remove-unwanted-elements.xsl">
+    <xslt in="testdata/remove-unwanted.xml" out="${tmp.dir}/remove-unwanted-processed-1.xml" style="../src/remove-unwanted-elements.xsl">
       <factory name="org.apache.xalan.processor.TransformerFactoryImpl">
         <attribute name="http://xml.apache.org/xalan/features/optimize" value="true"/>
       </factory>
       <param name="param1" expression="qa"/>
     </xslt>
     
-    <xslt in="testdata/remove-unwanted.xml" out="tmp/remove-unwanted-processed-2.xml" style="../src/remove-unwanted-elements.xsl">
+    <xslt in="testdata/remove-unwanted.xml" out="${tmp.dir}/remove-unwanted-processed-2.xml" style="../src/remove-unwanted-elements.xsl">
       <factory name="org.apache.xalan.processor.TransformerFactoryImpl">
         <attribute name="http://xml.apache.org/xalan/features/optimize" value="true"/>
       </factory>
       <param name="param2" expression="prod2"/>
     </xslt>
 
-    <xslt in="testdata/remove-unwanted.xml" out="tmp/remove-unwanted-processed-3.xml" style="../src/remove-unwanted-elements.xsl">
+    <xslt in="testdata/remove-unwanted.xml" out="${tmp.dir}/remove-unwanted-processed-3.xml" style="../src/remove-unwanted-elements.xsl">
       <factory name="org.apache.xalan.processor.TransformerFactoryImpl">
         <attribute name="http://xml.apache.org/xalan/features/optimize" value="true"/>
       </factory>
@@ -299,7 +328,7 @@
       <param name="param2" expression="dev2"/>
     </xslt>
     
-    <xslt in="testdata/remove-unwanted.xml" out="tmp/remove-unwanted-processed-4.xml" style="../src/remove-unwanted-elements.xsl">
+    <xslt in="testdata/remove-unwanted.xml" out="${tmp.dir}/remove-unwanted-processed-4.xml" style="../src/remove-unwanted-elements.xsl">
       <factory name="org.apache.xalan.processor.TransformerFactoryImpl">
         <attribute name="http://xml.apache.org/xalan/features/optimize" value="true"/>
       </factory>

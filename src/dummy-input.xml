@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dummy-input>
+	<!-- This file exists purely to provide nxslt some input when we don't really 
+		need any because the XSLT us purely of the "push" variety -->
+</dummy-input>
