@@ -140,6 +140,71 @@
     </sequential>
   </macrodef>
 
+	  <!--
+	    Export the specified objects (name and class) in a ZIP format.
+	    
+	    Required parameters:
+	      host - hostname or IP address of DataPower device
+	      uid - userid
+	      pwd - password
+	      local - filename for ZIP file created by this operation
+	      objects - target objects to be exported
+
+	    Optional parameters:
+	      port - XML Management Interface port on device (defaults to 5550)
+	      ignore-errors - defaults to false
+	      refobjs - Include referenced objects? defaults to true
+	      reffiles - Include referenced files? defaults to true 
+	    
+	  -->
+		<macrodef name="exportObjects">
+	    <attribute name="domain"/>
+	    <attribute name="host"/>
+	    <attribute name="local"/>
+	    <attribute name="port" default="5550"/>
+	    <attribute name="uid"/>
+	    <attribute name="pwd"/>
+	    <attribute name="dumpinput" default="false"/>
+	    <attribute name="dumpoutput" default="false"/>
+	    <attribute name="capturesoma" default=""/>
+	    <attribute name="ignore-errors" default="false"/>
+	  	
+	    <attribute name="objects"/>
+	    <attribute name="refobjs"  default="true"/>
+	    <attribute name="reffiles" default="true"/>
+	  	
+	    <sequential>
+	      <local name="export_success"/>
+	      <local name="export_response"/>
+	    	
+	      <!-- Export the specified object based on the options given. -->
+	      <wdp operation="Export" successprop="export_success" responseprop="export_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
+	          <objects>@{objects}</objects>
+	          <local>@{local}</local>
+	          <hostname>@{host}</hostname>
+	          <port>@{port}</port>
+	          <uid>@{uid}</uid>
+	          <pwd>@{pwd}</pwd>
+	          <ignore-errors>@{ignore-errors}</ignore-errors>
+	          <domain>@{domain}</domain>
+	      </wdp>
+	      
+	      <if>
+	        <equals arg1="${export_success}" arg2="true"/>
+	        <then>
+	          <echo>Exported object @{objname} into @{local} where</echo>
+	          <echo>class=@{objclass} ref-objects=@{refobjs} ref-files=@{reffiles} domain=@{domain} hostname=@{host}.</echo>
+	        </then>
+	        <else>
+	          <echo>Raw response for export: ${export_response}</echo>
+	          <fail message="Failed to export object @{objname} of class=@{objclass} from domain @{domain} on @{host}."/>
+	        </else>
+	      </if>
+	        	
+	    </sequential>
+	  </macrodef>
+
+	
   <!--
     
     Backup some set of domains in a ZIP format.  Backups up the domain=Xxxx domain plus

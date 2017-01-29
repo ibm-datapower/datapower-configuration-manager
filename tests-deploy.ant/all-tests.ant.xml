@@ -16,7 +16,7 @@
   <fail message="Please don't define the 'domain' property since it interferes with some of the tests." if="domain"/>
 
 
-	<target name="all-tests" depends="backup-device,backup-domains,checkpoints,host-alias,import,lbg,restore,upload,object-status">
+	<target name="all-tests" depends="backup-device,backup-domains,checkpoints,host-alias,import,lbg,restore,upload,object-status,export-objects">
 		<!--
   			NOTE: some test cases are NOT included in all-tests for various reasons, namely:
 
@@ -29,8 +29,8 @@
 	</target>
 
 	<target name="-init">
-		<delete dir="tmp"/>
-		<mkdir dir="tmp"/>
+		<delete dir="${tmp.dir}"/>
+		<mkdir dir="${tmp.dir}"/>
 	</target>
 
   <target name="setup" depends="-init" unless="test.skip-setup">
@@ -214,6 +214,15 @@
 		<ant antfile="../deploy.ant.xml" target="object-status">
 			<property name="domain" value="dcm-test"/>
 			<property name="object-status.file" location="object-status.dcm.xml"/>
+		</ant>
+	</target>
+
+	<target name="export-objects" depends="setup" description="Export Objects">
+		<!-- TODO: add negative test cases; this is only positive -->
+		<ant antfile="../deploy.ant.xml" target="export-objects">
+			<property name="domain" value="dcm-test"/>
+			<property name="export-manifest.file" location="export-objects.dcm.xml"/>
+			<property name="export.file" location="${tmp.dir}/export-objects.zip"/>
 		</ant>
 	</target>
 

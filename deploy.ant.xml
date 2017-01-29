@@ -41,6 +41,7 @@
   domain-unquiesce - unquiesce all the services in the domain
   
   export-object - export an object i.e. service
+  export-objects - export objects based on a dcm:definition file
   
   host-alias-remove - remove a specific host alias
   host-alias-set - create/overwrite a host alias
@@ -656,7 +657,48 @@
       objclass="${object.class}" objname="${object.name}" refobjs="${ref.objects}" reffiles="${ref.files}" />
     
   </target>
-  
+
+	  <!--
+	      Export objects based on a dcm:definition file.
+	  -->
+	  <target name="export-objects" depends="-init-dir, check-access">
+	    
+	    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+	    <fail message="The Ant property 'export-manifest.file' is required but not defined.  This is the required export-manifest dcm:definition file." unless="export-manifest.file"/>
+	    <fail message="The Ant property 'export.file' is required but not defined.  This is the filename where the backup will be written." unless="export.file"/>
+	    
+	    <property name="ref.objects" value="true"/> <!-- provide defaults if not specified by user -->
+	    <property name="ref.files" value="true"/>
+	    
+	    <sequential>
+	      <local name="dirname"/>
+	      <dirname property="dirname" file="${export.file}"/>
+	      <if>
+	        <not>
+	          <isfileselected file="${dirname}">
+	            <writable/>
+	          </isfileselected>
+	        </not>
+	        <then>
+	          <fail message="No permission to write ${export.file} into folder ${dirname}"/>
+	        </then>
+	      </if>
+	    	
+			<!-- Generate a SOMA export objects request xml-->
+			<nxslt infile="${export-manifest.file}" outprop="tmp" xsl="${dcm.dir}/src/export-objects-request.xsl">
+				<param xsl="domain" ant="${domain}"/>
+			</nxslt>
+
+	    	<!-- Log results to console -->
+			<echo message="${tmp}" />
+
+	    	<exportObjects host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" local="${export.file}" 
+		      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}" 
+		      objects="${tmp}" refobjs="${ref.objects}" reffiles="${ref.files}" />
+
+	    </sequential>
+	    	    
+	  </target>
 	
 	<!--
     Rollback to the previous firmware (and filesystem contents!).
