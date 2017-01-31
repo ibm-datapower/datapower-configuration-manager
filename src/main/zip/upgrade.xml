@@ -204,7 +204,7 @@
     <migrate-command  name="Crypto Identity Credential from Definition"/>
     <migrate-command  name="Crypto Validation Credential from Definition"/>
     <migrate-command  name="Delete Domain"/>
-    <migrate-command  name="Download Files"/>
+    <migrate-command  name="Export Object"/>
     <migrate-command  name="Host Alias Remove"/>
     <migrate-command  name="Host Alias Set"/>
     <migrate-command  name="Import (Basic)"/>
