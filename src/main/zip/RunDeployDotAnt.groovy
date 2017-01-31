@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 IBM Corp.
+ * Copyright 2015, 2017 IBM Corp.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
- 
+
 import com.urbancode.air.AirPluginTool
 import com.urbancode.air.CommandHelper
 
-try 
+try
 {
   def apTool = new AirPluginTool(args[0], args[1])
   def props = apTool.getStepProperties()
@@ -56,16 +56,29 @@ try
   def dcmDir = ch.getProcessBuilder().environment().get('PLUGIN_HOME') + '/dcm'
   def anthome = dcmDir + '/apache-ant-1.9.7/'
   ch.addEnvironmentVariable('ANT_HOME', anthome)
-  
+
+  // Get ANT_OPTS environment variable
+  def envVars = System.getenv()
+  def antOpts = envVars['ANT_OPTS']?:""
+
+  // Add -Xmx###m if specified
+  def memorySize = props['memorySize']
+  if (memorySize != "default") {
+      antOpts = antOpts.trim() ? antOpts.trim() + " " : ""
+      antOpts += memorySize
+      println "[Ok] Setting Java Max Memory Size as '${memorySize}'."
+  }
+  ch.addEnvironmentVariable('ANT_OPTS', antOpts)
+
   // Construct the initial set of arguments for the ant command.
   def isWindows = (System.getProperty('os.name') =~ /(?i)windows/).find()
   def antexe = isWindows ? "ant.bat" : "ant"
-  def antargs = [anthome + "bin/" + antexe, 
-                 '-f', dcmDir + '/deploy.ant.xml', 
-                 '-Ddcm.dir=' + dcmDir, 
-                 '-Dhost=' + props['hostname'], 
-                 '-Dport=' + props['portXMI'], 
-                 '-Duid=' + props['uid'], 
+  def antargs = [anthome + "bin/" + antexe,
+                 '-f', dcmDir + '/deploy.ant.xml',
+                 '-Ddcm.dir=' + dcmDir,
+                 '-Dhost=' + props['hostname'],
+                 '-Dport=' + props['portXMI'],
+                 '-Duid=' + props['uid'],
                  '-Dpwd=' + props['pwd'],
                  '-Dwork.dir=' + ch.getProcessBuilder().directory().getAbsolutePath() + '/tmp']
 
@@ -99,7 +112,7 @@ try
       println '### arg[' + i + ']=' + arg
     }
     // Check the argument for occurrences of every property.
-    props.each{ 
+    props.each{
       it.toString().find('([^=]+)=(.*)') { match, propname, propvalue ->
         // The property=value has been split into propname and propvalue.
         if (debug) {
@@ -124,10 +137,9 @@ try
       }
     }
   }
+
   ch.runCommand(antargs.join(' '), antargs)
 } catch (e) {
   println e
   System.exit 1
 }
-
-

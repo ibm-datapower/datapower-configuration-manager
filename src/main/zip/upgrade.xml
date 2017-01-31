@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright 2014, 2015 IBM Corp.
+ * Copyright 2014, 2017 IBM Corp.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 <plugin-upgrade
         xmlns="http://www.urbancode.com/UpgradeXMLSchema_v1"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  
+
   <migrate to-version="2">
     <migrate-command  name="Backup Device"/>
     <migrate-command  name="Backup Domains"/>
@@ -41,7 +41,7 @@
     <migrate-command  name="Unquiesce Domain"/>
     <migrate-command  name="Upload Directory"/>
   </migrate>
-  
+
   <migrate to-version="3">
     <migrate-command  name="Backup Device"/>
     <migrate-command  name="Backup Domains"/>
@@ -63,7 +63,7 @@
     <migrate-command  name="Unquiesce Domain"/>
     <migrate-command  name="Upload Directory"/>
   </migrate>
-  
+
   <migrate to-version="4">
     <migrate-command  name="Backup Device"/>
     <migrate-command  name="Backup Domains"/>
@@ -87,7 +87,7 @@
     <migrate-command  name="Unquiesce Domain"/>
     <migrate-command  name="Upload Directory"/>
   </migrate>
-  
+
   <migrate to-version="5">
     <migrate-command  name="Backup Device"/>
     <migrate-command  name="Backup Domains"/>
@@ -112,7 +112,7 @@
     <migrate-command  name="Unquiesce Domain"/>
     <migrate-command  name="Upload Directory"/>
   </migrate>
-  
+
   <migrate to-version="6">
     <migrate-command  name="Backup Device"/>
     <migrate-command  name="Backup Domains"/>
@@ -139,7 +139,7 @@
     <migrate-command  name="Upload Directory"/>
     <migrate-command  name="Upload From Definition"/>
   </migrate>
-  
+
   <migrate to-version="7">
     <migrate-command  name="Backup Device"/>
     <migrate-command  name="Backup Domains"/>
@@ -166,7 +166,7 @@
     <migrate-command  name="Upload Directory"/>
     <migrate-command  name="Upload From Definition"/>
   </migrate>
-  
+
   <migrate to-version="8">
     <migrate-command  name="Backup Device"/>
     <migrate-command  name="Backup Domains"/>
@@ -193,7 +193,7 @@
     <migrate-command  name="Upload Directory"/>
     <migrate-command  name="Upload From Definition"/>
   </migrate>
- 
+
   <migrate to-version="9">
     <migrate-command  name="Backup Device"/>
     <migrate-command  name="Backup Domains"/>
@@ -250,5 +250,138 @@
     <migrate-command  name="Upload Directory"/>
     <migrate-command  name="Upload From Definition"/>
   </migrate>
-  
+
+  <migrate to-version="11">
+    <migrate-command  name="Backup Device">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Backup Domains">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Checkpoint Delete">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Checkpoint Restore">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Checkpoint Save">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Create Domain">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Crypto Identity Credential from Definition">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Crypto Validation Credential from Definition">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Delete Domain">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Download Files">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Export Object">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Host Alias Remove">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Host Alias Set">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Import (Basic)">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Import (Definition)">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Import (Deployment Policy Object)">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Invoke any deploy.ant.xml target">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Load Balancer Group from Definition">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Quiesce Domain">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Restart Domain">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Restore Backup">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Save Configuration">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Set Log Level">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Unquiesce Domain">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Upload Directory">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Upload From Definition">
+      <migrate-properties>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+  </migrate>
+
 </plugin-upgrade>
