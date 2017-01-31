@@ -1,0 +1,27 @@
+language: groovy
+rvm:
+- 1.8.8
+before_script:
+- export VERSION=${TRAVIS_TAG}.${TRAVIS_COMMIT:0:7}
+script:
+- ant -Dplugin.version=${VERSION}
+jdk:
+- oraclejdk8
+- oraclejdk7
+- openjdk7
+- openjdk6
+notifications:
+    email:
+        on_success: change
+        on_failure: change
+# deploy:
+#   provider: releases
+#   api_key:
+#     secure: 1234567890987654321
+#   file:
+#       - dist/datapower-v*.zip
+#       - dist/dcm.jar
+#   skip_cleanup: true
+#   on:
+#     tags: true
+#     repo: ibm-datapower/datapower-configuration-manager

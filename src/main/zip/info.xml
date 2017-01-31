@@ -124,8 +124,7 @@
   </meta-html>
 
   <!-- Do not change the release-version, the build process injects it. -->
-  <release-version>11</release-version>
-
+  <release-version>#DEV_VERSION#</release-version>
 
   <release-notes>
     <!--
