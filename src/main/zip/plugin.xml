@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright 2014, 2015 IBM Corp.
+ * Copyright 2014, 2017 IBM Corp.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <header>
-    <identifier version="10" id="com.ibm.datapower" name="DataPower"/>
+    <identifier version="11" id="com.ibm.datapower" name="DataPower"/>
     <description>The IBM WebSphere DataPower plugin deploys DataPower services.</description>
     <tag>Infrastructure/WebSphere DataPower</tag>
   </header>
@@ -49,6 +49,14 @@
       </property>
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
+      </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -103,6 +111,14 @@
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -155,6 +171,14 @@
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -205,6 +229,14 @@
       </property>
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
+      </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -257,6 +289,14 @@
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -304,6 +344,14 @@
       </property>
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
+      </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -354,6 +402,14 @@
       </property>
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
+      </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -406,6 +462,14 @@
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -453,6 +517,14 @@
       </property>
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
+      </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -506,6 +578,14 @@
       </property>
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
+      </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -568,6 +648,14 @@
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -592,9 +680,9 @@
       <arg value="export-object"/>
     </command>
   </step-type>
-  
-  
-  
+
+
+
   <step-type name="Host Alias Remove">
     <description>Remove a host alias</description>
     <properties>
@@ -618,6 +706,14 @@
       </property>
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
+      </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -677,6 +773,14 @@
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -729,6 +833,14 @@
       </property>
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
+      </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -783,6 +895,14 @@
       </property>
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
+      </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -839,6 +959,14 @@
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -894,6 +1022,14 @@
       <property name="portXMI">
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true"/>
       </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -944,6 +1080,14 @@
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -992,6 +1136,14 @@
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -1038,6 +1190,14 @@
       </property>
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
+      </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -1091,6 +1251,14 @@
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -1139,6 +1307,14 @@
       </property>
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
+      </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -1198,6 +1374,14 @@
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -1245,6 +1429,14 @@
       </property>
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
+      </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -1299,6 +1491,14 @@
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -1351,6 +1551,14 @@
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -1372,7 +1580,4 @@
       <arg value="upload-from-def"/>
     </command>
   </step-type>
-
-
-
 </plugin>
