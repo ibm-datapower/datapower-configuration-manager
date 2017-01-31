@@ -51,7 +51,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -112,7 +112,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -172,7 +172,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -231,7 +231,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -290,7 +290,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -346,7 +346,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -404,7 +404,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -463,7 +463,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -519,7 +519,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -580,7 +580,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -649,7 +649,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -708,7 +708,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -774,7 +774,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -835,7 +835,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -897,7 +897,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -960,7 +960,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -1023,7 +1023,7 @@
         <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -1081,7 +1081,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -1137,7 +1137,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -1192,7 +1192,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -1252,7 +1252,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -1309,7 +1309,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -1375,7 +1375,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -1431,7 +1431,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -1492,7 +1492,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
@@ -1552,7 +1552,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
       <property name="memorySize">
-        <property-ui type="selectBox" default-value="" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
           <value label="-Xmx512m">-Xmx512m</value>
