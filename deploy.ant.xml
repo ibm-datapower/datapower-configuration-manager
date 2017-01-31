@@ -41,6 +41,7 @@
   domain-unquiesce - unquiesce all the services in the domain
   
   export-object - export an object i.e. service
+  export-objects - export objects based on a dcm:definition file
   
   host-alias-remove - remove a specific host alias
   host-alias-set - create/overwrite a host alias
@@ -63,7 +64,11 @@
   
   objects-from-def - create, delete, or modify objects based on dcm:object-* elements
 
+  object-status - check the opstate of objects are as required based on a dcm:definition file
+
   raw-mgmt-call - make a raw management (SOMA or AMP etc) call based on raw request file input
+
+  reboot - make an appliance reboot request
 
   save - save the domain
 
@@ -72,7 +77,7 @@
   service-quiesce - quiesce a service
   service-unquiesce -unquiesce a service
   service-status - get the opstate of a service
-
+  
   upload-dir - upload an entire directory
   upload-from-def - upload files specified in dcm:definition/dcm:upload elements
   
@@ -142,6 +147,7 @@
   <property name="dumpinput" value="false"/>
   <property name="dumpoutput" value="false"/>
   <property name="mgmt.method" value="/service/mgmt/current"/>
+  <property name="reboot.mode" value="reboot"/>
 
   <!--
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -651,7 +657,48 @@
       objclass="${object.class}" objname="${object.name}" refobjs="${ref.objects}" reffiles="${ref.files}" />
     
   </target>
-  
+
+	  <!--
+	      Export objects based on a dcm:definition file.
+	  -->
+	  <target name="export-objects" depends="-init-dir, check-access">
+	    
+	    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+	    <fail message="The Ant property 'export-manifest.file' is required but not defined.  This is the required export-manifest dcm:definition file." unless="export-manifest.file"/>
+	    <fail message="The Ant property 'export.file' is required but not defined.  This is the filename where the backup will be written." unless="export.file"/>
+	    
+	    <property name="ref.objects" value="true"/> <!-- provide defaults if not specified by user -->
+	    <property name="ref.files" value="true"/>
+	    
+	    <sequential>
+	      <local name="dirname"/>
+	      <dirname property="dirname" file="${export.file}"/>
+	      <if>
+	        <not>
+	          <isfileselected file="${dirname}">
+	            <writable/>
+	          </isfileselected>
+	        </not>
+	        <then>
+	          <fail message="No permission to write ${export.file} into folder ${dirname}"/>
+	        </then>
+	      </if>
+	    	
+			<!-- Generate a SOMA export objects request xml-->
+			<nxslt infile="${export-manifest.file}" outprop="tmp" xsl="${dcm.dir}/src/export-objects-request.xsl">
+				<param xsl="domain" ant="${domain}"/>
+			</nxslt>
+
+	    	<!-- Log results to console -->
+			<echo message="${tmp}" />
+
+	    	<exportObjects host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" local="${export.file}" 
+		      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}" 
+		      objects="${tmp}" refobjs="${ref.objects}" reffiles="${ref.files}" />
+
+	    </sequential>
+	    	    
+	  </target>
 	
 	<!--
     Rollback to the previous firmware (and filesystem contents!).
@@ -1093,7 +1140,98 @@
     
   </target>
   
+	<!--
+		Check the opstate of objects are as required based on a dcm:definition file.
+	-->
+	<target name="object-status" depends="-init-dir, check-access">
+
+		<!-- Validate input parameters -->
+		<fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+		<fail message="The Ant property 'object-status.file' is required but not defined.  This is the file containing the dcm:definition/dcm:object-state-manifest definition(s)." unless="object-status.file"/>
+		<if>
+			<not>
+				<available file="${object-status.file}"/>
+			</not>
+			<then>
+				<fail message="Unable to see the file containing the object definitions : ${object-status.file}"/>
+			</then>
+		</if>
+
+		<sequential>
+
+			<!-- Generate a SOMA object status request xml file -->
+			<property name="object-status-request" value="${work.dir}/object-status-request.xml"/>
+			<nxslt infile="${dcm.dir}/src/dummy-input.xml" outfile="${object-status-request}" xsl="${dcm.dir}/src/object-status-request.xsl">
+				<param xsl="domain" ant="${domain}"/>
+			</nxslt>
+
+			<!-- Do SOMA object status request call -->
+			<property name="object-status-response" value="${work.dir}/object-status-response.xml"/>
+			<rawMgmtCall host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" request="${object-status-request}"
+					response="${object-status-response}" method="${mgmt.method}"/>
+
+			<!-- Process SOMA object status response, cross-checking against required object states, capturing results in tmp property -->
+			<local name="tmp"/>
+			<nxslt infile="${object-status-response}" outprop="tmp" xsl="${dcm.dir}/src/object-status-response.xsl">
+				<param xsl="manifest-file" ant="${object-status.file}"/>
+			</nxslt>
+
+			<!-- Log results to console -->
+			<echo message="${tmp}" />
+
+			<!-- Fail build if any object staus checks failed -->
+			<if>
+			    <contains string="${tmp}" substring="[FAIL]" />
+			    <then>
+					<fail message="Object status check(s) failed (see above output for details)"/>
+			    </then>
+			</if>
+		</sequential>
+
+	</target>
   
+	<!--
+		Reboot appliance request.
+	-->
+	<target name="reboot" depends="-init-dir, check-access">
+
+		<!-- Validate input parameters -->
+		<fail message="The Ant property 'reboot.mode' is required but not defined. Valid options are 'reboot' or 'reload'. The default is 'reboot'." unless="reboot.mode"/>
+
+		<!-- NB: always prefer to use the OLDEST AMP version (1.0) to provide greatest 
+			backwards compatibility with older firmware versions unless there is a good 
+			reason not to -->
+
+		<!-- Generate an AMP reset request xml file -->
+		<local name="tmp"/>
+		<property name="reboot-request" value="${work.dir}/reboot-request.xml"/>
+		<nxslt infile="${dcm.dir}/src/dummy-input.xml" outfile="${reboot-request}" xsl="${dcm.dir}/src/reboot-request.xsl">
+			<param xsl="mode" ant="reboot.mode"/>
+		</nxslt>
+
+		<!-- Do AMP reboot request -->
+		<property name="reboot-response" value="${work.dir}/reboot-response.xml"/>
+		<rawMgmtCall host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" request="${reboot-request}"
+				response="${reboot-response}" method="/service/mgmt/amp/1.0"/>
+
+		<!-- Process AMP reboot response extracting status for the record -->
+		<local name="tmp"/>
+		<nxslt infile="${reboot-response}" outprop="tmp" xsl="${dcm.dir}/src/reboot-response.xsl">
+		</nxslt>
+
+		<!-- Log results to console -->
+		<echo message="${tmp}" />
+
+		<!-- Fail build if there was a problem -->
+		<if>
+		    <contains string="${tmp}" substring="[FAIL]" />
+		    <then>
+				<fail message="Reboot failed (see above output for details)"/>
+		    </then>
+		</if>
+
+	</target>
+	
   <!--
     Restore domains from a device or multiple-domains backup.
   -->

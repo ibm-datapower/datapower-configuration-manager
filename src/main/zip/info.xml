@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 /**
- * Copyright 2014, 2016 IBM Corp.
+ * Copyright 2014, 2017 IBM Corp.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -139,6 +139,11 @@
     <release-note plugin-version="8"> Move xalan to apache-ant/lib, use current version of ant (1.9.7). </release-note>
     <release-note plugin-version="9"> Export Object </release-note>
     <release-note plugin-version="10"> Download Files </release-note>
-    
+    <release-note plugin-version="11">
+        New functionality added to all steps:
+            - The ANT_OPTS varaible is applied to all commands.
+            - Specify the hidden Java Max Memory Size variable to increase the Ant commands JVM size.
+    </release-note>
+
   </release-notes>
 </pluginInfo>

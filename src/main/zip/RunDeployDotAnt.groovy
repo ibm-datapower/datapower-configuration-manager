@@ -1,5 +1,5 @@
 /**
- * Copyright 2015, 2016 IBM Corp.
+ * Copyright 2015, 2017 IBM Corp.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,6 +56,19 @@ try
   def dcmDir = ch.getProcessBuilder().environment().get('PLUGIN_HOME') + '/dcm'
   def anthome = dcmDir + '/apache-ant-1.9.7/'
   ch.addEnvironmentVariable('ANT_HOME', anthome)
+
+  // Get ANT_OPTS environment variable
+  def envVars = System.getenv()
+  def antOpts = envVars['ANT_OPTS']?:""
+
+  // Add -Xmx###m if specified
+  def memorySize = props['memorySize']
+  if (memorySize != "default") {
+      antOpts = antOpts.trim() ? antOpts.trim() + " " : ""
+      antOpts += memorySize
+      println "[Ok] Setting Java Max Memory Size as '${memorySize}'."
+  }
+  ch.addEnvironmentVariable('ANT_OPTS', antOpts)
 
   // Construct the initial set of arguments for the ant command.
   def isWindows = (System.getProperty('os.name') =~ /(?i)windows/).find()
@@ -124,6 +137,7 @@ try
       }
     }
   }
+
   ch.runCommand(antargs.join(' '), antargs)
 } catch (e) {
   println e
