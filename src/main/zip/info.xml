@@ -30,7 +30,7 @@
   <author name="IBM">
     <organization>IBM</organization>
     <email>ucplugin@us.ibm.com</email>
-    <website>https://www.ibmdw.net/urbancode/plugins/</website>
+    <website>https://developer.ibm.com/urbancode/plugins/</website>
     <bio/>
   </author>
 
@@ -141,8 +141,12 @@
     <release-note plugin-version="10"> Download Files </release-note>
     <release-note plugin-version="11">
         New functionality added to all steps:
-            - The ANT_OPTS varaible is applied to all commands.
+            - The ANT_OPTS variable is applied to all commands.
             - Specify the hidden Java Max Memory Size variable to increase the Ant commands JVM size.
+    </release-note>
+    <release-note plugin-version="12">
+        New functionality added to all steps:
+            - The hidden Java Max Memory Size variable has new -Xmx4096m, ${p?:environment/memorySize, and ${p?:resource/memorySize} options.
     </release-note>
 
   </release-notes>
