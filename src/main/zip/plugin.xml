@@ -19,7 +19,7 @@
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <header>
-    <identifier version="11" id="com.ibm.datapower" name="DataPower"/>
+    <identifier version="12" id="com.ibm.datapower" name="DataPower"/>
     <description>The IBM WebSphere DataPower plugin deploys DataPower services.</description>
     <tag>Infrastructure/WebSphere DataPower</tag>
   </header>
@@ -57,6 +57,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -118,6 +121,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -178,6 +184,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -237,6 +246,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -296,6 +308,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -352,6 +367,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -410,6 +428,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -469,6 +490,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -525,6 +549,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -586,6 +613,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -655,6 +685,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -714,6 +747,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -780,6 +816,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -841,6 +880,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -903,6 +945,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -966,6 +1011,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -1029,6 +1077,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -1087,6 +1138,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -1143,6 +1197,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -1198,6 +1255,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -1258,6 +1318,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -1315,6 +1378,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -1381,6 +1447,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -1437,6 +1506,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -1498,6 +1570,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -1558,6 +1633,9 @@
           <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
     </properties>
     <post-processing><![CDATA[
