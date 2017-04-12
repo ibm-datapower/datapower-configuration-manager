@@ -516,4 +516,22 @@
       </migrate-properties>
     </migrate-command>
   </migrate>
+
+  <migrate to-version="13">
+    <migrate-command  name="Import (Basic)">
+      <migrate-properties>
+        <migrate-property name="ignoreError" default=""/>
+      </migrate-properties>
+    </migrate-command>
+    <migrate-command  name="Import (Definition)">
+      <migrate-properties>
+        <migrate-property name="ignoreError" default=""/>
+      </migrate-properties>
+    </migrate-command>
+      <migrate-command  name="Import (Deployment Policy Object)">
+        <migrate-properties>
+          <migrate-property name="ignoreError" default=""/>
+        </migrate-properties>
+      </migrate-command>
+  </migrate>
 </plugin-upgrade>

@@ -148,6 +148,10 @@
         New functionality added to all steps:
             - The hidden Java Max Memory Size variable has new -Xmx4096m, ${p?:environment/memorySize}, and ${p?:resource/memorySize} options.
     </release-note>
+    <release-note plugin-version="13">
+        New functionality added to the Import (Basic), Import (Definition), and Import (Deployment Policy Object) steps:
+            - The hidden Import Error Regex variable can be utilized to ignore SOMA error responses.
+    </release-note>
 
   </release-notes>
 </pluginInfo>
