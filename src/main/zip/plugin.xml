@@ -19,7 +19,7 @@
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <header>
-    <identifier version="12" id="com.ibm.datapower" name="DataPower"/>
+    <identifier version="13" id="com.ibm.datapower" name="DataPower"/>
     <description>The IBM WebSphere DataPower plugin deploys DataPower services.</description>
     <tag>Infrastructure/WebSphere DataPower</tag>
   </header>
@@ -884,6 +884,9 @@
           <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
           <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
       </property>
+      <property name="ignoreError">
+        <property-ui type="textBox" default-value="" label="Import Error Regex" description="Specify regex that defines import error(s) to ignore on completion." hidden="true"/>
+      </property>
     </properties>
     <post-processing><![CDATA[
     if (properties.get("exitCode") != 0) {
@@ -948,6 +951,9 @@
           <value label="-Xmx4096m">-Xmx4096m</value>
           <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
           <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
+      </property>
+      <property name="ignoreError">
+        <property-ui type="textBox" default-value="" label="Import Error Regex" description="Specify regex that defines import error(s) to ignore on completion." hidden="true"/>
       </property>
     </properties>
     <post-processing><![CDATA[
@@ -1014,6 +1020,9 @@
           <value label="-Xmx4096m">-Xmx4096m</value>
           <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
           <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
+      </property>
+      <property name="ignoreError">
+        <property-ui type="textBox" default-value="" label="Import Error Regex" description="Specify regex that defines import error(s) to ignore on completion." hidden="true"/>
       </property>
     </properties>
     <post-processing><![CDATA[

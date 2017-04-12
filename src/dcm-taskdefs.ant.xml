@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
    Copyright 2014, 2015 IBM Corp.
-  
+
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
-  
+
    http://www.apache.org/licenses/LICENSE-2.0
-  
+
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,25 +27,25 @@
   <taskdef name="wdp" classname="com.ibm.dcm.taskWdp" classpath="${dcm.jar}"/>
   <taskdef name="xpath" classname="com.ibm.dcm.taskXpath" classpath="${dcm.jar}"/>
   <taskdef name="forxpath" classname="com.ibm.dcm.taskForXpath" classpath="${dcm.jar}"/>
-  
+
 
 
   <!--
-    
+
     Backup all of the domains on the device in a ZIP format.  Note that this is not
     a secure backup that includes keys/certs.  This is functionally just BackupDomains
     with a list of all the domains on the appliance.
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       uid - userid
       pwd - password
       local - filename for ZIP file created by this operation
-      
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="backupDevice">
     <attribute name="local"/>
@@ -57,7 +57,7 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <wdp operation="BackupDevice" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <local>@{local}</local>
@@ -68,27 +68,27 @@
         <ignore-errors>@{ignore-errors}</ignore-errors>
       </wdp>
     </sequential>
-    
+
   </macrodef>
-  
+
   <!--
     Export the specified object (name and class) in a ZIP format.
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       uid - userid
       pwd - password
       local - filename for ZIP file created by this operation
       objname - target object's name to be exported
-      objclass - target object's class 
-      
-      
+      objclass - target object's class
+
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors - defaults to false
       refobjs - Include referenced objects? defaults to true
-      reffiles - Include referenced files? defaults to true 
-    
+      reffiles - Include referenced files? defaults to true
+
   -->
 	<macrodef name="exportObject">
     <attribute name="domain"/>
@@ -101,16 +101,16 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-  	
+
     <attribute name="objclass"/>
     <attribute name="objname" />
     <attribute name="refobjs"  default="true"/>
     <attribute name="reffiles" default="true"/>
-  	
+
     <sequential>
       <local name="export_success"/>
       <local name="export_response"/>
-    	
+
       <!-- Export the specified object based on the options given. -->
       <wdp operation="Export" successprop="export_success" responseprop="export_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
           <objects xmlns:soma="http://www.datapower.com/schemas/management">
@@ -124,7 +124,7 @@
           <ignore-errors>@{ignore-errors}</ignore-errors>
           <domain>@{domain}</domain>
       </wdp>
-      
+
       <if>
         <equals arg1="${export_success}" arg2="true"/>
         <then>
@@ -136,13 +136,13 @@
           <fail message="Failed to export object @{objname} of class=@{objclass} from domain @{domain} on @{host}."/>
         </else>
       </if>
-        	
+
     </sequential>
   </macrodef>
 
 	  <!--
 	    Export the specified objects (name and class) in a ZIP format.
-	    
+
 	    Required parameters:
 	      host - hostname or IP address of DataPower device
 	      uid - userid
@@ -154,8 +154,8 @@
 	      port - XML Management Interface port on device (defaults to 5550)
 	      ignore-errors - defaults to false
 	      refobjs - Include referenced objects? defaults to true
-	      reffiles - Include referenced files? defaults to true 
-	    
+	      reffiles - Include referenced files? defaults to true
+
 	  -->
 		<macrodef name="exportObjects">
 	    <attribute name="domain"/>
@@ -168,15 +168,15 @@
 	    <attribute name="dumpoutput" default="false"/>
 	    <attribute name="capturesoma" default=""/>
 	    <attribute name="ignore-errors" default="false"/>
-	  	
+
 	    <attribute name="objects"/>
 	    <attribute name="refobjs"  default="true"/>
 	    <attribute name="reffiles" default="true"/>
-	  	
+
 	    <sequential>
 	      <local name="export_success"/>
 	      <local name="export_response"/>
-	    	
+
 	      <!-- Export the specified object based on the options given. -->
 	      <wdp operation="Export" successprop="export_success" responseprop="export_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
 	          <objects>@{objects}</objects>
@@ -188,7 +188,7 @@
 	          <ignore-errors>@{ignore-errors}</ignore-errors>
 	          <domain>@{domain}</domain>
 	      </wdp>
-	      
+
 	      <if>
 	        <equals arg1="${export_success}" arg2="true"/>
 	        <then>
@@ -200,27 +200,27 @@
 	          <fail message="Failed to export object @{objname} of class=@{objclass} from domain @{domain} on @{host}."/>
 	        </else>
 	      </if>
-	        	
+
 	    </sequential>
 	  </macrodef>
 
-	
+
   <!--
-    
+
     Backup some set of domains in a ZIP format.  Backups up the domain=Xxxx domain plus
     any additional domains in the blank-separated domains=A B ... property.
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       uid - userid
       pwd - password
       domains - Blank-separated list of domain names
       local - filename for ZIP file created by this operation
-      
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="backupDomains">
     <attribute name="domain"/>  <!-- first domain to backup -->
@@ -235,11 +235,11 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="domainlist"/>
       <local name="combinedNames"/>
-      
+
       <if>
         <equals arg1="@{saveIfNeeded}" arg2="true"/>
         <then>
@@ -260,12 +260,12 @@
           <property name="combinedNames" value=",@{domain},@{domains},"/>
           <forxpath inprop="domainlist" xpath="/status/DomainStatus[SaveNeeded = 'on' and contains(translate('${combinedNames}', ' ', ','), concat(',', string(Domain), ','))]/Domain">
             <sequential>
-              
+
               <saveDomainUnconditionally host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domain="@{forxpath}" ignore-errors="@{ignore-errors}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
-              
+
             </sequential>
           </forxpath>
-          
+
         </then>
       </if>
       <wdp operation="Backup" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
@@ -279,27 +279,27 @@
         <ignore-errors>@{ignore-errors}</ignore-errors>
       </wdp>
     </sequential>
-    
+
   </macrodef>
-  
+
 
   <!--
-    
-    Check for access to a device using some userid/password.  Returns the firmware 
+
+    Check for access to a device using some userid/password.  Returns the firmware
     version (e.g. XI52.4.0.2.5) in an ant property.  On success the ant property
     (${${versionprop}}) is set to the firmware version.  On failure the ant property
     is either empty or not set.
-    
+
     Required parameters:
     host - hostname or IP address of DataPower device
     uid - userid
     pwd - password
     versionprop - name of Ant property to set with the firmware version
-    
+
     Optional parameters:
     port - XML Management Interface port on device (defaults to 5550)
     ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="checkDeviceAccess">
     <attribute name="host"/>
@@ -312,11 +312,11 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="statusDefault"/>
       <local name="statusDomain"/>
-      
+
       <if>
         <not>
           <isset property="versionprop"/>
@@ -355,22 +355,22 @@
         </then>
       </if>
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Ensure that a file containing the preprocessed XML Management Interface schema is available.
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
-    
+
   -->
   <macrodef name="ensureDPSchema">
     <attribute name="host"/>
@@ -386,11 +386,11 @@
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
-    
+
     <sequential>
       <local name="fileSavedSchema"/>
       <local name="fileCreatedSchema"/>
-      
+
       <property name="fileSavedSchema" value="@{schemadir}/${@{versionprop}}.dpschema.xml"/>
       <property name="fileCreatedSchema" value="@{workdir}/${@{versionprop}}.dpschema.xml"/>
 <!--
@@ -404,76 +404,76 @@
       <if>
         <available file="${fileSavedSchema}"/>
         <then>
-          
+
           <!-- Use the dpschema file that the user has saved somewhere. -->
           <property name="@{dpschemaFileVbl}" location="${fileSavedSchema}"/>
           <echo>Using ${fileSavedSchema} for @{host}</echo>
-          
+
         </then>
         <else>
           <if>
             <available file="${fileCreatedSchema}"/>
             <then>
-              
+
               <!-- Use the dpschema file that was created earlier during this run. -->
               <property name="@{dpschemaFileVbl}" location="${fileCreatedSchema}"/>
               <echo>Using previously created schema ${fileCreatedSchema} for @{host}</echo>
-              
+
             </then>
             <else>
-              
+
               <!-- Time to do the heavy lifting of downloading the schema files from the host and generating the dpschema file. -->
-              
+
               <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt.wsdl"     domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
               <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt.xsd"      domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
               <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt-base.xsd" domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
               <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt-ops.xsd"  domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
               <dpdownload dir="@{workdir}" dpdir="store:///" filename="xml-mgmt-b2b.xsd"  domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}" ignoreerror="true"/>
-              
+
               <nxslt infile="@{workdir}/xml-mgmt.wsdl" outfile="@{workdir}/collected.xml" xsl="@{dcmdir}/src/dpschema-collectxml.xsl"/>
               <nxslt infile="@{workdir}/collected.xml" outfile="${fileCreatedSchema}"     xsl="@{dcmdir}/src/dpschema-reformatsoma.xsl"/>
-              
+
               <property name="@{dpschemaFileVbl}" location="${fileCreatedSchema}"/>
-              
+
               <echo>Using newly created schema ${fileCreatedSchema} for @{host}</echo>
-              
+
               <if>
                 <isfileselected file="@{schemadir}">
                   <writable/>
                 </isfileselected>
                 <then>
-                  
+
                   <copy file="${fileCreatedSchema}" tofile="${fileSavedSchema}"/>
-                  
+
                   <echo>Copied the newly created schema into the schema cache (${fileSavedSchema}).</echo>
-                  
+
                 </then>
               </if>
-              
+
             </else>
           </if>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Create a domain, when it does not exist.
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       domain - domain on the device
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="createDomain">
     <attribute name="host"/>
@@ -485,23 +485,23 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="create_okay"/>
       <local name="create_response"/>
       <local name="create_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      
+
       <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
-      
-      <xpath inprop="domainlist" outprop="domain_exists" 
+
+      <xpath inprop="domainlist" outprop="domain_exists"
         xpath="/status/DomainStatus[Domain='@{domain}']"/>
-      
+
       <if>
         <equals arg1="${domain_exists}" arg2=""/>
         <then>
-          
+
           <wdp operation="SetConfig" successprop="create_success" responseprop="create_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="create_okay">
             <config>
@@ -509,7 +509,7 @@
                 <mAdminState>enabled</mAdminState>
                 <NeighborDomain class="Domain">default</NeighborDomain>
                 <ConfigMode>local</ConfigMode>
-              </Domain>  
+              </Domain>
             </config>
             <hostname>@{host}</hostname>
             <port>@{port}</port>
@@ -517,7 +517,7 @@
             <pwd>@{pwd}</pwd>
             <domain>default</domain>
           </wdp>
-          
+
           <if>
             <and>
               <istrue value="${create_success}"/>
@@ -531,32 +531,32 @@
               <fail message="Failed to create domain @{domain} on @{host}."/>
             </else>
           </if>
-          
+
         </then>
         <else>
           <echo>Did not create domain @{domain} on @{host} since it already exists.</echo>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Delete a domain, when it exists.
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       domain - domain on the device
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="deleteDomain">
     <attribute name="host"/>
@@ -568,24 +568,24 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="delete_okay"/>
       <local name="delete_response"/>
       <local name="delete_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      
+
       <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
-      
+
       <xpath inprop="domainlist" outprop="domain_exists" xpath="/status/DomainStatus[Domain='@{domain}']"/>
-      
+
       <if>
         <not>
           <equals arg1="${domain_exists}" arg2=""/>
         </not>
         <then>
-          
+
           <wdp operation="DeleteConfig" successprop="delete_success" responseprop="delete_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="delete_okay">
             <classname>Domain</classname>
@@ -596,7 +596,7 @@
             <pwd>@{pwd}</pwd>
             <domain>default</domain>
           </wdp>
-          
+
           <if>
             <and>
               <istrue value="${delete_success}"/>
@@ -610,32 +610,32 @@
               <fail message="Failed to delete domain @{domain} on @{host}."/>
             </else>
           </if>
-          
+
         </then>
         <else>
           <echo>Did not delete domain @{domain} on @{host} since it does not exist.</echo>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Disable an object.
-    
+
     Required parameters:
     host - hostname or IP address of DataPower device
     domain - domain on the device
     uid - userid
     pwd - password
-    
+
     Optional parameters:
     port - XML Management Interface port on device (defaults to 5550)
     ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="disableObject">
     <attribute name="host"/>
@@ -649,13 +649,13 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="config"/>
       <local name="disable_okay"/>
       <local name="disable_response"/>
       <local name="disable_success"/>
-      
+
       <storexml outprop="config">
         <config>
           &lt;@{objclass} name="@{objname}">
@@ -663,13 +663,13 @@
           &lt;/@{objclass}>
         </config>
       </storexml>
-      
-      <wdp operation="ModifyConfig" domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" 
+
+      <wdp operation="ModifyConfig" domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}"
         successprop="disable_success" responseprop="disable_response" dumpinput="@{dumpoutput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="disable_okay">
         <wrapper>${config}</wrapper>
       </wdp>
-      
+
       <if>
         <and>
           <istrue value="${disable_success}"/>
@@ -683,26 +683,26 @@
           <fail message="Failed to disable object @{objclass}/@{objname} in domain @{domain} on @{host}."/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Disable one or more objects.
-    
+
     Required parameters:
     host - hostname or IP address of DataPower device
     domain - domain on the device
     uid - userid
     pwd - password
-    
+
     Optional parameters:
     port - XML Management Interface port on device (defaults to 5550)
     ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="disableObjects">
     <attribute name="host"/>
@@ -716,27 +716,27 @@
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     <element name="definition" implicit="yes"/>
-    
+
     <sequential>
       <local name="dcmpolicy"/>
       <local name="config"/>
       <local name="disable_okay"/>
       <local name="disable_response"/>
       <local name="disable_success"/>
-      
+
       <!-- Store the dcm:definition (DCM policy) in a property for easy access. -->
       <storexml outprop="dcmpolicy">
         <definition/> <!-- placeholder for dcm:definition provided as content of <disableObjects> -->
       </storexml>
-      
+
       <!--
         Generate <xxx name="yyy"><mAdminState>disabled</mAdminState></xxx> elements for each object.
       -->
       <nxslt inprop="dcmpolicy" outprop="config" xsl="@{dcmdir}/src/enable-disable-objects.xsl">
         <param ant="'disable'" xsl="newState"/>
       </nxslt>
-      
-      <wdp operation="ModifyConfig" 
+
+      <wdp operation="ModifyConfig"
         successprop="disable_success" responseprop="disable_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="disable_okay">
         <domain>@{domain}</domain>
@@ -747,7 +747,7 @@
         <local>@{local}</local>
         <wrapper>${config}</wrapper>
       </wdp>
-      
+
       <if>
         <and>
           <istrue value="${disable_success}"/>
@@ -761,16 +761,16 @@
           <fail message="Failed to disable specified object(s) in domain @{domain} on @{host}."/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
 
 
   <!--
-    
-    Download target files from filestore 
-    
+
+    Download target files from filestore
+
     Required parameters:
       host - hostname or IP address of DataPower device
       domain - name of domain
@@ -779,10 +779,10 @@
       local - target directory in local filesystem
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
-    
+
   -->
   <macrodef name="downloadFiles">
     <attribute name="host"/>
@@ -818,16 +818,16 @@
           </wdp>
         </sequential>
       </forxpath>
-      
+
     </sequential>
-    
+
   </macrodef>
 
-	
+
 	<!--
-    
+
     Download a filestore
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       domain - name of domain
@@ -835,10 +835,10 @@
       local - target directory in local filesystem
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
-    
+
   -->
   <macrodef name="downloadFilestore">
     <attribute name="host"/>
@@ -852,13 +852,13 @@
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
-    
+
     <sequential>
       <echo>Download all files from @{filestore} to @{local}</echo>
-    	
+
       <local name="rawxml"/>
       <local name="tmp"/>
-      
+
       <!--
         Get the complete listing of all the files and directories in the filestore,
         then convert that XML to a more useful form.
@@ -875,13 +875,13 @@
       </wdp>
       <nxslt inprop="rawxml" outprop="tmp" xsl="@{dcmdir}/src/downloadFilestore.xsl"/>
       <!-- <echo>${tmp}</echo> -->
-      
+
       <forxpath inprop="tmp" xpath="/downloadFilestore/directory" propname="dirname">
         <sequential>
           <mkdir dir="@{local}@{dirname}"/>
         </sequential>
       </forxpath>
-      
+
       <forxpath inprop="tmp" xpath="/downloadFilestore/file" propname="filename">
         <sequential>
           <echo>Downloading @{filestore}@{filename} to @{local}@{filename}</echo>
@@ -896,26 +896,26 @@
           </wdp>
         </sequential>
       </forxpath>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
+
 
   <!--
-    
+
     Enable an object.
-    
+
     Required parameters:
     host - hostname or IP address of DataPower device
     domain - domain on the device
     uid - userid
     pwd - password
-    
+
     Optional parameters:
     port - XML Management Interface port on device (defaults to 5550)
     ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="enableObject">
     <attribute name="host"/>
@@ -929,13 +929,13 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="config"/>
       <local name="enable_okay"/>
       <local name="enable_response"/>
       <local name="enable_success"/>
-      
+
       <storexml outprop="config">
         <config>
           &lt;@{objclass} name="@{objname}">
@@ -943,13 +943,13 @@
           &lt;/@{objclass}>
         </config>
       </storexml>
-      
-      <wdp operation="ModifyConfig" domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}" 
+
+      <wdp operation="ModifyConfig" domain="@{domain}" hostname="@{host}" uid="@{uid}" pwd="@{pwd}"
         successprop="enable_success" responseprop="enable_response" dumpinput="@{dumpoutput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="enable_okay">
         <wrapper>${config}</wrapper>
       </wdp>
-      
+
       <if>
         <and>
           <istrue value="${enable_success}"/>
@@ -963,26 +963,26 @@
           <fail message="Failed to enable object @{objclass}/@{objname} in domain @{domain} on @{host}."/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Enable one or more objects.
-    
+
     Required parameters:
     host - hostname or IP address of DataPower device
     domain - domain on the device
     uid - userid
     pwd - password
-    
+
     Optional parameters:
     port - XML Management Interface port on device (defaults to 5550)
     ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="enableObjects">
     <attribute name="host"/>
@@ -996,27 +996,27 @@
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     <element name="definition" implicit="yes"/>
-    
+
     <sequential>
       <local name="dcmpolicy"/>
       <local name="config"/>
       <local name="enable_okay"/>
       <local name="enable_response"/>
       <local name="enable_success"/>
-      
+
       <!-- Store the dcm:definition (DCM policy) in a property for easy access. -->
       <storexml outprop="dcmpolicy">
         <definition/> <!-- placeholder for dcm:definition provided as content of <enableObjects> -->
       </storexml>
-      
+
       <!--
         Generate <xxx name="yyy"><mAdminState>enabled</mAdminState></xxx> elements for each object.
       -->
       <nxslt inprop="dcmpolicy" outprop="config" xsl="@{dcmdir}/src/enable-disable-objects.xsl">
         <param ant="'enable'" xsl="newState"/>
       </nxslt>
-      
-      <wdp operation="ModifyConfig" 
+
+      <wdp operation="ModifyConfig"
         successprop="enable_success" responseprop="enable_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="enable_okay">
         <domain>@{domain}</domain>
@@ -1027,7 +1027,7 @@
         <local>@{local}</local>
         <wrapper>${config}</wrapper>
       </wdp>
-      
+
       <if>
         <and>
           <istrue value="${enable_success}"/>
@@ -1041,26 +1041,26 @@
           <fail message="Failed to enable specified object(s) in domain @{domain} on @{host}."/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Export configuration (as opposed to a domain backup).
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       domain - name of domain
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="exportConfig">
     <attribute name="host"/>
@@ -1079,14 +1079,14 @@
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     <element name="wrapper"/>
-    
+
     <sequential>
       <local name="export_file"/>
       <local name="export_response"/>
       <local name="status"/>
-      
-      <wdp operation="Export" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}" 
-        responseprop="export_response" 
+
+      <wdp operation="Export" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
+        responseprop="export_response"
         xpathprop="export_file" xpath="string(/env:Envelope/env:Body/soma:response/soma:file)">
         <domain>@{domain}</domain>
         <hostname>@{host}</hostname>
@@ -1102,7 +1102,7 @@
         <ignore-errors>@{ignore-errors}</ignore-errors>
         <wrapper/>
       </wdp>
-      
+
       <if>
         <not>
           <equals arg1="${export_file}" arg2=""/>
@@ -1116,12 +1116,12 @@
           <fail message="Failed to export specified object(s) in domain @{domain} on @{host}."/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
     Firmware rollback to previous version.
   -->
@@ -1134,17 +1134,17 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="success-update"/>
-      
+
       <!-- Rollback to previous firmware (and other aspects of file system!). -->
       <wdp operation="FirmwareRollback" successprop="success-update" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <hostname>@{host}</hostname>
         <uid>@{uid}</uid>
         <pwd>@{pwd}</pwd>
       </wdp>
-      
+
       <if>
         <isset property="success-update"/>
         <then>
@@ -1154,9 +1154,9 @@
           <fail message="Failed to rollback the firmware on @{host}"/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
 
 
@@ -1173,21 +1173,21 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="basename-scryptfile"/>
       <local name="dirname-scryptfile"/>
       <local name="success-update"/>
-      
+
       <basename property="basename-scryptfile" file="@{scryptfile}"/>
       <dirname property="dirname-scryptfile" file="@{scryptfile}"/>
-      
+
       <!-- Upload the firmware update file. -->
       <echo>Uploading the firmware update</echo>
       <dpupload dir="${dirname-scryptfile}" target="image:///" domain="default" host="@{host}" port="@{port}" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <include name="${basename-scryptfile}"/>
       </dpupload>
-      
+
       <!-- Update that puppy. -->
       <echo>Applying the firmware update, followed automatically by a reboot of the appliance.  This requires a few minutes to complete.</echo>
       <wdp operation="BootUpdate" successprop="success-update" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
@@ -1196,7 +1196,7 @@
         <uid>@{uid}</uid>
         <pwd>@{pwd}</pwd>
       </wdp>
-      
+
       <if>
         <isset property="success-update"/>
         <then>
@@ -1206,24 +1206,24 @@
           <fail message="Failed to update the firmware on @{host} to @{scryptfile}"/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
 
 
   <!--
-    
+
     Fetch the current status of all the domains.  This is useful for when you want to check whether
     a domain exists, whether it needs to be saved, and whether debug logging, probe, etc. are enabled
     in the domain. If you want to know whether a domain is enabled/up, though, this isn't the task.
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       uid - userid
       pwd - password
       domainsprop - name of Ant property to set with the XML for the domains
-      
+
     The domainprop contains XML like this:
     <status>
       <DomainStatus>
@@ -1240,11 +1240,11 @@
         ...
       </DomainStatus>
     </status>
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="getDomainStatus">
     <attribute name="host"/>
@@ -1256,7 +1256,7 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="status"/>
 
@@ -1271,12 +1271,12 @@
         <return antprop="@{domainsprop}" somaprop="status"/>
       </wdp>
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
-    Determine the operational state (up/down) of a service 
+    Determine the operational state (up/down) of a service
   -->
   <macrodef name="getServiceStatus">
     <attribute name="host" />
@@ -1292,12 +1292,12 @@
     <attribute name="dumpoutput" default="false" />
     <attribute name="capturesoma"/>
     <attribute name="ignore-errors" default="false" />
-    
+
     <sequential>
       <local name="capture"/>
       <local name="success" />
       <local name="opstate" />
-      
+
       <wdp operation="GetObjectStatus" successprop="success" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <hostname>@{host}</hostname>
         <uid>@{uid}</uid>
@@ -1305,7 +1305,7 @@
         <domain>@{domain}</domain>
         <return antprop="status" somaprop="@{servicetype}.@{servicename}" />
       </wdp>
-      
+
       <if>
         <and>
           <isset property="status" />
@@ -1315,7 +1315,7 @@
           <xpath inprop="status" outprop="opstate" xpath="/ObjectStatus/OpState/text()"/>
           <echo message="@{servicetype}.@{servicename} OpState: ${opstate}" />
           <property name="@{outputprop}.opstate" value="${opstate}" />
-          
+
         </then>
         <else>
           <if>
@@ -1327,13 +1327,13 @@
               <fail message="Error getting service status for service @{servicetype}.@{servicename} in @{domain} on @{host}." />
             </else>
           </if>
-          
+
         </else>
       </if>
     </sequential>
   </macrodef>
-  
-  
+
+
   <!--
     Create/overwrite an ID Cred and key/cert files and objects.
   -->
@@ -1351,7 +1351,7 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="basename"/>
       <local name="basename-no-ext"/>
@@ -1360,16 +1360,16 @@
       <local name="success-create-cert"/>
       <local name="success-create-idcred"/>
       <local name="success-create-key"/>
-<!--      
+<!--
       <echo>p12file=@{p12file}</echo>
       <echo>p12pwd=@{p12pwd}</echo>
       <echo>objname=@{objname}</echo>
       <echo>ignoreexpiration=@{ignoreexpiration}</echo>
--->      
+-->
       <basename property="basename" file="@{p12file}"/>
       <basename property="basename-no-ext" file="@{p12file}" suffix=".p12"/>
       <dirname property="dirname" file="@{p12file}"/>
-      
+
       <!--
         Okay, we now have a #PKCS12 file containing a key/cert pair plus the password for the file.
         Upload the file regardless of whether it may already exist.
@@ -1377,7 +1377,7 @@
       <dpupload dir="${dirname}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <include name="${basename}"/>
       </dpupload>
-      
+
       <!-- Create a Crypto Certficate object to wrap the #PKCS12 file. -->
       <wdp operation="SetConfig" successprop="success-create-cert" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <config>
@@ -1394,14 +1394,14 @@
         <pwd>@{pwd}</pwd>
         <domain>@{domain}</domain>
       </wdp>
-      
+
       <if>
         <and>
           <isset property="success-create-cert"/>
           <equals arg1="${success-create-cert}" arg2="true"/>
         </and>
         <then>
-          
+
           <!-- Create a Crypto Key object to wrap the #PKCS12 file. -->
           <wdp operation="SetConfig" successprop="success-create-key" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
             <config>
@@ -1417,14 +1417,14 @@
             <pwd>@{pwd}</pwd>
             <domain>@{domain}</domain>
           </wdp>
-          
+
           <if>
             <and>
               <isset property="success-create-key"/>
               <equals arg1="${success-create-key}" arg2="true"/>
             </and>
             <then>
-              
+
               <!-- Create the idcred object. -->
               <wdp operation="SetConfig" successprop="success-create-idcred" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
                 <config>
@@ -1439,7 +1439,7 @@
                 <pwd>@{pwd}</pwd>
                 <domain>@{domain}</domain>
               </wdp>
-              
+
               <if>
                 <and>
                   <isset property="success-create-idcred"/>
@@ -1452,24 +1452,24 @@
                   <fail message="Failed to create the ID Credential object @{objname}"/>
                 </else>
               </if>
-              
+
             </then>
             <else>
               <fail message="Failed to create the Crypto Key object ${basename-no-ext}"/>
             </else>
           </if>
-          
+
         </then>
         <else>
           <fail message="Failed to create the Crypto Certificate object ${basename-no-ext}"/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
     Create/overwrite an ID Cred and key/cert files and objects.
   -->
@@ -1489,7 +1489,7 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="basename-cert"/>
       <local name="basename-key"/>
@@ -1499,19 +1499,19 @@
       <local name="success-create-cert"/>
       <local name="success-create-idcred"/>
       <local name="success-create-key"/>
-<!--      
+<!--
       <echo>certfile=@{certfile}</echo>
       <echo>certpwd=@{certpwd}</echo>
       <echo>keyfile=@{keyfile}</echo>
       <echo>keypwd=@{keypwd}</echo>
       <echo>objname=@{objname}</echo>
       <echo>ignoreexpiration=@{ignoreexpiration}</echo>
--->      
+-->
       <basename property="basename-cert" file="@{certfile}"/>
       <basename property="basename-key" file="@{keyfile}"/>
       <dirname property="dirname-cert" file="@{certfile}"/>
       <dirname property="dirname-key" file="@{keyfile}"/>
-      
+
       <!--
         Okay, we now have key and certificate files containing a key/cert pair plus passwords for the files.
         Upload the files regardless of whether they may already exist.
@@ -1519,16 +1519,16 @@
       <if>
         <equals arg1="${dirname-cert}" arg2="${dirname-key}"/>
         <then>
-          
+
           <!-- Upload the two files from the same source directory. -->
           <dpupload dir="${dirname-cert}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
             <include name="${basename-cert}"/>
             <include name="${basename-key}"/>
           </dpupload>
-          
+
         </then>
         <else>
-          
+
           <!-- Upload the two files from different source directories. -->
           <dpupload dir="${dirname-cert}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
             <include name="${basename-cert}"/>
@@ -1536,10 +1536,10 @@
           <dpupload dir="${dirname-key}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
             <include name="${basename-key}"/>
           </dpupload>
-          
+
         </else>
       </if>
-      
+
       <!-- Create a Crypto Certficate object to wrap the certificate file. -->
       <wdp operation="SetConfig" successprop="success-create-cert" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <config>
@@ -1556,14 +1556,14 @@
         <pwd>@{pwd}</pwd>
         <domain>@{domain}</domain>
       </wdp>
-      
+
       <if>
         <and>
           <isset property="success-create-cert"/>
           <equals arg1="${success-create-cert}" arg2="true"/>
         </and>
         <then>
-          
+
           <!-- Create a Crypto Key object to wrap the key file. -->
           <wdp operation="SetConfig" successprop="success-create-key" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
             <config>
@@ -1579,14 +1579,14 @@
             <pwd>@{pwd}</pwd>
             <domain>@{domain}</domain>
           </wdp>
-          
+
           <if>
             <and>
               <isset property="success-create-key"/>
               <equals arg1="${success-create-key}" arg2="true"/>
             </and>
             <then>
-              
+
               <!-- Create the idcred object. -->
               <wdp operation="SetConfig" successprop="success-create-idcred" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
                 <config>
@@ -1601,7 +1601,7 @@
                 <pwd>@{pwd}</pwd>
                 <domain>@{domain}</domain>
               </wdp>
-              
+
               <if>
                 <and>
                   <isset property="success-create-idcred"/>
@@ -1614,24 +1614,24 @@
                   <fail message="Failed to create the ID Credential object @{objname}"/>
                 </else>
               </if>
-              
+
             </then>
             <else>
               <fail message="Failed to create the Crypto Key object ${basename-key}"/>
             </else>
           </if>
-          
+
         </then>
         <else>
           <fail message="Failed to create the Crypto Certificate object ${basename-cert}"/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
     Import some DataPower export, optionally applying deployment policies in the process.
   -->
@@ -1642,6 +1642,7 @@
     <attribute name="pwd"/>
     <attribute name="domain"/>
     <attribute name="inputfile"/> <!-- name of DataPower export file -->
+    <attribute name="ignoreError" default=""/> <!-- SOMA error to ignore - Note: Can't be empty -->
     <attribute name="dcmdir"/> <!-- directory where DCM is found -->
     <attribute name="workdir"/> <!-- tmpdir where a directory can be created, if necessary -->
     <attribute name="dumpinput" default="false"/>
@@ -1653,14 +1654,14 @@
     <attribute name="overwrite-objects" default="true"/>
     <attribute name="changes" default=""/> <!-- Alternative to passing in XML content -->
     <element name="definition" implicit="yes" optional="yes"/>
-    
+
     <sequential> <!-- permit declaring some variables local in scope. -->
       <local name="dcmdefinition"/>
       <local name="import_errors"/>
       <local name="import_basename"/>
       <local name="import_response"/>
       <local name="import_success"/>
-      
+
       <!-- Store the dcm:definition (DCM policy) in a property for easy access. -->
       <if>
         <equals arg1="@{changes}" arg2=""/>
@@ -1678,17 +1679,17 @@
       <nxslt infile="@{workdir}/1_raw-policy.xml" outfile="@{workdir}/2_included_policies.xml" xsl="@{dcmdir}/src/process-includes.xsl"/>
       <nxslt infile="@{workdir}/2_included_policies.xml" outfile="@{workdir}/3_expanded-deployment-policies.xml" xsl="@{dcmdir}/src/expand-black-white-modify.xsl"/>
       <nxslt infile="@{workdir}/3_expanded-deployment-policies.xml" outfile="@{workdir}/4_gathered-deployment-policies.xml" xsl="@{dcmdir}/src/write-deployment-policy.xsl"/>
-      
+
       <basename file="@{inputfile}" property="import_basename"/>
       <loadfile srcfile="@{workdir}/2_included_policies.xml" property="dcmdefinition"/>
       <rewriteExport inputfile="@{inputfile}" outputfile="@{workdir}/${import_basename}"
         dcmdir="@{dcmdir}" workdir="@{workdir}" changes="${dcmdefinition}"/>
-      
+
       <!--
         Import the (possibly rewritten) DataPower export file.
       -->
       <echo>Importing @{inputfile} into domain @{domain} on @{host}.</echo>
-      <wdp operation="ImportConfig" responseprop="import_response" successprop="import_success" xpathprop="import_errors" 
+      <wdp operation="ImportConfig" responseprop="import_response" successprop="import_success" xpathprop="import_errors"
         xpath="/env:Envelope/env:Body/soma:response/soma:import/import-results/exec-script-results/cfg-result[@status!='SUCCESS'] | /env:Envelope/env:Body/soma:response/soma:import/import-results/file-copy-log/file-result[not(@result='OK' or @result='ignored')] | /env:Envelope/env:Body/soma:response/soma:result"
         dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <domain>@{domain}</domain>
@@ -1715,16 +1716,31 @@
         </then>
         <else>
           <echo>Raw response to importing @{inputfile}</echo>
-          <echo>${import_response}</echo>
-          <fail message="Failed to import @{inputfile} into domain @{domain} on @{host}."/>
+          <echo>Import Response: ${import_response}</echo>
+          <echo>Import Error(s): '${import_errors}'</echo>
+          <echo>Ignore Error Regex: '@{ignoreError}'</echo>
+          <!-- If ignoreError regex specified, try to ignore given SOMA error -->
+          <if>
+            <and>
+              <length string="@{ignoreError}" when="greater" length="0"/>
+              <matches string="${import_errors}" pattern="@{ignoreError}"/>
+            </and>
+            <then>
+              <echo>Regex successfully matched. Ignoring import error...</echo>
+              <echo>Successfully imported @{inputfile} into domain @{domain} on @{host}.</echo>
+            </then>
+            <else>
+              <fail message="Failed to import @{inputfile} into domain @{domain} on @{host}."/>
+            </else>
+          </if>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
     Import some DataPower export, applying a built-in deployment policy in the process.
   -->
@@ -1735,6 +1751,7 @@
     <attribute name="pwd"/>
     <attribute name="domain"/>
     <attribute name="inputfile"/> <!-- name of DataPower export file -->
+    <attribute name="ignoreError" default=""/> <!-- SOMA error to ignore - Note: Can't be empty -->
     <attribute name="dpo"/> <!-- name of deployment policy object -->
     <attribute name="dcmdir"/> <!-- directory where DCM is found -->
     <attribute name="workdir"/> <!-- tmpdir where a directory can be created, if necessary -->
@@ -1745,17 +1762,17 @@
     <attribute name="rewrite-local" default="true"/>
     <attribute name="overwrite-files" default="true"/>
     <attribute name="overwrite-objects" default="true"/>
-    
+
     <sequential> <!-- permit declaring some variables local in scope. -->
       <local name="import_errors"/>
       <local name="import_response"/>
       <local name="import_success"/>
-      
+
       <!--
         Import the DataPower export file.
       -->
       <echo>Importing @{inputfile} into domain @{domain} on @{host}.</echo>
-      <wdp operation="ImportConfig" responseprop="import_response" successprop="import_success" xpathprop="import_errors" 
+      <wdp operation="ImportConfig" responseprop="import_response" successprop="import_success" xpathprop="import_errors"
         xpath="/env:Envelope/env:Body/soma:response/soma:import/import-results/exec-script-results/cfg-result[@status!='SUCCESS'] | /env:Envelope/env:Body/soma:response/soma:import/import-results/file-copy-log/file-result[not(@result='OK' or @result='ignored')] | /env:Envelope/env:Body/soma:response/soma:result"
         dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <domain>@{domain}</domain>
@@ -1782,20 +1799,35 @@
         </then>
         <else>
           <echo>Raw response to importing @{inputfile}</echo>
-          <echo>${import_response}</echo>
-          <fail message="Failed to import @{inputfile} into domain @{domain} on @{host}."/>
+          <echo>Import Response: ${import_response}</echo>
+          <echo>Import Error(s): '${import_errors}'</echo>
+          <echo>Ignore Error Regex: '@{ignoreError}'</echo>
+          <!-- If ignoreError regex specified, try to ignore given SOMA error -->
+          <if>
+            <and>
+              <length string="@{ignoreError}" when="greater" length="0"/>
+              <matches string="${import_errors}" pattern="@{ignoreError}"/>
+            </and>
+            <then>
+              <echo>Regex successfully matched. Ignoring import error...</echo>
+              <echo>Successfully imported @{inputfile} into domain @{domain} on @{host}.</echo>
+            </then>
+            <else>
+              <fail message="Failed to import @{inputfile} into domain @{domain} on @{host}."/>
+            </else>
+          </if>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
 
 
   <!--
-    
+
     Listing of a filestore
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       domain - name of domain
@@ -1803,11 +1835,11 @@
       listprop - name of Ant property where the listing should be stored
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="listFilestore">
     <attribute name="host"/>
@@ -1821,9 +1853,9 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
-      
+
       <wdp operation="GetFilestore" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <domain>@{domain}</domain>
         <hostname>@{host}</hostname>
@@ -1834,9 +1866,9 @@
         <ignore-errors>@{ignore-errors}</ignore-errors>
         <return antprop="@{listprop}" somaprop="location"/>
       </wdp>
-      
+
     </sequential>
-    
+
   </macrodef>
 
 
@@ -1862,7 +1894,7 @@
     <attribute name="ignore-errors" default="false"/>
     <attribute name="changes" default=""/> <!-- Alternative to passing in XML content -->
     <element name="definition" implicit="yes" optional="yes"/>
-    
+
     <sequential>
       <local name="config"/>
       <local name="get_response"/>
@@ -1871,12 +1903,12 @@
       <local name="schema_file"/>
       <local name="set_okay"/>
       <local name="set_response"/>
-      
+
       <!-- We'll need the preprocessed schema to make our best effort to ensure that the request is schema-compliant. -->
       <ensureDPSchema host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" versionprop="@{versionprop}"
         domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"
         dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
-      
+
       <!-- Get the configuration of the existing object. -->
       <wdp operation="GetConfig" responseprop="get_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <domain>@{domain}</domain>
@@ -1888,9 +1920,9 @@
         <objname>@{existing-name}</objname>
         <return antprop="config" somaprop="config"/>
       </wdp>
-      
+
       <!-- <echo>::: getConfig returned ${config}</echo> -->
-      
+
       <if>
         <!-- ${config} != '' and ${config} != '<objs></objs>' -->
         <and>
@@ -1902,14 +1934,14 @@
           </not>
         </and>
         <then>
-          
+
           <!-- Store any changes in a file, so we can pass them to the stylesheet.-->
           <property name="oc_file" value="@{workdir}/object-create.xml"/>
           <storexml outfile="${oc_file}"><changes><definition/></changes></storexml>
-          
+
           <!-- <echo>::: oc_file = ${oc_file}</echo> -->
           <!-- <echo>::: schema_file = ${schema_file}</echo> -->
-          
+
           <!--
             Create the XML for the new object, including its new name, based on the XML from
             the existing object plus any specified changes.  Ensure the resulting XML is as
@@ -1920,9 +1952,9 @@
             <param xsl="schema-url" ant="${schema_file}"/>
             <param xsl="new-name" ant="@{new-name}"/>
           </nxslt>
-          
+
           <!-- <echo>::: new_config = ${new_config}</echo> -->
-          
+
           <!-- Create the new object. -->
           <wdp operation="SetConfig" responseprop="set_response"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay"
@@ -1934,10 +1966,10 @@
             <pwd>@{pwd}</pwd>
             <config>${new_config}</config>
           </wdp>
-          
+
           <!-- <echo>::: set_okay = ${set_okay}</echo> -->
           <!-- <echo>::: set_response = ${set_response}</echo> -->
-          
+
           <if>
             <equals arg1="${set_okay}" arg2="OK"/>
             <then>
@@ -1948,19 +1980,19 @@
               <fail message="Failed to create @{class}/@{new-name} in @{domain} on @{host}."/>
             </else>
           </if>
-          
+
         </then>
         <else>
           <echo>Raw response for dcm:object-create getConfig: ${get_response}</echo>
           <fail message="Failed to get the configuration of @{class}/@{existing-name} in @{domain} on @{host}."/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
     Create an object based on inline XML.
   -->
@@ -1988,13 +2020,13 @@
       <local name="schema_file"/>
       <local name="set_okay"/>
       <local name="set_response"/>
-      
+
       <!-- We'll need the preprocessed schema to make our best effort to ensure that the request is schema-compliant. -->
       <ensureDPSchema host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" versionprop="@{versionprop}"
         domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"
         dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
 
-      <!-- 
+      <!--
         Copy the inline definition to a file, wrapping it in an dcm:object-create
         element for the benefit of the object-modify stylesheet.
       -->
@@ -2003,15 +2035,15 @@
 
       <!-- <echo>::: oc_file = ${oc_file}</echo> -->
       <!-- <echo>::: schema_file = ${schema_file}</echo> -->
-      
+
       <nxslt infile="${oc_file}" outprop="new_config" xsl="@{dcmdir}/src/object-modify.xsl">
         <param xsl="input-url" ant="${oc_file}"/>
         <param xsl="schema-url" ant="${schema_file}"/>
         <!-- <param xsl="new-name" ant="{$oc/@newname}"/> -->
       </nxslt>
-      
+
       <!-- <echo>::: new_config = ${new_config}</echo> -->
-      
+
       <!-- Create the new object. -->
       <wdp operation="SetConfig" responseprop="set_response"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay"
@@ -2023,10 +2055,10 @@
         <pwd>@{pwd}</pwd>
         <config>${new_config}</config>
       </wdp>
-      
+
       <!-- <echo>::: set_okay = ${set_okay}</echo> -->
       <!-- <echo>::: set_response = ${set_response}</echo> -->
-      
+
       <if>
         <equals arg1="${set_okay}" arg2="OK"/>
         <then>
@@ -2038,10 +2070,10 @@
         </else>
       </if>
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
     Create an object based on an object in an export file.
   -->
@@ -2065,7 +2097,7 @@
     <attribute name="ignore-errors" default="false"/>
     <attribute name="changes" default=""/> <!-- Alternative to passing in XML content -->
     <element name="definition" implicit="yes" optional="yes"/>
-    
+
     <sequential>
       <local name="config"/>
       <local name="file_base_name"/>
@@ -2077,48 +2109,48 @@
       <local name="schema_file"/>
       <local name="set_okay"/>
       <local name="set_response"/>
-      
+
       <!-- We'll need the preprocessed schema to make our best effort to ensure that the request is schema-compliant. -->
       <ensureDPSchema host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" versionprop="@{versionprop}"
         domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"
         dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
-      
+
       <!-- Determine the file extension. -->
       <basename property="file_base_name" file="@{export}"/>
       <condition property="is_zip">
         <matches pattern=".+\.[zZ][iI][pP]$" string="${file_base_name}"/>
       </condition>
-      
+
       <!-- <echo>### file_base_name=${file_base_name}, is_zip=${is_zip}</echo> -->
-      
+
       <property name="private_dir" value="@{workdir}/export_${file_base_name}"/>
       <property name="private_xml" value="${private_dir}/export.xml"/>
-      
+
       <!-- <echo>### private_dir=${private_dir}</echo> -->
       <!-- <echo>### private_xml=${private_xml}</echo> -->
-      
+
       <if>
         <istrue value="${is_zip}"/>
         <then>
-          
+
           <!-- Unzip .zip files so we can access their export.xml. -->
           <mkdir dir="${private_dir}"/>
           <unzip src="@{export}" dest="${private_dir}"/>
-          
+
           <!-- Extract the configuration of the existing object. -->
           <xpath infile="${private_xml}" outprop="config" xpath="/datapower-configuration/configuration/*[name()='@{class}']" xpathType="node"/>
-          
+
         </then>
         <else>
-          
+
           <!-- Extract the configuration of the existing object. -->
           <xpath infile="@{export}" outprop="config" xpath="/datapower-configuration/configuration/*[name()='@{class}']" xpathType="node"/>
-          
+
         </else>
       </if>
-      
+
       <!-- <echo>### config=${config}</echo> -->
-      
+
       <if>
         <!-- ${config} != '' and ${config} != '<objs></objs>' -->
         <and>
@@ -2130,22 +2162,22 @@
           </not>
         </and>
         <then>
-          
+
           <!-- Store any changes in a file, so we can pass them to the stylesheet.-->
           <property name="oc_file" value="@{workdir}/object-create.xml"/>
           <storexml outfile="${oc_file}"><changes><definition/></changes></storexml>
-          
+
           <!-- <echo>::: oc_file = ${oc_file}</echo> -->
           <!-- <echo>::: schema_file = ${schema_file}</echo> -->
-          
+
           <nxslt inprop="config" outprop="new_config" xsl="@{dcmdir}/src/object-modify.xsl">
             <param xsl="input-url" ant="${oc_file}"/>
             <param xsl="schema-url" ant="${schema_file}"/>
             <param xsl="new-name" ant="@{new-name}"/>
           </nxslt>
-          
+
           <!-- <echo>::: new_config = ${new_config}</echo> -->
-          
+
           <!-- Create the new object. -->
           <wdp operation="SetConfig" responseprop="set_response"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay"
@@ -2157,10 +2189,10 @@
             <pwd>@{pwd}</pwd>
             <config>${new_config}</config>
           </wdp>
-          
+
           <!-- <echo>::: set_okay = ${set_okay}</echo> -->
           <!-- <echo>::: set_response = ${set_response}</echo> -->
-          
+
           <if>
             <equals arg1="${set_okay}" arg2="OK"/>
             <then>
@@ -2171,18 +2203,18 @@
               <fail message="Failed to create @{class}/@{new-name} in @{domain} on @{host}."/>
             </else>
           </if>
-          
+
         </then>
         <else>
           <fail message="Failed to get the configuration of @{class}/@{existing-name} in @{domain} on @{host}."/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
     Delete an object.
   -->
@@ -2204,7 +2236,7 @@
     <sequential>
       <local name="delete_success"/>
       <local name="delete_response"/>
-      
+
       <!-- Delete the existing object. -->
       <wdp operation="DeleteConfig" responseprop="delete_response" successprop="delete_success" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <domain>@{domain}</domain>
@@ -2215,10 +2247,10 @@
         <classname>@{class}</classname>
         <objname>@{name}</objname>
       </wdp>
-      
+
       <!-- <echo>::: delete_success = ${delete_success}</echo> -->
       <!-- <echo>::: delete_response = ${delete_response}</echo> -->
-      
+
       <if>
         <istrue value="${delete_success}"/>
         <then>
@@ -2229,12 +2261,12 @@
           <fail message="Failed to delete @{class}/@{name} in @{domain} on @{host}."/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
     Modify an object based on inline XML changes.
   -->
@@ -2256,7 +2288,7 @@
     <attribute name="ignore-errors" default="false"/>
     <attribute name="changes" default=""/> <!-- Alternative to passing in XML content -->
     <element name="definition" implicit="yes" optional="yes"/>
-    
+
     <sequential>
       <local name="config"/>
       <local name="get_response"/>
@@ -2265,12 +2297,12 @@
       <local name="schema_file"/>
       <local name="set_okay"/>
       <local name="set_response"/>
-      
+
       <!-- We'll need the preprocessed schema to make our best effort to ensure that the request is schema-compliant. -->
       <ensureDPSchema host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" versionprop="@{versionprop}"
         domain="@{domain}" dcmdir="@{dcmdir}" schemadir="@{schemadir}" workdir="@{workdir}" dpschemaFileVbl="schema_file"
         dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
-      
+
       <!-- Get the configuration of the existing object. -->
       <wdp operation="GetConfig" responseprop="get_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <domain>@{domain}</domain>
@@ -2282,9 +2314,9 @@
         <objname>@{name}</objname>
         <return antprop="config" somaprop="config"/>
       </wdp>
-      
+
       <!-- <echo>::: getConfig returned ${config}</echo> -->
-      
+
       <if>
         <!-- ${config} != '' and ${config} != '<objs></objs>' -->
         <and>
@@ -2296,20 +2328,20 @@
           </not>
         </and>
         <then>
-          
+
           <property name="om_file" value="@{workdir}/object-modify.xml"/>
           <storexml outfile="${om_file}"><changes><definition/></changes></storexml>
-          
+
           <!-- <echo>::: om_file = ${om_file}</echo> -->
           <!-- <echo>::: schema_file = ${schema_file}</echo> -->
-          
+
           <nxslt inprop="config" outprop="new_config" xsl="@{dcmdir}/src/object-modify.xsl">
             <param xsl="input-url" ant="${om_file}"/>
             <param xsl="schema-url" ant="${schema_file}"/>
           </nxslt>
-          
+
           <!-- <echo>::: new_config = ${new_config}</echo> -->
-          
+
           <!-- Create the new object. -->
           <wdp operation="SetConfig" responseprop="set_response"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay"
@@ -2321,10 +2353,10 @@
             <pwd>@{pwd}</pwd>
             <config>${new_config}</config>
           </wdp>
-          
+
           <!-- <echo>::: set_okay = ${set_okay}</echo> -->
           <!-- <echo>::: set_response = ${set_response}</echo> -->
-          
+
           <if>
             <equals arg1="${set_okay}" arg2="OK"/>
             <then>
@@ -2335,34 +2367,34 @@
               <fail message="Failed to create @{class}/@{name} in @{domain} on @{host}."/>
             </else>
           </if>
-          
+
         </then>
         <else>
           <echo>Raw response for dcm:object-modify getConfig: ${get_response}</echo>
           <fail message="Failed to get the configuration of @{class}/@{name} in @{domain} on @{host}."/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Quiesce all the services in a domain, when it exists.
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       domain - domain on the device
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       timeout - number of seconds to wait for existing transactions to end
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="quiesceDomain">
     <attribute name="host"/>
@@ -2375,24 +2407,24 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="quiesce_okay"/>
       <local name="quiesce_response"/>
       <local name="quiesce_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      
+
       <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
-      
+
       <xpath inprop="domainlist" outprop="domain_exists" xpath="/status/DomainStatus[Domain='@{domain}']"/>
-      
+
       <if>
         <not>
           <equals arg1="${domain_exists}" arg2=""/>
         </not>
         <then>
-          
+
           <wdp operation="QuiesceDomain" successprop="quiesce_success" responseprop="quiesce_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="quiesce_okay">
             <hostname>@{host}</hostname>
@@ -2402,7 +2434,7 @@
             <domain>@{domain}</domain>
             <timeout>@{timeout}</timeout>
           </wdp>
-          
+
           <if>
             <and>
               <istrue value="${quiesce_success}"/>
@@ -2416,18 +2448,18 @@
               <fail message="Failed to quiesce domain @{domain} on @{host}."/>
             </else>
           </if>
-          
+
         </then>
         <else>
           <echo>Did not quiesce domain @{domain} on @{host} since it does not exist.</echo>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
     Quiesce a service
   -->
@@ -2444,7 +2476,7 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma"/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="quiesce_okay"/>
       <local name="quiesce_response"/>
@@ -2514,12 +2546,12 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma"/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="removecheckpoint_okay"/>
       <local name="removecheckpoint_response"/>
       <local name="removecheckpoint_success"/>
-      
+
       <wdp operation="RemoveCheckpoint" successprop="removecheckpoint_success" responseprop="removecheckpoint_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="removecheckpoint_okay" capturesoma="@{capturesoma}">
         <hostname>@{host}</hostname>
@@ -2529,7 +2561,7 @@
         <domain>@{domain}</domain>
         <name>@{checkpoint-name}</name>
       </wdp>
-      
+
       <if>
         <and>
           <istrue value="${removecheckpoint_success}"/>
@@ -2545,22 +2577,22 @@
       </if>
     </sequential>
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Reset a domain conventionally, using ResetDomain, when the domain exists.
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       domain - domain on the device
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="resetDomainConventionally">
     <attribute name="host"/>
@@ -2572,25 +2604,25 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="reset_okay"/>
       <local name="reset_response"/>
       <local name="reset_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      
+
       <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
-      
-      <xpath inprop="domainlist" outprop="domain_exists" 
+
+      <xpath inprop="domainlist" outprop="domain_exists"
         xpath="/status/DomainStatus[Domain='@{domain}']"/>
-      
+
       <if>
         <not>
           <equals arg1="${domain_exists}" arg2=""/>
         </not>
         <then>
-          
+
           <wdp operation="ResetDomain" successprop="reset_success" responseprop="reset_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="reset_okay">
             <hostname>@{host}</hostname>
@@ -2599,7 +2631,7 @@
             <pwd>@{pwd}</pwd>
             <domain>@{domain}</domain>
           </wdp>
-          
+
           <if>
             <and>
               <istrue value="${reset_success}"/>
@@ -2613,32 +2645,32 @@
               <fail message="Failed to reset domain @{domain} on @{host}."/>
             </else>
           </if>
-          
+
         </then>
         <else>
           <echo>Did not reset domain @{domain} on @{host} since it does not exist.</echo>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Reset a domain by deleting it (when it exists) and then (re)creating it.
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       domain - domain on the device
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="resetDomainDeleteCreate">
     <attribute name="host"/>
@@ -2650,7 +2682,7 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="create_okay"/>
       <local name="create_response"/>
@@ -2660,10 +2692,10 @@
       <local name="delete_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      
+
       <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
-      
-      <xpath inprop="domainlist" outprop="domain_exists" 
+
+      <xpath inprop="domainlist" outprop="domain_exists"
         xpath="/status/DomainStatus[Domain='@{domain}']"/>
 
       <if>
@@ -2671,7 +2703,7 @@
           <equals arg1="${domain_exists}" arg2=""/>
         </not>
         <then>
-          
+
           <wdp operation="DeleteConfig" successprop="delete_success" responseprop="delete_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="delete_okay">
             <classname>Domain</classname>
@@ -2682,7 +2714,7 @@
             <pwd>@{pwd}</pwd>
             <domain>default</domain>
           </wdp>
-          
+
           <if>
             <and>
               <istrue value="${delete_success}"/>
@@ -2694,7 +2726,7 @@
               <fail message="Failed to delete domain @{domain} on @{host}."/>
             </else>
           </if>
-          
+
         </then>
       </if>
 
@@ -2705,7 +2737,7 @@
             <mAdminState>enabled</mAdminState>
             <NeighborDomain class="Domain">default</NeighborDomain>
             <ConfigMode>local</ConfigMode>
-          </Domain>  
+          </Domain>
         </config>
         <hostname>@{host}</hostname>
         <port>@{port}</port>
@@ -2713,7 +2745,7 @@
         <pwd>@{pwd}</pwd>
         <domain>default</domain>
       </wdp>
-      
+
       <if>
         <and>
           <istrue value="${create_success}"/>
@@ -2727,26 +2759,26 @@
           <fail message="Failed to create domain @{domain} on @{host}."/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Restart a domain, when it exists.
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       domain - domain on the device
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="restartDomain">
     <attribute name="host"/>
@@ -2758,25 +2790,25 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="restart_okay"/>
       <local name="restart_response"/>
       <local name="restart_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      
+
       <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
-      
-      <xpath inprop="domainlist" outprop="domain_exists" 
+
+      <xpath inprop="domainlist" outprop="domain_exists"
         xpath="/status/DomainStatus[Domain='@{domain}']"/>
-      
+
       <if>
         <not>
           <equals arg1="${domain_exists}" arg2=""/>
         </not>
         <then>
-          
+
           <wdp operation="RestartDomain" successprop="restart_success" responseprop="restart_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="restart_okay">
             <hostname>@{host}</hostname>
@@ -2785,7 +2817,7 @@
             <pwd>@{pwd}</pwd>
             <domain>@{domain}</domain>
           </wdp>
-          
+
           <if>
             <and>
               <istrue value="${restart_success}"/>
@@ -2799,18 +2831,18 @@
               <fail message="Failed to restart domain @{domain} on @{host}."/>
             </else>
           </if>
-          
+
         </then>
         <else>
           <echo>Did not restart domain @{domain} on @{host} since it does not exist.</echo>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
     Restore one or more domains from a backup created by BackupDevice or BackupDevice.
   -->
@@ -2827,10 +2859,10 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="success-update"/>
-      
+
       <!-- Restore the specified domain(s). -->
       <wdp operation="Restore" successprop="success-update" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <local>@{zipfile}</local>
@@ -2841,7 +2873,7 @@
         <uid>@{uid}</uid>
         <pwd>@{pwd}</pwd>
       </wdp>
-      
+
       <if>
         <isset property="success-update"/>
         <then>
@@ -2859,12 +2891,12 @@
           <fail message="Failed to restore from @{zipfile} on @{host}"/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
     Rewrite a DataPower export (.zip or .xml/.xcfg) to change object names or
     replace the existing WSDLs in a WSP with a new set of WSDLs.
@@ -2876,13 +2908,13 @@
     <attribute name="workdir"/> <!-- tmpdir where a directory can be created, if necessary -->
     <attribute name="changes" default=""/> <!-- Alternative to passing in XML content -->
     <element name="definition" implicit="yes" optional="yes"/>
-    
+
     <sequential> <!-- permit declaring some variables local in scope. -->
       <local name="inputfile.abs"/>
       <local name="object-names-present"/>
       <local name="outputfile.abs"/>
       <local name="wsdls-present"/>
-      
+
       <!-- Ensure that the input and output files are not the same file. -->
       <property name="inputfile.abs" location="@{inputfile}"/>
       <property name="outputfile.abs" location="@{outputfile}"/>
@@ -2891,7 +2923,7 @@
           <equals arg1="${inputfile.abs}" arg2="${outputfile.abs}" casesensitive="false"/>
         </condition>
       </fail>
-      
+
       <if>
         <equals arg1="@{changes}" arg2=""/>
         <then>
@@ -2901,7 +2933,7 @@
           <storexml outfile="@{workdir}/dcmpolicy.xml">@{changes}</storexml>
         </else>
       </if>
-      
+
       <!--
         Prepare the .zip/.xcfg file - rewriting if necessary.  The name of the (rewritten) file ends up in
         ${export_file}.
@@ -2917,7 +2949,7 @@
         </or>
         <then>
           <!--
-            Rewrite the export to account for renaming objects and/or new WSDLs. 
+            Rewrite the export to account for renaming objects and/or new WSDLs.
           -->
           <if>
             <matches string="@{inputfile}" pattern="\.zip$" casesensitive="false"/>
@@ -2946,12 +2978,12 @@
           <copy file="@{inputfile}" tofile="@{outputfile}" overwrite="true"/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
     Rollback a domain to a checkpoint
   -->
@@ -2966,12 +2998,12 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma"/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="rollbackcheckpoint_okay"/>
       <local name="rollbackcheckpoint_response"/>
       <local name="rollbackcheckpoint_success"/>
-      
+
       <wdp operation="RollbackCheckpoint" successprop="rollbackcheckpoint_success" responseprop="rollbackcheckpoint_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="rollbackcheckpoint_okay" capturesoma="@{capturesoma}">
         <hostname>@{host}</hostname>
@@ -2981,7 +3013,7 @@
         <domain>@{domain}</domain>
         <name>@{checkpoint-name}</name>
       </wdp>
-      
+
       <if>
         <and>
           <istrue value="${rollbackcheckpoint_success}"/>
@@ -2997,8 +3029,8 @@
       </if>
     </sequential>
   </macrodef>
-  
-  
+
+
   <!--
     Create (save) a checkpoint
   -->
@@ -3018,7 +3050,7 @@
       <local name="savecheckpoint_okay"/>
       <local name="savecheckpoint_response"/>
       <local name="savecheckpoint_success"/>
-      
+
       <wdp operation="SaveCheckpoint" successprop="savecheckpoint_success" responseprop="savecheckpoint_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}"
         xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="savecheckpoint_okay" capturesoma="@{capturesoma}">
         <hostname>@{host}</hostname>
@@ -3028,7 +3060,7 @@
         <domain>@{domain}</domain>
         <name>@{checkpoint-name}</name>
       </wdp>
-      
+
       <if>
         <and>
           <istrue value="${savecheckpoint_success}"/>
@@ -3044,22 +3076,22 @@
       </if>
     </sequential>
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Save the domain is changed.
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       domain - name of domain on device
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="saveDomainIfChanged">
     <attribute name="host"/>
@@ -3072,19 +3104,19 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="save_needed"/>
-      
+
       <fail message="The domainStatusProp attribute was not supplied in the ant script invoking &lt;saveDomainIfChanged&gt;!">
         <condition>
           <equals arg1="@{domainStatusProp}" arg2=""/>
         </condition>
       </fail>
-      
-      <xpath inprop="@{domainStatusProp}" outprop="save_needed" 
+
+      <xpath inprop="@{domainStatusProp}" outprop="save_needed"
       xpath="/status/DomainStatus[Domain='@{domain}']/SaveNeeded"/>
-      
+
       <if>
         <equals arg1="${save_needed}" arg2="on"/>
         <then>
@@ -3092,26 +3124,26 @@
             dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}" ignore-errors="@{ignore-errors}"/>
         </then>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Save the domain is changed and the user responds affirmatively to a prompt at the console.
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       domain - name of domain on device
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="saveDomainIfChangedPrompt">
     <attribute name="host"/>
@@ -3124,24 +3156,24 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="answer"/>
       <local name="save_needed"/>
-      
+
       <fail message="The domainStatusProp attribute was not supplied in the ant script invoking &lt;saveDomainIfChangedPrompt&gt;!">
         <condition>
           <equals arg1="@{domainStatusProp}" arg2=""/>
         </condition>
       </fail>
-      
-      <xpath inprop="@{domainStatusProp}" outprop="save_needed" 
+
+      <xpath inprop="@{domainStatusProp}" outprop="save_needed"
         xpath="/status/DomainStatus[Domain='@{domain}']/SaveNeeded"/>
-      
+
       <if>
         <equals arg1="${save_needed}" arg2="on"/>
         <then>
-          
+
           <input validargs="y,s,h" addproperty="answer">Save domain @{domain} now (yes, skip saving, halt ANT script)?</input>
           <if>
             <equals arg1="${answer}" arg2="y"/>
@@ -3149,7 +3181,7 @@
 
               <saveDomainUnconditionally host="@{host}" port="@{port}" uid="@{uid}" pwd="@{pwd}" domain="@{domain}"
                 dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}" ignore-errors="@{ignore-errors}"/>
-              
+
             </then>
           </if>
           <if>
@@ -3158,29 +3190,29 @@
               <fail message="Stopping early because you chose 'halt' when asked about saving a domain."/>
             </then>
           </if>
-          
+
         </then>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Save the domain unconditionally.
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       domain - name of domain on device
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="saveDomainUnconditionally">
     <attribute name="host"/>
@@ -3192,11 +3224,11 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="save_okay"/>
       <local name="save_response"/>
-<!--      
+<!--
       <echo>saveDomainUnconditionally : host=@{host}</echo>
       <echo>saveDomainUnconditionally : port=@{port}</echo>
       <echo>saveDomainUnconditionally : uid=@{uid}</echo>
@@ -3207,8 +3239,8 @@
       <echo>saveDomainUnconditionally : ignore-errors=@{ignore-errors}</echo>
 -->
       <!-- Save this domain -->
-      <wdp operation="SaveConfig" responseprop="save_response" 
-        xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="save_okay" 
+      <wdp operation="SaveConfig" responseprop="save_response"
+        xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="save_okay"
         dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <domain>@{domain}</domain>
         <host>@{host}</host>
@@ -3217,7 +3249,7 @@
         <pwd>@{pwd}</pwd>
         <ignore-errors>@{ignore-errors}</ignore-errors>
       </wdp>
-      
+
       <if>
         <equals arg1="${save_okay}" arg2="OK"/>
         <then>
@@ -3228,12 +3260,12 @@
           <fail message="Failed to save domain @{domain} on @{host}."/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
     Perform a secure backup of the appliance.
   -->
@@ -3249,9 +3281,9 @@
     <attribute name="dumpoutput" default="false" />
     <attribute name="capturesoma"/>
     <attribute name="ignore-errors" default="false" />
-    
+
     <sequential>
-      
+
       <local name="capture"/>
       <local name="success" />
       <wdp operation="SecureBackup" successprop="success" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
@@ -3262,9 +3294,9 @@
         <objname>@{objname}</objname>
         <remote>@{remote}</remote>
       </wdp>
-      
+
       <if>
-        
+
         <istrue value="${success}" />
         <then>
           <echo message="Secure backup successful to @{remote}" />
@@ -3272,27 +3304,27 @@
         <else>
           <fail message="Secure Backup failed." />
         </else>
-        
+
       </if>
     </sequential>
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Set the log level in a domain (for the default log).
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       domain - domain on the device
       loglevel - debug, info, noice, warn, error, critic, alert, emerg
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="setLogLevel">
     <attribute name="host"/>
@@ -3305,24 +3337,24 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="set_okay"/>
       <local name="set_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      
+
       <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
-      
-      <xpath inprop="domainlist" outprop="domain_exists" 
+
+      <xpath inprop="domainlist" outprop="domain_exists"
         xpath="/status/DomainStatus[Domain='@{domain}']"/>
-      
+
       <if>
         <not>
           <equals arg1="${domain_exists}" arg2=""/>
         </not>
         <then>
-          
+
           <wdp operation="SetLogLevel" successprop="set_success" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="set_okay">
             <hostname>@{host}</hostname>
@@ -3332,7 +3364,7 @@
             <domain>@{domain}</domain>
             <loglevel>@{loglevel}</loglevel>
           </wdp>
-          
+
           <if>
             <and>
               <istrue value="${set_success}"/>
@@ -3346,18 +3378,18 @@
               <fail message="Failed to set log level in domain @{domain} on @{host} to @{loglevel."/>
             </else>
           </if>
-          
+
         </then>
         <else>
           <echo>Did set log level in domain @{domain} on @{host} since that domain does not exist.</echo>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
     Create a valcred based on a few parameters and an implicit FileSet.
   -->
@@ -3374,29 +3406,29 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <element name="definition" implicit="yes"/>
-    
+
     <sequential>
       <local name="response-create"/>
       <local name="success-create"/>
       <local name="uploadedfiles"/>
       <local name="valcred-objname"/>
-      
+
       <!-- Upload all the files in the specified directory.  These are all supposed to be certificate files for this valcred object. -->
-      <dpupload dir="@{rootdir}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}" 
+      <dpupload dir="@{rootdir}" target="cert:///" domain="@{domain}" url="https://@{host}:@{port}/service/mgmt/current" uid="@{uid}" pwd="@{pwd}"
         uploadedfilesprop="uploaded-files" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <definition/>
       </dpupload>
-      
+
       <!-- <echo>uploaded-files = ${uploaded-files}</echo> -->
-      
+
       <!-- Generate the guts of a SetConfig, comprised of Crypto Certificate objects and a Validation Credential object. -->
       <property name="valcred-objname" value="@{objname}"/>
       <nxslt inprop="uploaded-files" outprop="config" xsl="@{dcmdir}/src/generate-valcred.xsl">
         <param ant="valcred-objname" xsl="objname"/>
       </nxslt>
-      
+
       <!-- <echo>config = ${config}</echo> -->
-      
+
       <wdp operation="SetConfig" successprop="success-create" responseprop="response-create" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
         <wrapper>${config}</wrapper>
         <hostname>@{host}</hostname>
@@ -3404,10 +3436,10 @@
         <pwd>@{pwd}</pwd>
         <domain>@{domain}</domain>
       </wdp>
-      
+
       <!-- <echo>response-create = ${response-create}</echo> -->
       <!-- <echo>success-create = ${success-create}</echo> -->
-      
+
       <if>
         <and>
           <isset property="success-create"/>
@@ -3420,12 +3452,12 @@
           <fail message="Failed to create the Validation Credential object @{objname} or one or more certificate objects"/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
     Unimport some DataPower export.
   -->
@@ -3443,7 +3475,7 @@
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
     <element name="definition" implicit="yes"/>
-    
+
     <sequential>
       <local name="exportname"/>
       <local name="exportxml"/>
@@ -3452,13 +3484,13 @@
       <local name="delete_success"/>
       <local name="objects_delete"/>
       <local name="objects_disable"/>
-      
+
       <!-- Rewrite the DP export to account for changes to object names or WSDLs (in a WSP), or just copy the DP export file. -->
       <basename property="exportname" file="@{inputfile}"/>
       <rewriteExport inputfile="@{inputfile}" outputfile="@{workdir}/${exportname}" dcmdir="@{dcmdir}" workdir="@{workdir}">
         <definition/> <!-- placeholder for dcm:definition provided as content of <unimportConfig> -->
       </rewriteExport>
-      
+
       <!-- Access the rewritten export.xml - Note that this code depends on the internals of <rewriteExport>! -->
       <if>
         <matches string="${exportname}" pattern="\.zip$" casesensitive="false"/>
@@ -3469,10 +3501,10 @@
           <property name="exportxml" location="@{workdir}/${exportname}"/>
         </else>
       </if>
-      
+
       <!-- Capture the list of objects to delete, in proper order. -->
       <nxslt infile="${exportxml}" outprop="objects_disable" xsl="@{dcmdir}/src/unimport-extract-disable.xsl"/>
-      
+
       <!-- Capture the list of objects to delete, in proper order. -->
       <nxslt infile="${exportxml}" outprop="objects_delete" xsl="@{dcmdir}/src/unimport-extract-delete.xsl"/>
 
@@ -3486,12 +3518,12 @@
         <pwd>@{pwd}</pwd>
         <ignore-errors>true</ignore-errors>
       </wdp>
-      
-      <!-- 
+
+      <!--
         Delete the objects multiple times.  This is due to a race condition where some objects are reported as "deleted"
         but they are in fact still being shut down.  This simple heuristic has been sufficient so far, but it is a heuristic,
         not a perfect solution.
-        
+
         The race condition first appeared while deleting an MPGW with an MQ FSH and MQ QM.  We deleted the MQ FSH just fine, but
         the next object we deleted, the MQ QM, fails to delete because it was still in use by the MQ FSH, which apparently had not
         finished being destroyed.  Since it was a race condition, sometimes the MQ QM deleted successfully and sometimes not.
@@ -3524,7 +3556,7 @@
         <pwd>@{pwd}</pwd>
         <ignore-errors>@{ignore-errors}</ignore-errors>
       </wdp>
-      
+
       <if>
         <and>
           <istrue value="${delete_success}"/>
@@ -3538,26 +3570,26 @@
           <fail message="Failed to unimport @{inputfile} from domain @{domain} on @{host}."/>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!--
-    
+
     Unquiesce all the services in a domain, when it exists.
-    
+
     Required parameters:
       host - hostname or IP address of DataPower device
       domain - domain on the device
       uid - userid
       pwd - password
-    
+
     Optional parameters:
       port - XML Management Interface port on device (defaults to 5550)
       ignore-errors = true() or false()
-    
+
   -->
   <macrodef name="unquiesceDomain">
     <attribute name="host"/>
@@ -3569,24 +3601,24 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="unquiesce_okay"/>
       <local name="unquiesce_response"/>
       <local name="unquiesce_success"/>
       <local name="domain_exists"/>
       <local name="domainlist"/>
-      
+
       <getDomainStatus host="@{host}" uid="@{uid}" pwd="@{pwd}" port="@{port}" domainsprop="domainlist" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"/>
-      
+
       <xpath inprop="domainlist" outprop="domain_exists" xpath="/status/DomainStatus[Domain='@{domain}']"/>
-      
+
       <if>
         <not>
           <equals arg1="${domain_exists}" arg2=""/>
         </not>
         <then>
-          
+
           <wdp operation="UnquiesceDomain" successprop="unquiesce_success" responseprop="unquiesce_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
             xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="unquiesce_okay">
             <hostname>@{host}</hostname>
@@ -3596,7 +3628,7 @@
             <domain>@{domain}</domain>
             <timeout>@{timeout}</timeout>
           </wdp>
-          
+
           <if>
             <and>
               <istrue value="${unquiesce_success}"/>
@@ -3610,19 +3642,19 @@
               <fail message="Failed to unquiesce domain @{domain} on @{host}."/>
             </else>
           </if>
-          
+
         </then>
         <else>
           <echo>Did not unquiesce domain @{domain} on @{host} since it does not exist.</echo>
         </else>
       </if>
-      
+
     </sequential>
-    
+
   </macrodef>
-  
-  
-  <!-- 
+
+
+  <!--
     Unquiesce a service
   -->
   <macrodef name="unquiesceService">
@@ -3638,7 +3670,7 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma"/>
     <attribute name="ignore-errors" default="false"/>
-    
+
     <sequential>
       <local name="unquiesce_okay"/>
       <local name="unquiesce_response"/>
@@ -3678,7 +3710,7 @@
     <attribute name="param1" default=""/>
     <attribute name="param2" default=""/>
     <attribute name="param3" default=""/>
-    
+
     <sequential>
       <xslt in="@{in}" out="@{out}" style="@{xsl}">
         <factory name="org.apache.xalan.processor.TransformerFactoryImpl">
@@ -3692,10 +3724,10 @@
         <param name="param3" expression="@{param3}"/>
       </xslt>
     </sequential>
-    
+
   </macrodef>
-  
-  
+
+
   <!-- Convenient definition to supply a default value when the specified value is empty. -->
   <macrodef name="defprop">
     <attribute name="name"/>
@@ -3716,8 +3748,8 @@
       </if>
     </sequential>
   </macrodef>
-  
-  
+
+
   <!-- Convenient definition to supply a default value when the specified property is empty or not set. -->
   <macrodef name="defprop-set">
     <attribute name="name"/>

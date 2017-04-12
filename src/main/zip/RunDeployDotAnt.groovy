@@ -82,6 +82,12 @@ try
                  '-Dpwd=' + props['pwd'],
                  '-Dwork.dir=' + ch.getProcessBuilder().directory().getAbsolutePath() + '/tmp']
 
+  // Add -Dignore.error if specified
+  def ignoreError = props['ignoreError']
+  if (ignoreError) {
+      antargs << "-Dignore.error=" + ignoreError
+  }
+
   // When addlProperties != '' then we pick out one or more mappings from UCD properties
   // to additional ant properties.  For example, crypto.dir=${p:resource/work.dir}${p:component.name}/ucdDemo/crypto
   // will pass -Dcrypto.dir=... to deploy.ant.xml. Multiple properties may be defined, separated by '~' characters.
