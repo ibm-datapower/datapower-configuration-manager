@@ -146,7 +146,7 @@
     </release-note>
     <release-note plugin-version="12">
         New functionality added to all steps:
-            - The hidden Java Max Memory Size variable has new -Xmx4096m, ${p?:environment/memorySize, and ${p?:resource/memorySize} options.
+            - The hidden Java Max Memory Size variable has new -Xmx4096m, ${p?:environment/memorySize}, and ${p?:resource/memorySize} options.
     </release-note>
 
   </release-notes>
