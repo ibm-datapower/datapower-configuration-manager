@@ -655,7 +655,7 @@
 
     <exportObject host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" local="${export.file}"
       dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"
-      objclass="${object.class}" objname="${object.name}" refobjs="${ref.objects}" reffiles="${ref.files}" />
+      objclass="${object.class}" objname="${object.name}" refobjs="${ref.objects}" reffiles="${ref.files}" allfiles="${all.files}" />
 
   </target>
 
