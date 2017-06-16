@@ -106,6 +106,7 @@
     <attribute name="objname" />
     <attribute name="refobjs"  default="true"/>
     <attribute name="reffiles" default="true"/>
+    <attribute name="allfiles" default="false"/>
 
     <sequential>
       <local name="export_success"/>
@@ -123,6 +124,7 @@
           <pwd>@{pwd}</pwd>
           <ignore-errors>@{ignore-errors}</ignore-errors>
           <domain>@{domain}</domain>
+          <all-files>@{allfiles}</all-files>
       </wdp>
 
       <if>
