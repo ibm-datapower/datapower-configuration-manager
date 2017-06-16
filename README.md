@@ -7,7 +7,7 @@ Deploy (UCD).
 ## Prerequisites
 
 * JDK 1.6 or later is required to build. An equivalent JRE is supported if using a prebuilt plugin.
-* Apache Ant (1.8.1 or later, 1.9.7 will be packaged with UCD plugin)
+* Apache Ant (1.8.1 or later, 1.9.9 will be packaged with UCD plugin)
 
 ## Building
 
