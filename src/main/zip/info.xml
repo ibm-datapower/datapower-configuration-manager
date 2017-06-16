@@ -152,6 +152,9 @@
         Fixes APAR PI79894 - New functionality added to the Import (Basic), Import (Definition), and Import (Deployment Policy Object) steps:
             - The hidden Import Error Regex variable can be utilized to ignore SOMA error responses.
     </release-note>
+    <release-note plugin-version="14">
+        DataPower plugin is now bundled with Ant v1.9.9.
+    </release-note>
 
   </release-notes>
 </pluginInfo>
