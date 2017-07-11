@@ -637,6 +637,7 @@
 
     <property name="ref.objects" value="true"/> <!-- provide defaults if not specified by user -->
     <property name="ref.files" value="true"/>
+    <property name="all.files" value="false"/>
 
     <sequential>
       <local name="dirname"/>
