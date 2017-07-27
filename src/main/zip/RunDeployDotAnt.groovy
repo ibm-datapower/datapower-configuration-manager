@@ -26,8 +26,8 @@ try
 
   // Dump the inputs
   if (debug) {
-    args.each{ println 'arg ' + it }
-    props.sort().each{ println 'property ' + it }
+    args.each{ println 'Argument: ' + it }
+    props.sort().each{ println 'Property: ' + it }
   }
 
   // An odd bug surfaced in 6.1.0.3 (uncertain about other releases).  Arguments
@@ -68,6 +68,14 @@ try
       antOpts += memorySize
       println "[Ok] Setting Java Max Memory Size as '${memorySize}'."
   }
+
+  // On Windows, surround password in quotes
+  // Solves all instances except escaping double quotes
+  if (apTool.isWindows) {
+      println "[Ok] Windows OS identified. Surrounding password in double quotes to help escape special characters."
+      props['pwd'] = '"' + props['pwd'] + '"'
+  }
+
   ch.addEnvironmentVariable('ANT_OPTS', antOpts)
 
   // Construct the initial set of arguments for the ant command.
