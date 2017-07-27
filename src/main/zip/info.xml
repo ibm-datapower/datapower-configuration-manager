@@ -155,6 +155,11 @@
     <release-note plugin-version="14">
         DataPower plugin is now bundled with Ant v1.9.9.
     </release-note>
+    <release-note plugin-version="15">
+        Fixes APAR PI85141 - Failure in Export Object step due to missing all.files default argument.
+        The Export Object step contains a new Export All Files? property and all required properties are now properly marked.
+        Fixes APAR PI84786 - Escape all special characters (except double quotes) in Password field for Windows OS.
+    </release-note>
 
   </release-notes>
 </pluginInfo>

@@ -126,7 +126,7 @@ public class CommandHelper {
     }
     /**
      * A convenience method for running commands and optionally parsing the stdout of that command.
-     * An input String can be provided and will be written to the process OutputStream 
+     * An input String can be provided and will be written to the process OutputStream
      * The process' stdOut and stdErr are forwarded to this scripts 'stdOut' and stdIn is untouched.
      *
      * @param message an optional message to print prior to the commandline
@@ -153,7 +153,7 @@ public class CommandHelper {
     /**
      * A convenience method for running commands and optionally parsing the stdout of that command.
      * If closure is non-null, the closure will be passed the resultant {@link Process} and is expected to deal with all IO.
-     * An input String can be provided and will be written to the process OutputStream 
+     * An input String can be provided and will be written to the process OutputStream
      * Otherwise, the process' stdOut and stdErr are forwarded to this scripts 'stdOut' and stdIn is untouched.
      *
      * @param message an optional message to print prior to the commandline
@@ -170,11 +170,11 @@ public class CommandHelper {
         }
         println("command: ${pb.command().collect{addDisplayQuotes(it)}.join(' ')}")
         def proc = pb.start()
-        
+
         if (input != null && input.length() > 0) {
             proc.getOutputStream().write(input.getBytes());
         }
-        
+
         def hook = {
            proc.destroy();
         }
@@ -203,7 +203,7 @@ public class CommandHelper {
 
     public def getProcessBuilder() {
         return pb;
-    } 
+    }
 
     private void addShutdownHook(def hook) {
        Runtime.getRuntime().addShutdownHook(hook as Thread);
@@ -252,21 +252,21 @@ public class CommandHelper {
     public void ignoreExitValue(boolean ignore) {
         this.ignoreExitValue = ignore;
     }
-    
+
     public void addEnvironmentVariable(String key, String value) {
         if (pb != null) {
             Map<String, String> environmentVariables = pb.environment();
             environmentVariables.put(key, value);
         }
     }
-    
+
     public void removeEnvironmentVariable(String key) {
         if (pb != null) {
             Map<String, String> environmentVariables = pb.environment();
             environmentVariables.remove(key);
         }
     }
-    
+
     public void printEnvironmentVariables() {
         if (pb != null) {
             Map<String, String> environmentVariables = pb.environment();
@@ -275,15 +275,15 @@ public class CommandHelper {
             }
         }
     }
-    
+
     private String sanitizeExecutable(String path) {
         String sanitizedPath = path
-        
+
         File exe = new File(path)
         if (exe.isAbsolute()) {
             sanitizedPath = path.replaceAll("[\\\\/]", Matcher.quoteReplacement(File.separator))
         }
-        
+
         return sanitizedPath
     }
 }

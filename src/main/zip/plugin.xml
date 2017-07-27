@@ -19,7 +19,7 @@
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <header>
-    <identifier version="14" id="com.ibm.datapower" name="DataPower"/>
+    <identifier version="15" id="com.ibm.datapower" name="DataPower"/>
     <description>The IBM WebSphere DataPower plugin deploys DataPower services.</description>
     <tag>Infrastructure/WebSphere DataPower</tag>
   </header>
@@ -645,14 +645,14 @@
   <step-type name="Export Object">
     <description>Export an object from a domain on a device</description>
     <properties>
-      <property name="domainName">
+      <property name="domainName" required="true">
         <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the first domain to backup"/>
       </property>
-      <property name="objectClass">
-        <property-ui type="textBox" default-value="" label="Object Class" description="Object class e.g. MultiProtocolGateway or WSGateway"/>
+      <property name="objectClass" required="true">
+        <property-ui type="textBox" default-value="" label="Object Class" description="Object class. Specify 'all-classes' to export every class. e.g. MultiProtocolGateway or WSGateway"/>
       </property>
-      <property name="objectName">
-        <property-ui type="textBox" default-value="" label="Object Name" description="Object name e.g. name of service"/>
+      <property name="objectName" required="true">
+        <property-ui type="textBox" default-value="" label="Object Name" description="Object name. Specify 'all-objects' to export every object. e.g. name of service"/>
       </property>
       <property name="refObjects">
         <property-ui type="checkBox" default-value="true" label="Include reference objects?" description="Include referenced objects when exporting?"/>
@@ -660,7 +660,10 @@
       <property name="refFiles">
         <property-ui type="checkBox" default-value="true" label="Include reference files?" description="Include referenced files when exporting?"/>
       </property>
-      <property name="exportFile">
+      <property name="allFiles">
+        <property-ui type="checkBox" default-value="false" label="Include all files?" description="Include other files when exporting?"/>
+      </property>
+      <property name="exportFile" required="true">
         <property-ui type="textBox" default-value="" label="Export file" description="DataPower export file to create/overwrite"/>
       </property>
       <property name="hostname">
@@ -709,6 +712,7 @@
       <arg value="-Dobject.name=@objectName@"/>
       <arg value="-Dref.objects=@refObjects@"/>
       <arg value="-Dref.files=@refFiles@"/>
+      <arg value="-Dall.files=@allFiles@"/>
       <arg value="-Dexport.file=@exportFile@"/>
       <arg value="export-object"/>
     </command>

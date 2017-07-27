@@ -538,4 +538,16 @@
   <migrate to-version="14">
   </migrate>
 
+  <migrate to-version="15">
+    <migrate-command  name="Export Object">
+      <migrate-properties>
+        <migrate-property name="domainName" default="${p:dpDomainName}"/>
+        <migrate-property name="objectClass" default=""/>
+        <migrate-property name="objectName" default=""/>
+        <migrate-property name="exportFile" default=""/>
+        <migrate-property name="allFiles" default=""/>
+      </migrate-properties>
+    </migrate-command>
+  </migrate>
+
 </plugin-upgrade>
