@@ -550,4 +550,7 @@
     </migrate-command>
   </migrate>
 
+  <migrate to-version="16">
+  </migrate>
+
 </plugin-upgrade>
