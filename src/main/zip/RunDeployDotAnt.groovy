@@ -106,7 +106,7 @@ try
       if (debug) {
         println '### additional property : ' + it
       }
-      def property = it.toString().tokenize('=')
+      def property = it.toString().tokenize('=')*.trim()
       if (property.size() == 2 && property[0].size() > 0) {
         if (debug) {
           println '###   property ' + property[0] + '=' + property[1]

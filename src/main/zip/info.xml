@@ -160,6 +160,9 @@
         The Export Object step contains a new Export All Files? property and all required properties are now properly marked.
         Fixes APAR PI84786 - Escape all special characters (except double quotes) in Password field for Windows OS.
     </release-note>
+    <release-note plugin-version="16">
+        Improve Invoke any deploy.ant.xml target step's Additional Properties decription. Property names and values are now trimmed.
+    </release-note>
 
   </release-notes>
 </pluginInfo>

@@ -19,7 +19,7 @@
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <header>
-    <identifier version="15" id="com.ibm.datapower" name="DataPower"/>
+    <identifier version="16" id="com.ibm.datapower" name="DataPower"/>
     <description>The IBM WebSphere DataPower plugin deploys DataPower services.</description>
     <tag>Infrastructure/WebSphere DataPower</tag>
   </header>
@@ -1069,7 +1069,7 @@
         <property-ui type="textBox" default-value="" label="Additional Properties File" description="File Containing Additional Properties"/>
       </property>
       <property name="addlProperties">
-        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]"/>
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings; Separate each pair with a tilde (~) character. Example: antpropname1=value~antpropname2=value"/>
       </property>
       <property name="hostname">
         <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true"/>
