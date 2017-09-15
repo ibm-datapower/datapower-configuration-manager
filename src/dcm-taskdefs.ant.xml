@@ -3463,6 +3463,9 @@
   <!--
     Unimport some DataPower export.
   -->
+
+  <!-- BEWARE: the unimport-extract-disable.xsl and unimport-extract-delete.xsl do not exist in the current code! -->
+  <!-- If used, this macrodef will certainly fail until those files are pulled into the correct directory! -->
   <macrodef name="unimportConfig">
     <attribute name="host"/>
     <attribute name="port" default="5550"/>
