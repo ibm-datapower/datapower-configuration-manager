@@ -430,9 +430,9 @@ public class Soma {
    * The params must contain:
    * 
    * domain= ... some domain name ... 
-   * aliasname= ... password to show to the world ... 
-   * type= ... real, secret password ... 
-   *
+   * aliasname= ... passwordAlias object name to show to the world ... 
+   * type= ... real, secret password ... Not needed anymore
+   * password= ... actual password ...
    * The params may contain:
    * 
    * ignore-errors=on or off
@@ -442,13 +442,13 @@ public class Soma {
    * @throws Exception
    */
   public NamedParams doAddPasswordMap (NamedParams params) throws Exception {
-    params.insistOn (new String[] {"domain", "aliasname", "type"});
+    params.insistOn (new String[] {"domain", "aliasname", "password"});
 
     // Make the request of the XML Management Interface.
     StringBuffer body = new StringBuffer ();
     body.append("<AddPasswordMap>");
     body.append("<AliasName>" + params.get("aliasname") + "</AliasName>");
-    body.append("<Type>" + params.get("type") + "</Type>");
+    body.append("<Password>" + params.get("password") + "</Password>");
     body.append("</AddPasswordMap>");
 
     String request = SomaUtils.getDoActionEnvelope (params.get("domain"), body.toString());
