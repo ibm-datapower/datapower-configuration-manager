@@ -90,7 +90,9 @@ public class Soma {
       result = doAddKnownHost(params);
     } else if (somaOp.equals("AddPasswordMap")) {
       result = doAddPasswordMap(params);
-    } else if (somaOp.equals("AddTrustedHost")) {
+    } else if (somaOp.equals("ChangePasswordMap")) {
+      result = doChangePasswordMap(params);
+    }else if (somaOp.equals("AddTrustedHost")) {
       result = doAddTrustedHost(params);
     } else if (somaOp.equals("Backup")) {
       result = doBackup(params);
@@ -452,6 +454,49 @@ public class Soma {
     body.append("</AddPasswordMap>");
 
     String request = SomaUtils.getDoActionEnvelope (params.get("domain"), body.toString());
+    NamedParams result = params;
+    if (errorsAreSignificant(params)) {
+      result = conn.sendAndReceive (params, request);
+      insistSomaResultIsOkay(result);
+    } else {
+      // Do the operation, ignoring the response and any exceptions.
+      try {
+        result = conn.sendAndReceive (params, request);
+      } catch (Exception e) {
+      }
+    }
+
+    return result;
+  }
+  
+   /**
+   * This method implements the changePasswordMap operation.
+   * 
+   * The params must contain:
+   * 
+   * domain= ... some domain name ... 
+   * aliasname= ... passwordAlias object name to be updated ... 
+   * password= ... new password ...
+   * The params may contain:
+   * 
+   * ignore-errors=on or off
+   * 
+   * @param params
+   * @return NamedParams "rawresponse".
+   * @throws Exception
+   */
+  public NamedParams doChangePasswordMap (NamedParams params) throws Exception {
+    params.insistOn (new String[] {"domain", "aliasname", "password"});
+
+    // Make the request of the XML Management Interface.
+    StringBuffer body = new StringBuffer ();
+    body.append("<soma:modify-config>");
+	body.append("<PasswordAlias name=\"" + params.get("aliasname") +"\">");
+    body.append("<Password>" + params.get("password") + "</Password>");
+    body.append("</PasswordAlias>");
+	 body.append("</soma:modify-config>");
+
+    String request = SomaUtils.getGeneralEnvelope (params.get("domain"), body.toString());
     NamedParams result = params;
     if (errorsAreSignificant(params)) {
       result = conn.sendAndReceive (params, request);
