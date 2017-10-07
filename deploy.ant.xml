@@ -1397,7 +1397,7 @@
   </target>
 
   
-  <target name="buildPasswordAlias" depends="-init-dir, check-access" description="create PasswordAlias object">
+  <target name="create-passwordAlias-object" depends="-init-dir, check-access" description="create PasswordAlias object">
 	<fail message="The Ant property 'passwordAlias.object.name' is required but not defined.  This is the name of a password Alias object." unless="passwordAlias.object.name"/>
 	<fail message="The Ant property 'passwordAlias.object.password' is required but not defined.  This is the password of a password Alias object." unless="passwordAlias.object.password"/>
 	<property name="object.class" value="PasswordAlias"/>
