@@ -1396,46 +1396,7 @@
 
   </target>
 
-  
-  <target name="create-passwordAlias-object" depends="-init-dir, check-access" description="create PasswordAlias object">
-	<fail message="The Ant property 'passwordAlias.object.name' is required but not defined.  This is the name of a password Alias object." unless="passwordAlias.object.name"/>
-	<fail message="The Ant property 'passwordAlias.object.password' is required but not defined.  This is the password of a password Alias object." unless="passwordAlias.object.password"/>
-	<property name="object.class" value="PasswordAlias"/>
-	<property name="ref.objects" value="false"/>
-	<!-- provide defaults if not specified by user -->
-	<property name="ref.files" value="fasle"/>
-	<wdp operation="AddPasswordMap" dumpinput="true" dumpoutput="true" capturesoma="${capturesoma}">
-		<objects xmlns:soma="http://www.datapower.com/schemas/management">
-			<soma:object class="@{object.class}" name="@{passwordAlias.object.name}" ref-objects="@{refobjs}" ref-files="@{reffiles}"/>
-		</objects>
-		<aliasname>${passwordAlias.object.name}</aliasname>
-		<password>${passwordAlias.object.password}</password>
-		<hostname>${host}</hostname>
-		<uid>${uid}</uid>
-		<pwd>${pwd}</pwd>
-		<domain>${domain}</domain>
-	</wdp>
- </target>
 
- <target name="update-passwordAlias-object" depends="-init-dir, check-access" description="update password in PasswordAlias object">
-	<fail message="The Ant property 'passwordAlias.object.name' is required but not defined.  This is the name of a password Alias object." unless="passwordAlias.object.name"/>
-	<fail message="The Ant property 'passwordAlias.object.password' is required but not defined.  This is the new password." unless="passwordAlias.object.password"/>
-	<property name="object.class" value="PasswordAlias"/>
-	<property name="ref.objects" value="false"/>
-	<!-- provide defaults if not specified by user -->
-	<property name="ref.files" value="fasle"/>
-	<wdp operation="ChangePasswordMap" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
-		<objects xmlns:soma="http://www.datapower.com/schemas/management">
-			<soma:object class="@{object.class}" name="@{passwordAlias.object.name}" ref-objects="@{refobjs}" ref-files="@{reffiles}"/>
-		</objects>
-		<aliasname>${passwordAlias.object.name}</aliasname>
-		<password>${passwordAlias.object.password}</password>
-		<hostname>${host}</hostname>
-		<uid>${uid}</uid>
-		<pwd>${pwd}</pwd>
-		<domain>${domain}</domain>
-	</wdp>
- </target>
   <target name="valcred-from-def" depends="-init-dir, check-access">
 
     <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
@@ -1523,7 +1484,45 @@
     <property name="port" value="5550"/> <!-- Provide a default when this property hasn't been defined before. -->
 
   </target>
+  <target name="create-passwordAlias-object" depends="-init-dir, check-access" description="create PasswordAlias object">
+	<fail message="The Ant property 'passwordAlias.object.name' is required but not defined.  This is the name of a password Alias object." unless="passwordAlias.object.name"/>
+	<fail message="The Ant property 'passwordAlias.object.password' is required but not defined.  This is the password of a password Alias object." unless="passwordAlias.object.password"/>
+	<property name="object.class" value="PasswordAlias"/>
+	<property name="ref.objects" value="false"/>
+	<!-- provide defaults if not specified by user -->
+	<property name="ref.files" value="fasle"/>
+	<wdp operation="AddPasswordMap" dumpinput="true" dumpoutput="true" capturesoma="${capturesoma}">
+		<objects xmlns:soma="http://www.datapower.com/schemas/management">
+			<soma:object class="@{object.class}" name="@{passwordAlias.object.name}" ref-objects="@{refobjs}" ref-files="@{reffiles}"/>
+		</objects>
+		<aliasname>${passwordAlias.object.name}</aliasname>
+		<password>${passwordAlias.object.password}</password>
+		<hostname>${host}</hostname>
+		<uid>${uid}</uid>
+		<pwd>${pwd}</pwd>
+		<domain>${domain}</domain>
+	</wdp>
+  </target>
 
+  <target name="update-passwordAlias-object" depends="-init-dir, check-access" description="update password in PasswordAlias object">
+	<fail message="The Ant property 'passwordAlias.object.name' is required but not defined.  This is the name of a password Alias object." unless="passwordAlias.object.name"/>
+	<fail message="The Ant property 'passwordAlias.object.password' is required but not defined.  This is the new password." unless="passwordAlias.object.password"/>
+	<property name="object.class" value="PasswordAlias"/>
+	<property name="ref.objects" value="false"/>
+	<!-- provide defaults if not specified by user -->
+	<property name="ref.files" value="fasle"/>
+	<wdp operation="ChangePasswordMap" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+		<objects xmlns:soma="http://www.datapower.com/schemas/management">
+			<soma:object class="@{object.class}" name="@{passwordAlias.object.name}" ref-objects="@{refobjs}" ref-files="@{reffiles}"/>
+		</objects>
+		<aliasname>${passwordAlias.object.name}</aliasname>
+		<password>${passwordAlias.object.password}</password>
+		<hostname>${host}</hostname>
+		<uid>${uid}</uid>
+		<pwd>${pwd}</pwd>
+		<domain>${domain}</domain>
+	</wdp>
+  </target>
 
   <target name="-init-dir" depends="clean">
     <mkdir dir="${work.dir}"/>
