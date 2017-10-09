@@ -18,19 +18,13 @@
  -->
 <!--
   This stylesheet performs DataPower deployment operations:
-
   certificate-from-def - upload a cert (or multiple certs) based on a dcm:definition (with Crypto Certificate objects, of course)
-
   check-access - check whether the device is accessible and that the userid/password works
-
   checkpoint-delete - delete the specified checkpoint
   checkpoint-restore - restore from the specified checkpoint
   checkpoint-save - create/overwrite the specified checkpoint
-
   create-tam-files - Create TAM files based on a whole bunch of parameters
-
   clean - delete any temp files created by this ant script
-
   domain-create - ensure the domain exists
   domain-delete - delete the domain
   domain-init - delete and recreate the domain, then upload the standard files
@@ -39,96 +33,66 @@
   domain-reset - clear all the objects from the domain (but not files)
   domain-restart - restart the domain
   domain-unquiesce - unquiesce all the services in the domain
-
   export-object - export an object i.e. service
   export-objects - export objects based on a dcm:definition file
-
   host-alias-remove - remove a specific host alias
   host-alias-set - create/overwrite a host alias
-
   idcred-from-def - create an idcred object based on a dcm:definition
   idcred-from-key-and-cert - create an idcred object after uploading matching key and certificate files
   idcred-from-p12 - create an idcred object after uploading a #PKCS12 file containing matching key and certificate
-
   import-changed - import a specified .zip or .xcfg file into the domain, making changes along the way
   import-from-def - ditto
   import-dpo - import a specified .zip or .xcfg file into the domain, making changes along the way
-
   key-from-def - upload a key (or multiple keys) based on a dcm:definition (with Crypto Key objects, of course)
-
   load-balancer-group-from-def - create/overwrite a load balancer group object
-
   ltpa-password - prompt the console user for the LTPA shared-secret password
-
   main (default target) - execute the import-changed and save targets (in that order)
-
   objects-from-def - create, delete, or modify objects based on dcm:object-* elements
-
   object-status - check the opstate of objects are as required based on a dcm:definition file
-
   raw-mgmt-call - make a raw management (SOMA or AMP etc) call based on raw request file input
-
   reboot - make an appliance reboot request
-
   save - save the domain
-
   secure-backup-device - secure backup of device
-
   service-quiesce - quiesce a service
   service-unquiesce -unquiesce a service
   service-status - get the opstate of a service
-
   upload-dir - upload an entire directory
   upload-from-def - upload files specified in dcm:definition/dcm:upload elements
-
   valcred-from-def - create a valcred object based on a dcm:definition
   valcred-from-dir - create a valcred object from a set of certificates in a directory
-
   This script relies on the following ANT properties:
-
     host - the hostname or IP address of the DataPower device
     domain - the name of the domain on that device
     uid - the userid on that device
     pwd - the password for the userid on that device
     port - the XML Management Interface port on that device (optional, defaults to 5550)
-
     dcm.jar - location of DCM jar file
     work.dir - location of DCM temp directory
     dcm.dir - location of DCM stylesheets directory
     schema.dir - location of directory used by DCM to cache internally-generated schemas
-
   IF YOU ARE NEW TO ANT:
-
     Ant executes the specified "targets" in the order that you specified them on the command line, or
     it executes the "main" target, which is the default.  Each target may depend on other targets, and those
     will be executed first.  For example, the "main" target depends on "domain-create", which in turn depends on
     "check-access".  So Ant will begin by executing the "check-access" target, then the "domain-create"
     target, and finally the "main" target.  Oh, and the code preceding all the <target> elements is initialization
     code and will be executed before everything else.  Targets that are defined but not needed are ignored.
-
     Properties are the lifeblood of Ant.  A property is simply a name/value pair and it can be set once.  Further
     changes to a property are ignored.  For example, if the property xyz is defined on the command line like this:
-
       ant -Dxyz=10
-
     then xyz will have that value for the life of the Ant execution, regardless of how many times you attempt to
     set xyz after that.  Several places in the script provide default values for some properties but it isn't
     possible (or generally desirable) to prevent the user from setting a property either on the command line,
     or through a property file named on the command line.
-
     Properties, once defined, exist for the rest of Ant's execution.  With one exception of course. ;)
     The lifetime of Ant properties can be confined by writing code this way:
-
       <sequential>
         <local name="def"/>
         <property name="def" value="123"/>
         ...
       </sequential>
-
     The property "def" will be forgotten at the end of the <sequential> task.
-
     There you go.  With these concepts in hand, Ant scripts are generally straightforward to read.
-
 -->
 <project name="deploy" default="main" xmlns:props="antlib:ibm">
 
@@ -1484,9 +1448,10 @@
     <property name="port" value="5550"/> <!-- Provide a default when this property hasn't been defined before. -->
 
   </target>
-  <target name="create-passwordAlias-object" depends="-init-dir, check-access" description="create PasswordAlias object">
-	<fail message="The Ant property 'passwordAlias.object.name' is required but not defined.  This is the name of a password Alias object." unless="passwordAlias.object.name"/>
-	<fail message="The Ant property 'passwordAlias.object.password' is required but not defined.  This is the password of a password Alias object." unless="passwordAlias.object.password"/>
+  
+<target name="create-passwordAlias-object" depends="-init-dir, check-access" description="create PasswordAlias object">		
+	<fail message="The Ant property 'passwordAlias.object.name' is required but not defined.  This is the name of a password Alias object." unless="passwordAlias.object.name"/>		
+	<fail message="The Ant property 'passwordAlias.object.password' is required but not defined.  This is the password of a password Alias object." unless="passwordAlias.object.password"/>		
 	<property name="object.class" value="PasswordAlias"/>
 	<property name="ref.objects" value="false"/>
 	<!-- provide defaults if not specified by user -->
@@ -1501,10 +1466,10 @@
 		<uid>${uid}</uid>
 		<pwd>${pwd}</pwd>
 		<domain>${domain}</domain>
-	</wdp>
-  </target>
+	</wdp>		
+</target>		
 
-  <target name="update-passwordAlias-object" depends="-init-dir, check-access" description="update password in PasswordAlias object">
+<target name="update-passwordAlias-object" depends="-init-dir, check-access" description="update password in PasswordAlias object">
 	<fail message="The Ant property 'passwordAlias.object.name' is required but not defined.  This is the name of a password Alias object." unless="passwordAlias.object.name"/>
 	<fail message="The Ant property 'passwordAlias.object.password' is required but not defined.  This is the new password." unless="passwordAlias.object.password"/>
 	<property name="object.class" value="PasswordAlias"/>
@@ -1522,8 +1487,7 @@
 		<pwd>${pwd}</pwd>
 		<domain>${domain}</domain>
 	</wdp>
-  </target>
-
+</target>
   <target name="-init-dir" depends="clean">
     <mkdir dir="${work.dir}"/>
     <mkdir dir="${schema.dir}"/>
