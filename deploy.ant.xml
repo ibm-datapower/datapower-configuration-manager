@@ -17,46 +17,54 @@
  **/
  -->
 <!--
-  This stylesheet performs DataPower deployment operations:
+  This stylesheet performs DataPower deployment operations (* = matching plug-in step):
+
+  backup-device*  - Backup all domains on a device (minus key/certificate files)
+  backup-domains* - Backup one or more domains on a device (minus key/certificate files)
 
   certificate-from-def - upload a cert (or multiple certs) based on a dcm:definition (with Crypto Certificate objects, of course)
 
   check-access - check whether the device is accessible and that the userid/password works
 
-  checkpoint-delete - delete the specified checkpoint
-  checkpoint-restore - restore from the specified checkpoint
-  checkpoint-save - create/overwrite the specified checkpoint
+  checkpoint-delete*  - delete the specified checkpoint
+  checkpoint-restore* - restore from the specified checkpoint
+  checkpoint-save*    - create/overwrite the specified checkpoint
 
   create-tam-files - Create TAM files based on a whole bunch of parameters
 
   clean - delete any temp files created by this ant script
 
-  domain-create - ensure the domain exists
-  domain-delete - delete the domain
-  domain-init - delete and recreate the domain, then upload the standard files
-  domain-quiesce - quiesce all the services in the domain
-  domain-recreate - delete and recreate the domain, then save
-  domain-reset - clear all the objects from the domain (but not files)
-  domain-restart - restart the domain
-  domain-unquiesce - unquiesce all the services in the domain
+  domain-create*    - ensure the domain exists
+  domain-delete*    - delete the domain
+  domain-init       - delete and recreate the domain, then upload the standard files
+  domain-quiesce*   - quiesce all the services in the domain
+  domain-recreate   - delete and recreate the domain, then save
+  domain-reset      - clear all the objects from the domain (but not files)
+  domain-restart*   - restart the domain
+  domain-unquiesce* - unquiesce all the services in the domain
 
-  export-object - export an object i.e. service
+  download-files* - Download target files or all files from a filestore
+
+  export-object* - export an object i.e. service
   export-objects - export objects based on a dcm:definition file
 
-  host-alias-remove - remove a specific host alias
-  host-alias-set - create/overwrite a host alias
+  firmware-rollback - Rollback to the previous firmware (and filesystem contents!)
+  firmware-update   - Update to a new level of firmware
 
-  idcred-from-def - create an idcred object based on a dcm:definition
+  host-alias-remove* - remove a specific host alias
+  host-alias-set*    - create/overwrite a host alias
+
+  idcred-from-def* - create an idcred object based on a dcm:definition
   idcred-from-key-and-cert - create an idcred object after uploading matching key and certificate files
-  idcred-from-p12 - create an idcred object after uploading a #PKCS12 file containing matching key and certificate
+  idcred-from-p12  - create an idcred object after uploading a #PKCS12 file containing matching key and certificate
 
-  import-changed - import a specified .zip or .xcfg file into the domain, making changes along the way
-  import-from-def - ditto
-  import-dpo - import a specified .zip or .xcfg file into the domain, making changes along the way
+  import-changed   - import a specified .zip or .xcfg file into the domain, making changes along the way
+  import-from-def* - ditto
+  import-dpo*      - import a specified .zip or .xcfg file into the domain, making changes along the way
 
   key-from-def - upload a key (or multiple keys) based on a dcm:definition (with Crypto Key objects, of course)
 
-  load-balancer-group-from-def - create/overwrite a load balancer group object
+  load-balancer-group-from-def* - create/overwrite a load balancer group object
 
   ltpa-password - prompt the console user for the LTPA shared-secret password
 
@@ -66,23 +74,25 @@
 
   object-status - check the opstate of objects are as required based on a dcm:definition file
 
-  raw-mgmt-call - make a raw management (SOMA or AMP etc) call based on raw request file input
+  raw-mgmt-call* - make a raw management (SOMA or AMP etc) call based on raw request file input
 
   reboot - make an appliance reboot request
 
-  save - save the domain
+  restore-backup* - Restore one or more domains from backup file (see Backup Device or Backup Domains)
+
+  save* - save the domain
 
   secure-backup-device - secure backup of device
 
-  service-quiesce - quiesce a service
-  service-unquiesce -unquiesce a service
-  service-status - get the opstate of a service
+  service-quiesce   - quiesce a service
+  service-unquiesce - unquiesce a service
+  service-status    - get the opstate of a service
 
-  upload-dir - upload an entire directory
-  upload-from-def - upload files specified in dcm:definition/dcm:upload elements
+  upload-dir*      - upload an entire directory
+  upload-from-def* - upload files specified in dcm:definition/dcm:upload elements
 
-  valcred-from-def - create a valcred object based on a dcm:definition
-  valcred-from-dir - create a valcred object from a set of certificates in a directory
+  valcred-from-def* - create a valcred object based on a dcm:definition
+  valcred-from-dir  - create a valcred object from a set of certificates in a directory
 
   This script relies on the following ANT properties:
 
