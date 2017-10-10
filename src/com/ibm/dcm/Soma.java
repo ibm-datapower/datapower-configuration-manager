@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 IBM Corp.
+ * Copyright 2014, 2017 IBM Corp.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import org.w3c.dom.*;
 
 /**
  * This class provides a bunch of methods that wrap various SOMA calls.
- * 
+ *
  */
 public class Soma {
 
@@ -34,7 +34,7 @@ public class Soma {
 
   /**
    * Create a Soma object the relies on the supplied SSLConnection.
-   * 
+   *
    * @param conn
    */
   public Soma (SSLConnection conn) {
@@ -43,7 +43,7 @@ public class Soma {
 
   /**
    * Copy constructor.
-   * 
+   *
    * @param other
    */
   public Soma (Soma other) {
@@ -61,7 +61,7 @@ public class Soma {
    * This method exists because since you supplied the SSLConnection in the first
    * place then providing you access to it doesn't increase the risk, since you
    * could simply have kept a reference to the object.
-   * 
+   *
    * The SSLConnection object belongs to the Soma object, so don't fiddle with it.
    */
   public SSLConnection getConnection () {
@@ -73,11 +73,11 @@ public class Soma {
    * This method performs some SOMA operation (specified in params) and returns a
    * SomaParams object containing the results.  The exact results depend on the
    * operation.
-   * 
+   *
    * The params object must contain (at a minimum) this key/value pair:
-   * 
+   *
    * soma= ... some SOMA operation ... (e.g. MemoryStatus, or SetFile)
-   * 
+   *
    * Throws an exception in case of any errors.
    */
   public NamedParams performOperation (NamedParams params) throws Exception {
@@ -90,7 +90,9 @@ public class Soma {
       result = doAddKnownHost(params);
     } else if (somaOp.equals("AddPasswordMap")) {
       result = doAddPasswordMap(params);
-    } else if (somaOp.equals("AddTrustedHost")) {
+    } else if (somaOp.equals("ChangePasswordMap")) {
+      result = doChangePasswordMap(params);
+    }else if (somaOp.equals("AddTrustedHost")) {
       result = doAddTrustedHost(params);
     } else if (somaOp.equals("Backup")) {
       result = doBackup(params);
@@ -314,21 +316,21 @@ public class Soma {
 
     return result;
   }
-  
+
   // TODO: revisit debug logging properly later..
   private static boolean DEBUG = false;
-  
+
   private static void debug(String msg) {
-	  if (DEBUG) System.out.println("[debug] Soma: " + msg);
+      if (DEBUG) System.out.println("[debug] Soma: " + msg);
   }
 
   /**
    * This method implements the SomaCall operation.
-   * 
+   *
    * The params must contain:
-   * 
-   * request= ... the request file name ... 
-   * response= ... the request file name ... 
+   *
+   * request= ... the request file name ...
+   * response= ... the request file name ...
    *
    * The params may contain:
    *
@@ -338,55 +340,55 @@ public class Soma {
    * @return NamedParams "rawresponse".
    * @throws Exception
    */
-	public NamedParams doRawMgmtCall(NamedParams params) throws Exception {
-		params.insistOn(new String[] { "request", "response" });		
-		File requestFile = new File(params.get("request"));
-		debug("requestFile: "+ requestFile.getAbsolutePath());
-		String request = readFile(requestFile);
-		NamedParams result = params;
-		result = conn.sendAndReceive(params, request, params.get("method"));
-		String raw = result.get("rawresponse");
-		File responseFile = new File(params.get("response"));
-		debug("responseFile: "+ responseFile.getAbsolutePath());
-		PrintWriter out = new PrintWriter(responseFile);
-		out.println(raw);
-		out.close();
-		return result;
-	}
+    public NamedParams doRawMgmtCall(NamedParams params) throws Exception {
+        params.insistOn(new String[] { "request", "response" });
+        File requestFile = new File(params.get("request"));
+        debug("requestFile: "+ requestFile.getAbsolutePath());
+        String request = readFile(requestFile);
+        NamedParams result = params;
+        result = conn.sendAndReceive(params, request, params.get("method"));
+        String raw = result.get("rawresponse");
+        File responseFile = new File(params.get("response"));
+        debug("responseFile: "+ responseFile.getAbsolutePath());
+        PrintWriter out = new PrintWriter(responseFile);
+        out.println(raw);
+        out.close();
+        return result;
+    }
 
-	private static String readFile(File file) throws IOException {
-		BufferedReader reader = new BufferedReader(new FileReader(file));
-		String line = null;
-		StringBuilder stringBuilder = new StringBuilder();
-		String ls = System.getProperty("line.separator");
+    private static String readFile(File file) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String line = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        String ls = System.getProperty("line.separator");
 
-		try {
-			while ((line = reader.readLine()) != null) {
-				stringBuilder.append(line);
-				stringBuilder.append(ls);
-			}
+        try {
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+                stringBuilder.append(ls);
+            }
 
-			return stringBuilder.toString();
-		} finally {
-			reader.close();
-		}
-	}
+            return stringBuilder.toString();
+        } finally {
+            reader.close();
+        }
+    }
 
   /**
    * This method implements the AddKnownHost operation.
-   * 
+   *
    * The params must contain:
-   * 
-   * domain= ... some domain name ... 
-   * clientname= ... name of SSH Client object ... 
-   * knownhost= ... hostname or IP addr ... 
-   * key= ... text of key ... 
+   *
+   * domain= ... some domain name ...
+   * clientname= ... name of SSH Client object ...
+   * knownhost= ... hostname or IP addr ...
+   * key= ... text of key ...
    *
    * The params may contain:
-   *  
-   * type=ssh-rsa 
+   *
+   * type=ssh-rsa
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -426,29 +428,29 @@ public class Soma {
 
   /**
    * This method implements the AddPasswordMap operation.
-   * 
-   * The params must contain:
-   * 
-   * domain= ... some domain name ... 
-   * aliasname= ... password to show to the world ... 
-   * type= ... real, secret password ... 
    *
+   * The params must contain:
+   *
+   * domain= ... some domain name ...
+   * aliasname= ... passwordAlias object name to show to the world ...
+   * type= ... real, secret password ... Not needed anymore
+   * password= ... actual password ...
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
    */
   public NamedParams doAddPasswordMap (NamedParams params) throws Exception {
-    params.insistOn (new String[] {"domain", "aliasname", "type"});
+    params.insistOn (new String[] {"domain", "aliasname", "password"});
 
     // Make the request of the XML Management Interface.
     StringBuffer body = new StringBuffer ();
     body.append("<AddPasswordMap>");
     body.append("<AliasName>" + params.get("aliasname") + "</AliasName>");
-    body.append("<Type>" + params.get("type") + "</Type>");
+    body.append("<Password>" + params.get("password") + "</Password>");
     body.append("</AddPasswordMap>");
 
     String request = SomaUtils.getDoActionEnvelope (params.get("domain"), body.toString());
@@ -467,21 +469,64 @@ public class Soma {
     return result;
   }
 
+   /**
+   * This method implements the changePasswordMap operation.
+   *
+   * The params must contain:
+   *
+   * domain= ... some domain name ...
+   * aliasname= ... passwordAlias object name to be updated ...
+   * password= ... new password ...
+   * The params may contain:
+   *
+   * ignore-errors=on or off
+   *
+   * @param params
+   * @return NamedParams "rawresponse".
+   * @throws Exception
+   */
+  public NamedParams doChangePasswordMap (NamedParams params) throws Exception {
+    params.insistOn (new String[] {"domain", "aliasname", "password"});
+
+    // Make the request of the XML Management Interface.
+    StringBuffer body = new StringBuffer ();
+    body.append("<soma:modify-config>");
+    body.append("<PasswordAlias name=\"" + params.get("aliasname") +"\">");
+    body.append("<Password>" + params.get("password") + "</Password>");
+    body.append("</PasswordAlias>");
+     body.append("</soma:modify-config>");
+
+    String request = SomaUtils.getGeneralEnvelope (params.get("domain"), body.toString());
+    NamedParams result = params;
+    if (errorsAreSignificant(params)) {
+      result = conn.sendAndReceive (params, request);
+      insistSomaResultIsOkay(result);
+    } else {
+      // Do the operation, ignoring the response and any exceptions.
+      try {
+        result = conn.sendAndReceive (params, request);
+      } catch (Exception e) {
+      }
+    }
+
+    return result;
+  }
+
 
   /**
    * This method implements the AddTrustedHost operation.
-   * 
+   *
    * The params must contain:
-   * 
-   * domain= ... some domain name ... 
-   * trustedhost= ... hostname or IP addr ... 
-   * key= ... text of key ... 
+   *
+   * domain= ... some domain name ...
+   * trustedhost= ... hostname or IP addr ...
+   * key= ... text of key ...
    *
    * The params may contain:
-   *  
-   * type=ssh-rsa 
+   *
+   * type=ssh-rsa
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -520,22 +565,22 @@ public class Soma {
 
   /**
    * This method implements the do-backup operation.
-   * 
+   *
    * The params must contain:
-   * 
-   * domain= ... some domain name ... 
-   * local= ... local filename ... 
+   *
+   * domain= ... some domain name ...
+   * local= ... local filename ...
    *
    * The params may contain:
-   * 
-   * format= ZIP or XML (default ZIP) 
-   * persisted=true or false (default false) 
-   * deployment-policy-name= ... name of deployment policy object ... 
-   * user-comment= ... 
-   * domains= ... blank-separated list of additional domains ... 
-   * deployment-policy= ... XML config for ConfigConfigDeploymentPolicy object ... 
+   *
+   * format= ZIP or XML (default ZIP)
+   * persisted=true or false (default false)
+   * deployment-policy-name= ... name of deployment policy object ...
+   * user-comment= ...
+   * domains= ... blank-separated list of additional domains ...
+   * deployment-policy= ... XML config for ConfigConfigDeploymentPolicy object ...
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -612,17 +657,17 @@ public class Soma {
 
   /**
    * This method backs up all domains on the device.
-   * 
+   *
    * The params must contain:
-   * 
-   * local= ... local filename ... 
+   *
+   * local= ... local filename ...
    *
    * The params may contain:
-   * 
-   * format= ZIP or XML 
-   * persisted=true or false (default false) 
+   *
+   * format= ZIP or XML
+   * persisted=true or false (default false)
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -664,15 +709,15 @@ public class Soma {
   /**
    * This method implements the BootDelete operation, which deletes the
    * boot image that you could roll back to.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * nothing (implicitly used "default" domain)
    *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -701,16 +746,16 @@ public class Soma {
    * This method implements the BootUpdate operation, which specifies a
    * new boot image and reload/restart options.  (Implicitly uses the
    * default domain.)
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * name= ... name of a configuration file (implicitly in the config:/// filestore) ...
-   * 
+   *
    * The params may optionally contain:
-   * 
+   *
    * option= (write | append)
    * ignore-errors=
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -741,21 +786,21 @@ public class Soma {
 
 
   /**
-   * This method implements the CacheSchema operation, which causes the 
+   * This method implements the CacheSchema operation, which causes the
    * cache to contain the most up to date version of the specified
    * XML schema.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * objname= ... name of an XML Manager object ...
    * url= ... a URL, which may be on or off the box, for the schema ...
-   * 
+   *
    * The params may optionally contain:
-   * 
+   *
    * mode= (general | stream)
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -789,24 +834,24 @@ public class Soma {
 
 
   /**
-   * This method implements the CacheStylesheet operation, which causes the 
+   * This method implements the CacheStylesheet operation, which causes the
    * cache to contain the most up to date version of the specified
    * stylesheet.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * objname= ... name of an XML Manager object ...
    * url= ... a URL, which may be on or off the box, for the stylesheet ...
-   * 
+   *
    * Many SOMA functions correspond closely to CLI commands.  This one, oddly,
    * doesn't, which makes me suspicious.
-   * 
+   *
    * The params may optionally contain:
-   * 
+   *
    * mode= ... check this out ...
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -840,20 +885,20 @@ public class Soma {
 
 
   /**
-   * This method implements the CacheWSDL operation, which causes the 
+   * This method implements the CacheWSDL operation, which causes the
    * cache to contain the most up to date version of the specified
    * WSDL.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * objname= ... name of an XML Manager object ...
    * url= ... a URL, which may be on or off the box, for the WSDL ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -884,19 +929,19 @@ public class Soma {
 
 
   /**
-   * This method implements the ChangePassword operation, which replaces 
+   * This method implements the ChangePassword operation, which replaces
    * password for the uid with the new password, provided you supply the
    * correct old (current) password.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * pwd= ... the old/current password ...
    * newpwd= ... the new password ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -928,16 +973,16 @@ public class Soma {
 
   /**
    * This method clears a filestore, removing all files and directories.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * filestore=(cert: | export: | local: | logstore: | logtemp: | sharedcert: | temporary:)
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return the original params.
    * @throws Exception
@@ -954,12 +999,12 @@ public class Soma {
     }
 
     String fs = params.get("filestore");
-    if (!(fs.equals("cert:")       || 
-          fs.equals("export:")     || 
-          fs.equals("local:")      || 
-          fs.equals("logstore:")   || 
-          fs.equals("logtemp:")    || 
-          fs.equals("sharedcert:") || 
+    if (!(fs.equals("cert:")       ||
+          fs.equals("export:")     ||
+          fs.equals("local:")      ||
+          fs.equals("logstore:")   ||
+          fs.equals("logtemp:")    ||
+          fs.equals("sharedcert:") ||
           fs.equals("temporary:"))) {
       if (errorsAreSignificant(params)) {
         throw new RuntimeException("Filestore \"" + fs + "\" isn't permitted to be cleared.");
@@ -1035,18 +1080,18 @@ public class Soma {
 
   /**
    * This method implements the ConvertCertificate operation.
-   * 
+   *
    * The params must contain:
-   * 
-   * domain= ... some domain name ... 
-   * objname= ... name of CryptoCertificate object ... 
-   * remote= ... URL to write the converted certificate ... 
+   *
+   * domain= ... some domain name ...
+   * objname= ... name of CryptoCertificate object ...
+   * remote= ... URL to write the converted certificate ...
    *
    * The params may contain:
-   *  
-   * format=openssh-pubkey 
+   *
+   * format=openssh-pubkey
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -1085,18 +1130,18 @@ public class Soma {
 
   /**
    * This method implements the ConvertKey operation.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
-   * objname= ... name of CryptoKey object ... 
-   * remote= ... URL to write the converted certificate ... 
+   * objname= ... name of CryptoKey object ...
+   * remote= ... URL to write the converted certificate ...
    *
    * The params may contain:
-   *  
-   * format=openssh-pubkey 
+   *
+   * format=openssh-pubkey
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -1134,23 +1179,23 @@ public class Soma {
 
 
   /**
-   * This method implements the do-cpa-import operation. 
-   *  
-   * UNTESTED due to a lack of hardware (XB6x) 
-   * 
+   * This method implements the do-cpa-import operation.
+   *
+   * UNTESTED due to a lack of hardware (XB6x)
+   *
    * The params must contain:
-   * 
-   * domain= ... some domain name ... 
-   * local= ... local filename ... 
-   * gateway-name= ... name of gateway ... 
-   * internal-party= ... name of internal party ... 
-   * 
+   *
+   * domain= ... some domain name ...
+   * local= ... local filename ...
+   * gateway-name= ... name of gateway ...
+   * internal-party= ... name of internal party ...
+   *
    * The params may contain:
-   *  
-   * overwrite-files=true or false (default true) 
-   * overwrite-objects=true or false (default true) 
+   *
+   * overwrite-files=true or false (default true)
+   * overwrite-objects=true or false (default true)
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -1190,18 +1235,18 @@ public class Soma {
 
 
   /**
-   * This method implements the CreateDirectory operation, which creates 
+   * This method implements the CreateDirectory operation, which creates
    * a single directory.  Sorry, it won't create multiple levels in one call.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * remote= ... the remote directory to create ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -1231,11 +1276,11 @@ public class Soma {
 
 
   /**
-   * This method implements the CreateTAMFiles operation, which creates 
+   * This method implements the CreateTAMFiles operation, which creates
    * all the stuff needed to integrate with Tivoli Access Manager.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * outputconfigfile= ...
    * administrator-uid= ...
@@ -1245,11 +1290,11 @@ public class Soma {
    * tamhost= ...
    * tamport ...
    * sslkeyfilelifetime= number of seconds (16 bits)
-   * ssltimeout= number of seconds (32 bits) 
-   * localmode= 
-   * 
+   * ssltimeout= number of seconds (32 bits)
+   * localmode=
+   *
    * The params may optionally contain:
-   * 
+   *
    * ldapserver= ...
    * ldapport= ...
    * ldapauthtimeout= number of seconds (32 bits)
@@ -1259,15 +1304,15 @@ public class Soma {
    * ldapcache= on or off
    * ldapusercachesize= size (16 bits)
    * ldappolicycachesize= size (16 bits)
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
    */
   public NamedParams doCreateTAMFiles (NamedParams params) throws Exception {
-    params.insistOn (new String[] {"domain", "outputconfigfile", "administrator-uid", "administrator-pwd", 
+    params.insistOn (new String[] {"domain", "outputconfigfile", "administrator-uid", "administrator-pwd",
                        "tamdomain", "application", "tamhost", "tamport", "sslkeyfilelifetime", "ssltimeout",
                        "localmode", "useadregistry"});
 
@@ -1354,20 +1399,20 @@ public class Soma {
 
 
   /**
-   * This method implements the CryptoExport operation, which exports the 
+   * This method implements the CryptoExport operation, which exports the
    * specified crypto object to a file.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * name= ... object name ...
    * remote= ... name of DP file where the export s/b written ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * objtype= key or cert
    * mechanism=hsmkwk
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -1403,23 +1448,23 @@ public class Soma {
 
 
   /**
-   * This method implements the CryptoImport operation, which imports the 
+   * This method implements the CryptoImport operation, which imports the
    * specified crypto object from a file (see CryptoExport).
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * name= ... object name ...
    * remote= ... name of DP file to inport from ...
-   * 
+   *
    * The params may contain:
    * objtype=key or cert
    * password= ... password for the input file ...
    * passwordalias= ... password alias for the input file ...
    * kwkexportable=on or off
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -1459,22 +1504,22 @@ public class Soma {
 
 
   /**
-   * This method implements the DeleteConfig operation, which deletes 
+   * This method implements the DeleteConfig operation, which deletes
    * the specified object.  You
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
-   * 
+   *
    *   classname= ... name of the objects's class (e.g. Domain or MQQM) ...
    *   objname= ... name of the specific object to delete ...
-   * or 
+   * or
    *   config= <config> ... </config>
-   *  
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -1505,16 +1550,16 @@ public class Soma {
 
   /**
    * This method implements the DeleteFile operation.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * remote= ... the name of some file on the device ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -1542,17 +1587,17 @@ public class Soma {
 
   /**
    * This method implements the DeleteKnownHost operation.
-   * 
+   *
    * The params must contain:
-   * 
-   * domain= ... some domain name ... 
-   * knownhost= ... hostname or IP addr ... 
-   * clientname= ... name of SSH Client object ... 
+   *
+   * domain= ... some domain name ...
+   * knownhost= ... hostname or IP addr ...
+   * clientname= ... name of SSH Client object ...
    *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -1586,16 +1631,16 @@ public class Soma {
 
   /**
    * This method implements the DeleteKnownHostTable operation.
-   * 
+   *
    * The params must contain:
-   * 
-   * domain= ... some domain name ... 
-   * clientname= ... name of SSH Client object ... 
+   *
+   * domain= ... some domain name ...
+   * clientname= ... name of SSH Client object ...
    *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -1629,16 +1674,16 @@ public class Soma {
 
   /**
    * This method implements the DeletePasswordMap operation.
-   * 
+   *
    * The params must contain:
-   * 
-   * domain= ... some domain name ... 
-   * aliasname= ... publicly visible "password" ... 
+   *
+   * domain= ... some domain name ...
+   * aliasname= ... publicly visible "password" ...
    *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -1671,16 +1716,16 @@ public class Soma {
 
   /**
    * This method implements the DeleteTrustedHost operation.
-   * 
+   *
    * The params must contain:
-   * 
-   * domain= ... some domain name ... 
-   * trustedhost= ... hostname or IP addr ... 
+   *
+   * domain= ... some domain name ...
+   * trustedhost= ... hostname or IP addr ...
    *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -1717,15 +1762,15 @@ public class Soma {
    * for use by the web gui for SSL connections.  This avoids all those complaints
    * when connecting to the web gui about the certificate not matching the
    * host.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * host= ... a dotted decimal host address or hostname ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -1757,17 +1802,17 @@ public class Soma {
 
   /**
    * Thie method implemented the DisconnectUser operation, which disconnects a webgui user.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * sessionid= ... some session id ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * sessiontype=(serial-port | telnet | secure-shell | web-gui | saml-artifact | system)
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams containing "rawresponse"
    * @throws Exception
@@ -1802,16 +1847,16 @@ public class Soma {
 
   /**
    * This method implements the ExecCLI operation.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ... (e.g. default, regroot, etc.)
    * cli= ... set of CLI commands ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams containing "rawresponse"
    * @throws Exception
@@ -1819,7 +1864,7 @@ public class Soma {
   public NamedParams doExecCLI (NamedParams params) throws Exception {
     params.insistOn (new String[] {"domain", "cli"});
 
-    // Fake up a temporary filename to use remotely.  The filename is based on a 
+    // Fake up a temporary filename to use remotely.  The filename is based on a
     // number between one and two billion, with a prefix and an extension of .cli.
     String filename = new Integer(new Random().nextInt(1000000000) + 1000000000).toString();
     String remoteFilename = "temporary:///ExecCli_" + filename + ".cli";
@@ -1850,16 +1895,16 @@ public class Soma {
   /**
    * This method implements the ExecConfig operation, which executes the
    * specified CLI file.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * remote= ... some file on DP ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -1888,22 +1933,22 @@ public class Soma {
 
   /**
    * This method implements the do-export operation.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
-   * local=... filename ... 
-   * 
+   * local=... filename ...
+   *
    * The params may contain:
-   *  
-   * all-files=true or false (defaults to false) 
+   *
+   * all-files=true or false (defaults to false)
    * deployment-policy-name=name of existing DeploymentPolicy object
-   * deployment-policy=raw XML for a deployment policy object 
-   * format=ZIP or XML (defaults to ZIP) 
-   * objects=raw XML for <object> elements to include in the request 
-   * persisted=true or false (defaults to false) 
-   * user-comment=...  
-   *                
+   * deployment-policy=raw XML for a deployment policy object
+   * format=ZIP or XML (defaults to ZIP)
+   * objects=raw XML for <object> elements to include in the request
+   * persisted=true or false (defaults to false)
+   * user-comment=...
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -1973,21 +2018,21 @@ public class Soma {
 
 
   /**
-   * This method implements the FetchFile operation, which fetches the 
+   * This method implements the FetchFile operation, which fetches the
    * specified URL to a file on the device.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * url= ... URL to download from ...
    * remote= ... name of DP file where the content s/b written ...
-   * 
+   *
    * The params may optionally contain:
-   * 
-   * overwrite=on or off 
+   *
+   * overwrite=on or off
    * xmlmanager= ... name of XMLManager object ... (not supported in 3.8.2, optional in 4.0 and later)
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -2023,17 +2068,17 @@ public class Soma {
 
 
   /**
-   * This method implements the FileCapture operation, which controls capturing 
+   * This method implements the FileCapture operation, which controls capturing
    * network input in files on the device.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * tracingmode=(off | always | errors)
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -2042,7 +2087,7 @@ public class Soma {
     params.insistOn (new String[] {"tracingmode"});
 
     // Make the request of the XML Management Interface.
-    String body ="<FileCapture><Mode>" + params.get("tracingmode") + "</Mode></FileCapture>"; 
+    String body ="<FileCapture><Mode>" + params.get("tracingmode") + "</Mode></FileCapture>";
     String request = SomaUtils.getDoActionEnvelope ("default", body);
     NamedParams result = params;
     if (errorsAreSignificant(params)) {
@@ -2063,15 +2108,15 @@ public class Soma {
   /**
    * This method implements the FirmwareRollback operation, which rolls the
    * firmware back to the previous version.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * nothing
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -2098,17 +2143,17 @@ public class Soma {
 
   /**
    * Flush the AAA cache for the AAA policy object.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * policy= ... some AAA policy object name ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -2136,12 +2181,12 @@ public class Soma {
 
   /**
    * Flush the Arp cache.
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -2167,12 +2212,12 @@ public class Soma {
 
   /**
    * Flush the DNS cache.
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -2198,17 +2243,17 @@ public class Soma {
 
   /**
    * Flush the document cache for the (optionally specified) XML manager.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * xmlmanager= ... name of an XMLManager object ... (defaults to 'default')
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -2242,12 +2287,12 @@ public class Soma {
 
   /**
    * Flush the ND cache.
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -2273,16 +2318,16 @@ public class Soma {
 
   /**
    * Flush the NSS cache.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * client= ... name of an NSS client ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -2313,17 +2358,17 @@ public class Soma {
 
   /**
    * Flush the PDP cache for the PDP object.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * name= ... some PDP object name ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -2351,12 +2396,12 @@ public class Soma {
 
   /**
    * Flush the RBM cache.
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -2382,16 +2427,16 @@ public class Soma {
 
   /**
    * Flush the stylesheet cache for the (optionally specified) XML manager.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * xmlmanager= ... name of an XMLManager object ... (defaults to 'default')
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -2424,16 +2469,16 @@ public class Soma {
 
 
   /**
-   * This method implements the GenerateErrorReport operation, which generates 
+   * This method implements the GenerateErrorReport operation, which generates
    * an error report based on the previously saved internal state of the device.
-   * 
+   *
    * This generates temporary:///error-report.txt, which you may download (GetFile)
    * or email (SendFile).
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams containing "rawresponse".
    * @throws Exception
@@ -2460,28 +2505,28 @@ public class Soma {
 
 
   /**
-   * This method implements the GetConfig operation, which returns the 
+   * This method implements the GetConfig operation, which returns the
    * configuration of an object, in XML format.  This XML contains all the
    * default parameters and values, which makes it somewhat verbose.
-   * 
+   *
    * A classname plus object name returns (at most) the information for one object.
    * A classname without an object name returns all the objects of that class.
    * No classname and no object name returns all objects in the domain.
    * It makes no sense to have an object name and no classname.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
-   * 
+   *
    * The param may contain:
-   * 
+   *
    * classname= ... some object class name ... (e.g. Domain or MQQM)
    *                (fully described in xml-mgmt.xsd in name="ConfigEnum")
    * objname= ... name of an existing object of that class
    * recursive=true or false (default false)
    * persisted=true or false (default false)
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams containing "config" (the desired XML) and "rawresponse".
    * @throws Exception when the classname is illegal
@@ -2538,18 +2583,18 @@ public class Soma {
 
   /**
    * This method implements the GetConformanceReport operation.
-   * 
+   *
    * The params must contain:
-   * 
-   * domain= ... some domain name ... 
-   * class=WSGateway 
-   * name= ... name of WSGateway object ... 
+   *
+   * domain= ... some domain name ...
+   * class=WSGateway
+   * name= ... name of WSGateway object ...
    * profile= dp-wsi-bp.xsl, dp-wsi-bsp-1.0.xsl, or dp-cfg-bp.xsl
-   * 
+   *
    * The param may contain:
-   *  
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams containing "report" (the desired XML) and "rawresponse".
    * @throws Exception when the classname is illegal or missing parameters
@@ -2596,20 +2641,20 @@ public class Soma {
 
   /**
    * This method implements the GetDiff operation.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
-   * 
-   * The param may contain: 
-   *  
-   * (class name [recursive] [from-persisted] [to-persisted]) 
-   * OR 
-   *   this (from-export | from-backup | (from-class from-name [from-recursive] [from-persisted])) 
-   *   and  (to-export | to-backup | (to-class to-name [to-recursive] [to-persisted])) 
-   * 
+   *
+   * The param may contain:
+   *
+   * (class name [recursive] [from-persisted] [to-persisted])
+   * OR
+   *   this (from-export | from-backup | (from-class from-name [from-recursive] [from-persisted]))
+   *   and  (to-export | to-backup | (to-class to-name [to-recursive] [to-persisted]))
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams containing "diff" (the desired XML) and "rawresponse".
    * @throws Exception when the classname is illegal or missing parameters
@@ -2717,17 +2762,17 @@ public class Soma {
 
   /**
    * This method implements the get-file operation.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ... (e.g. default, regroot, etc.)
    * local= ... local file name ... (e.g.c:\\somedir\somefile.xsl)
    * remote=... remove file name ... (e.g. local:///somefile.xsl)
-   * 
+   *
    * The param may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams containing "config" (the desired XML) and "rawresponse".
    * @throws Exception
@@ -2770,19 +2815,19 @@ public class Soma {
 
   /**
    * This method implements the GetFilestore operation.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ... (e.g. default, regroot, etc.)
    * filestore=(cert | config | export | image | local | logstore | logtemp | pubcert | sharedcert | store | tasktemplates | temporary):
-   * 
+   *
    * The param may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams containing "location" (the desired XML) and "rawresponse".
-   * @throws Exception 
+   * @throws Exception
    */
   public NamedParams doGetFilestore (NamedParams params) throws Exception {
     params.insistOn (new String[] {"domain", "filestore"});
@@ -2817,18 +2862,18 @@ public class Soma {
   /**
    * This method gets the log.  This appears to simply be a download of
    * logtemp:///default-log-xml.
-   * 
-   * I experimented with name="default-log-xml.1" and got nothing.  
+   *
+   * I experimented with name="default-log-xml.1" and got nothing.
    * name="default-log" returned the same as having no name attribute.
    * I didn't experiment further.  Perhaps the name parameter is useful
    * when you have log targets creating other files.
-   * 
+   *
    * I'd just stick to GetFile instead.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ... (e.g. default, regroot, etc.)
-   * 
+   *
    * @param params
    * @return NamedParams containing "log" (the desired XML) and "rawresponse".
    * @throws Exception
@@ -2856,22 +2901,22 @@ public class Soma {
 
   /**
    * This method gathers status information for various classes.
-   * 
+   *
    * You can find a complete list of available classnames in the XML management interface
-   * schema for name="StatusEnum". 
-   *  
-   * For example, capture. 
-   * 
+   * schema for name="StatusEnum".
+   *
+   * For example, capture.
+   *
    * The params must contain:
-   * 
-   * domain= ... some domain name ... (e.g. default, regroot, etc.) 
-   *  
-   * The params may contain: 
-   *  
+   *
+   * domain= ... some domain name ... (e.g. default, regroot, etc.)
+   *
+   * The params may contain:
+   *
    * capture.xxx= xxx is a class name (e.g. WSGateway or MultiProtocolGateway)
-   * 
+   *
    * Returns a NamedParams containing a key/value pair for each object found.
-   * 
+   *
    */
   public NamedParams doGetObjectStatus (NamedParams params) throws Exception {
     params.insistOn ("domain");
@@ -2883,7 +2928,7 @@ public class Soma {
     Node root = SomaUtils.getDOM (status.get("rawresponse"));
     Node nodeStatus = SomaUtils.nodeXpathFor(root, "/env:Envelope/env:Body/soma:response/soma:status");
 
-    // Iterate over the supplied parameters looking for specification of which 
+    // Iterate over the supplied parameters looking for specification of which
     // classes (and objects) are interesting (and the client wants broken out
     // and returned).
     NamedParams result = new NamedParams();
@@ -2898,7 +2943,7 @@ public class Soma {
         if (classname.length() > 0) {
           bClassSpecificationFound = true;
 
-          // Pick out all the <ObjectStatus> elements that apply to this 
+          // Pick out all the <ObjectStatus> elements that apply to this
           // classname and that match the supplied regular expression.
           NodeList list = SomaUtils.nodelistXpathFor(nodeStatus, "ObjectStatus[Class='" + classname + "']");
           for (int k = 0; k < list.getLength(); k += 1) {
@@ -2928,16 +2973,16 @@ public class Soma {
 
   /**
    * This method gathers status information for the specified class.
-   * 
+   *
    * You can find a complete list of available classnames in the XML management interface
    * schema for name="StatusEnum".
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ... (e.g. default, regroot, etc.)
-   * 
+   *
    * Returns a NamedParams containing a key/value pair for "rawresponse".
-   * 
+   *
    */
   private NamedParams doGetStatus (NamedParams params, String objectClass) throws Exception {
     params.insistOn ("domain");
@@ -2961,25 +3006,25 @@ public class Soma {
   /**
    * Fetch the status of one or more things and return them collectively
    * in XML that looks like this:
-   * 
+   *
    * <status>
    *     <.../> (XML returned for each status you requested)
    *     ...
    * </status>
-   * 
+   *
    * The full list of things for which status can be requested is in the
    * SOMA schema under name="StatusEnum".  It is currently 111 items, but
    * that is likely to grow as the system is enhanced over time.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * statuses= ... list of whitespace separated status names ...
    * (e.g. "SystemUsage TCPTable FirmwareStatus")
-   * 
+   *
    * An invalid name causes DataPower to return an HTTP 500, which throws
    * an exception.
-   * 
+   *
    * @param params
    * @return The desired results.
    * @throws Exception
@@ -2998,8 +3043,8 @@ public class Soma {
       NamedParams oneresult = doGetStatus(params, names[i]);
 
       // When it worked correctly, collect the information.  Otherwise do nothing.
-      // Why?  Well, for example, suppose statistics collection isn't on in the 
-      // default domain and you request ConnectionsAccepted.  You get back 
+      // Why?  Well, for example, suppose statistics collection isn't on in the
+      // default domain and you request ConnectionsAccepted.  You get back
       // <some:status/>.  If you specify a name that isn't legal then you
       // will get a failure back from DataPower that causes an exception. So there
       // are no conditions left to test for.
@@ -3024,21 +3069,21 @@ public class Soma {
   /**
    * This method implements the ImportConfig operation, which imports the DP export
    * file into a domain.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * local= ... DP export file (.zip or .xcfg) e.g. c:\xyzzy.zip ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * deployment-policy= name of a ConfigDeploymentPolicy object already present in the domain prior to this operation
    * deployment-policy-file= ... local file containing a ConfigDeploymentPolicy object in XML ...
    * overwrite-files=true/false defaults to true
    * overwrite-objects=true/false default to true
    * rewrite-local-ip=true/false defaults to true
    * source-type= 'zip' or 'xml' - by default the extension of the local file is examined to make a guess.
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -3090,7 +3135,7 @@ public class Soma {
           finally {
               input.close();
           }
-          // The input may be empty, may be malformed XML (e.g. a list of ModifiedConfig elements), or 
+          // The input may be empty, may be malformed XML (e.g. a list of ModifiedConfig elements), or
           // a dcm:wrapper around the input.
           String rawcontent = Base64.bytesToString (buffer);
           String content = null;
@@ -3142,18 +3187,18 @@ public class Soma {
 
   /**
    * This method implements the ImportExecute operation.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * name= ... some import package object name ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * Returns a NamedParams containing a key/value pair for "rawresponse".
-   * 
+   *
    */
   public NamedParams doImportExecute (NamedParams params) throws Exception {
     params.insistOn (new String[] {"domain", "name"});
@@ -3179,13 +3224,13 @@ public class Soma {
 
   /**
    * This method determines whether the specified object is present and "up".
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * classname= ... some DP object class name (e.g. Matching or Domain) ...
    * objname= ... the name of an object of that class ...
-   * 
+   *
    * @param params
    * @return
    * @throws Exception
@@ -3218,19 +3263,19 @@ public class Soma {
 
 
   /**
-   * This method implements the Keygen operation, which creates 
+   * This method implements the Keygen operation, which creates
    * a private key, a self signed cert, and a cert signing request,
    * all in files.  It can optionally create key/cert objects to wrap
    * the files.  The files are stored in the cert: filestore PLUS the
-   * temporary:/// filestore, so you can download them. 
-   * 
+   * temporary:/// filestore, so you can download them.
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * cn= common name
-   * 
+   *
    * The params may optionally contain:
-   * 
+   *
    * ldaporder=on or off
    * c= ... country name ...
    * st= ... state name ...
@@ -3253,9 +3298,9 @@ public class Soma {
    * objectname= when genobject is true, this is the name of the key and cert objects
    * hsm=on or off
    * usingkey= hmmm.  what is this again?  i used to know
-   * 
+   *
    * ignore-errors = on or off
-   *                 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -3332,16 +3377,16 @@ public class Soma {
   /**
    * Turn the blue LED on the front of device on or off.  This is helpful when
    * trying to locate one device in a rack (or several racks).
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * state=on or off
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -3371,14 +3416,14 @@ public class Soma {
    * This method fetches the status of memory on the device.  It illustrates how you may
    * choose to write a class of methods that gather status and break it out of XML into
    * individual key/value pairs in the results.
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
-   * @return NamedParams containing name/value pairs for Usage, TotalMemory, UsedMemory, 
-   * FreeMemory, and ReqMemory. 
+   * @return NamedParams containing name/value pairs for Usage, TotalMemory, UsedMemory,
+   * FreeMemory, and ReqMemory.
    * @throws Exception
    */
   public NamedParams doMemoryStatus (NamedParams params) throws Exception {
@@ -3413,19 +3458,19 @@ public class Soma {
 
 
   /**
-   * This method implements the ModifyConfig operation, which updates 
+   * This method implements the ModifyConfig operation, which updates
    * the configuration of an object based on an XML description.  You
    * need to study the SOMA schema in order to make use of this method.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * config= ... XML as defined in the schema ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -3453,21 +3498,21 @@ public class Soma {
 
 
   /**
-   * This method implements the MoveFile operation, which moves the 
+   * This method implements the MoveFile operation, which moves the
    * specified file to another location.  Actually, either the source
    * or the destination can be off box.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * source= ... URL to move from ...
    * destination= ... URL to move to ...
-   * 
+   *
    * The params may optionally contain:
-   * 
+   *
    * overwrite=on or off
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -3502,12 +3547,12 @@ public class Soma {
 
   /**
    * Flush the Password Map.
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -3533,12 +3578,12 @@ public class Soma {
 
   /**
    * Create the Password Map.
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -3564,16 +3609,16 @@ public class Soma {
 
   /**
    * This method implements the Ping operation, which pings the specified host.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * host= ... DNS-resolvable host name, or a dotted decimal address ...
-   * 
+   *
    * The params may contain:
-   *  
-   * useipv=4 or 6  (default 4) 
+   *
+   * useipv=4 or 6  (default 4)
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -3607,16 +3652,16 @@ public class Soma {
 
   /**
    * This function implements the Quiesce operation for a device.
-   *  
-   * The params must contain: 
-   *  
-   * timeout= ... some number of seconds ... 
-   *  
+   *
+   * The params must contain:
+   *
+   * timeout= ... some number of seconds ...
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -3647,17 +3692,17 @@ public class Soma {
 
   /**
    * This function implements the Quiesce operation for a domain.
-   *  
-   * The params must contain: 
-   *  
-   * domain= ... some domain name ... 
-   * timeout= ... seconds ... 
-   *  
+   *
+   * The params must contain:
+   *
+   * domain= ... some domain name ...
+   * timeout= ... seconds ...
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -3689,21 +3734,21 @@ public class Soma {
 
   /**
    * This function implements the Quiesce operation for a front side handler.
-   *  
-   * The params must contain: 
-   *  
-   * domain= ... some domain name ... 
-   * timeout= ... seconds ... 
-   * type= ... Service class name (e.g. MultiProtocolGateway) ... 
-   * objname= ... name of service object ... 
-   * fehtype= ... FSH class name (e.g. HTTPSourceProtocolHandler) ... 
-   * fehname= ... FSH object name ... 
-   *  
+   *
+   * The params must contain:
+   *
+   * domain= ... some domain name ...
+   * timeout= ... seconds ...
+   * type= ... Service class name (e.g. MultiProtocolGateway) ...
+   * objname= ... name of service object ...
+   * fehtype= ... FSH class name (e.g. HTTPSourceProtocolHandler) ...
+   * fehname= ... FSH object name ...
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -3739,19 +3784,19 @@ public class Soma {
 
   /**
    * This function implements the Quiesce operation for a service.
-   *  
-   * The params must contain: 
-   *  
-   * domain= ... some domain name ... 
-   * type= ... class name (e.g. MultiProtocolGateway) ... 
-   * objname= ... service object name ... 
-   * timeout= ... seconds ... 
-   *  
+   *
+   * The params must contain:
+   *
+   * domain= ... some domain name ...
+   * type= ... class name (e.g. MultiProtocolGateway) ...
+   * objname= ... service object name ...
+   * timeout= ... seconds ...
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -3759,7 +3804,7 @@ public class Soma {
     params.insistOn (new String[] {"domain", "type", "objname", "timeout"});
 
     boolean wait = true;
-    
+
     // Make the request of the XML Management Interface.
     StringBuffer body = new StringBuffer ();
     body.append("<ServiceQuiesce>");
@@ -3780,13 +3825,13 @@ public class Soma {
         wait = false;
       }
     }
-    
+
     if (wait) {
       NamedParams waitOnQuiesce = new NamedParams(params);
       String serviceProp = params.get("type") + "." + params.get("objname");
-      waitOnQuiesce.set("capture." + params.get("type"), params.get("objname")); 
+      waitOnQuiesce.set("capture." + params.get("type"), params.get("objname"));
       while (wait) {
-        NamedParams tmp = doGetObjectStatus(waitOnQuiesce); 
+        NamedParams tmp = doGetObjectStatus(waitOnQuiesce);
         Node root = SomaUtils.getDOM (tmp.get(serviceProp));
         // When not fully quiesced:
         // <ObjectStatus><Class>MultiProtocolGateway</Class><OpState>down</OpState><AdminState>enabled</AdminState><Name>to1234</Name><EventCode>0x00000000</EventCode><ErrorCode/><ConfigState>saved</ConfigState></ObjectStatus>
@@ -3806,20 +3851,20 @@ public class Soma {
 
 
   /**
-   * This method implements the RefreshDocument operation, which ensures the  
+   * This method implements the RefreshDocument operation, which ensures the
    * document cache associated with the specified XML manager has an up to date
    * copy of the specified URL.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * xmlmanager= ... name of an XML manager object ...
    * doc= ... URL of a document ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -3847,20 +3892,20 @@ public class Soma {
 
 
   /**
-   * This method implements the RefreshStlesheet operation, which ensures the  
+   * This method implements the RefreshStlesheet operation, which ensures the
    * stylesheet cache associated with the specified XML manager has an up to date
    * copy of the specified stylesheet.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * xmlmanager= ... name of an XML manager object ...
    * stylesheet= ... URL of a stylesheet ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -3889,18 +3934,18 @@ public class Soma {
 
   /**
    * This method implements the RefreshTAMCerts operation.
-   * 
+   *
    * The params must contain:
-   * 
-   * domain= ... domain ... 
-   * objname= ... name of a TAM object ... 
-   * tamuid= ... TAM userid ... 
-   * tampwd= ... TAM password ... 
-   * 
+   *
+   * domain= ... domain ...
+   * objname= ... name of a TAM object ...
+   * tamuid= ... TAM userid ...
+   * tampwd= ... TAM password ...
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -3934,18 +3979,18 @@ public class Soma {
 
 
   /**
-   * This method implements the RemoveCheckpoint operation, which removes the  
+   * This method implements the RemoveCheckpoint operation, which removes the
    * specified checkpoint from the domain.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * name= ... name of a checkpoint ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -3973,18 +4018,18 @@ public class Soma {
 
 
   /**
-   * This method implements the RemoveDirectory operation, which removes 
+   * This method implements the RemoveDirectory operation, which removes
    * a single directory.  Sorry, it won't remove multiple levels.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * remote= ... the remote directory to remove ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4015,17 +4060,17 @@ public class Soma {
   /**
    * This method implements the RemoveStylesheet operation, which removes the
    * specified stylesheet(s) from the cache associated with the XML manager.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * xmlmanager= ... name of an XML manager object ...
    *
    * The params may contain:
-   * 
+   *
    * pattern= ... PCRE specifying which stylesheets to remove from the cache ...
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4060,16 +4105,16 @@ public class Soma {
   /**
    * This method implements the ResetDomain method, which returns the domain to
    * a pristine condition, as if it had just been created.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -4097,16 +4142,16 @@ public class Soma {
 
   /**
    * This method implements the RestartDomain method, which restarts the domain.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -4134,24 +4179,24 @@ public class Soma {
 
   /**
    * This method implements the do-restore operation.
-   * 
+   *
    * The params must contain:
-   * 
-   * domain= ... some domain name to restore ... 
+   *
+   * domain= ... some domain name to restore ...
    * local=... file to restore from ...
    *
    * The params may contain:
-   *  
-   * depoyment-policy-name= name of deployment policy to use 
+   *
+   * depoyment-policy-name= name of deployment policy to use
    * deployment-policy=raw XML for <soma:deployment-policy> elements to use
-   * domains=... list of domains to restore, in addition to "domain", separated by spaces ... 
-   * dry-run= true or false (defaults to false) 
-   * format= ZIP or XML (defaults to ZIP) 
-   * ignore-errors=on or off (defaults to off) 
-   * overwrite-files=true or false (defaults to true) 
-   * overwrite-objects=true or false (defaults to true) 
-   * rewrite-local-ip=true or false (defaults to false) 
-   * 
+   * domains=... list of domains to restore, in addition to "domain", separated by spaces ...
+   * dry-run= true or false (defaults to false)
+   * format= ZIP or XML (defaults to ZIP)
+   * ignore-errors=on or off (defaults to off)
+   * overwrite-files=true or false (defaults to true)
+   * overwrite-objects=true or false (defaults to true)
+   * rewrite-local-ip=true or false (defaults to false)
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4234,18 +4279,18 @@ public class Soma {
 
 
   /**
-   * This method implements the RollbackCheckpoint operation, which rolls back the  
+   * This method implements the RollbackCheckpoint operation, which rolls back the
    * specified checkpoint.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * name= ... name of a checkpoint ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4273,18 +4318,18 @@ public class Soma {
 
 
   /**
-   * This method implements the SaveCheckpoint operation, which saves the  
+   * This method implements the SaveCheckpoint operation, which saves the
    * the state of the specified domain in a checkpoint.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * name= ... name of a checkpoint ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4313,15 +4358,15 @@ public class Soma {
 
   /**
    * This method implements the SaveConfig action.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params containing "domain"
    * @return a NamedParams containing "rawresponse"
    * @throws Exception
@@ -4350,19 +4395,19 @@ public class Soma {
 
   /**
    * This method implements the SecureBackup operation.
-   * 
+   *
    * The params must contain:
-   * 
-   * domain= ... domain ... 
-   * objname= ... CryptoCertificate object name ... 
-   * remote= ... URL to write the backup to ... 
-   * 
+   *
+   * domain= ... domain ...
+   * objname= ... CryptoCertificate object name ...
+   * remote= ... URL to write the backup to ...
+   *
    * The params may contain:
-   *  
-   * include-iscsi=on or off (default off) 
-   * include-raid=on or off (default off) 
+   *
+   * include-iscsi=on or off (default off)
+   * include-raid=on or off (default off)
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4406,19 +4451,19 @@ public class Soma {
 
   /**
    * This method implements the SecureRestore operation.
-   * 
+   *
    * The params must contain:
-   * 
-   * domain= ... domain ... 
-   * objname= ... CryptoCertificate object name ... 
-   * remote= ... URL to restore from ... 
-   * 
+   *
+   * domain= ... domain ...
+   * objname= ... CryptoCertificate object name ...
+   * remote= ... URL to restore from ...
+   *
    * The params may contain:
-   *  
-   * validate=on or off (default off) 
+   *
+   * validate=on or off (default off)
    * type= ... ??? ... (not supported in 3.8.2, optional 4.0 and later)
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4459,17 +4504,17 @@ public class Soma {
 
 
   /**
-   * This method implements the SelectConfig operation, which selects the 
+   * This method implements the SelectConfig operation, which selects the
    * configuration file to use for the device.
-   * 
+   *
    * The params must contain:
-   *  
+   *
    * remote= ... some file on DP ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4497,19 +4542,19 @@ public class Soma {
 
 
   /**
-   * This method implements the SendErrorReport operation, which sends an email 
+   * This method implements the SendErrorReport operation, which sends an email
    * error report.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * host= ... address of SMTP server ...
    * location= ... subject line ...
    * address= ... email address ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams containing "rawresponse".
    * @throws Exception
@@ -4519,9 +4564,9 @@ public class Soma {
 
     // Make the request of the XML Management Interface.
     String body = "<SendErrorReport>" +
-    "<SmtpServer>" + params.get("host") + "</SmtpServer>" + 
-    "<LocationIdentifier>" + params.get("location") + "</LocationIdentifier>" + 
-    "<EmailAddress>" + params.get("address") + "</EmailAddress>" + 
+    "<SmtpServer>" + params.get("host") + "</SmtpServer>" +
+    "<LocationIdentifier>" + params.get("location") + "</LocationIdentifier>" +
+    "<EmailAddress>" + params.get("address") + "</EmailAddress>" +
     "</SendErrorReport>";
     String request = SomaUtils.getDoActionEnvelope ("default", body);
     NamedParams result = params;
@@ -4541,18 +4586,18 @@ public class Soma {
 
 
   /**
-   * This method implements the SendFile operation, which sends a file via email. 
-   * 
+   * This method implements the SendFile operation, which sends a file via email.
+   *
    * The params must contain:
-   * 
+   *
    * host= ... address of SMTP server ...
    * remote= ... url of the file to send ...
    * address= ... email address ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams containing "rawresponse".
    * @throws Exception
@@ -4562,9 +4607,9 @@ public class Soma {
 
     // Make the request of the XML Management Interface.
     String body = "<SendFile>" +
-    "<LocationIdentifier>" + params.get("remote") + "</LocationIdentifier>" + 
-    "<SmtpServer>" + params.get("host") + "</SmtpServer>" + 
-    "<EmailAddress>" + params.get("address") + "</EmailAddress>" + 
+    "<LocationIdentifier>" + params.get("remote") + "</LocationIdentifier>" +
+    "<SmtpServer>" + params.get("host") + "</SmtpServer>" +
+    "<EmailAddress>" + params.get("address") + "</EmailAddress>" +
     "</SendFile>";
     String request = SomaUtils.getDoActionEnvelope ("default", body);
     NamedParams result = params;
@@ -4585,20 +4630,20 @@ public class Soma {
 
   /**
    * This method implements the SendLogEvent operation, which places an entry
-   * in the stream of log messages. 
-   * 
+   * in the stream of log messages.
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * logcategory= ... some log category (e.g. xsltmsg) ...
    * loglevel= (debug | info | notice | warn | error | critic | alert | emerg)
    * msg= ... text of the message ...
-   * 
+   *
    * The params may optionally contain:
-   *  
-   * eventcode= event code (e.g. '0x12345678') 
+   *
+   * eventcode= event code (e.g. '0x12345678')
    * ignore-errors = on or off
-   *                 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4634,15 +4679,15 @@ public class Soma {
 
 
   /**
-   * This method implements the SetConfig operation, which creates an 
+   * This method implements the SetConfig operation, which creates an
    * object based on the configuration in XML format, which is identical to
    * that returned by GetConfig.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * config= ... raw XML configuration ...
-   *                
+   *
    * @param params
    * @return NamedParams containing "rawresponse".
    * @throws Exception
@@ -4671,17 +4716,17 @@ public class Soma {
 
   /**
    * This method implements the set-file operation.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ... (e.g. default, regroot, etc.)
    * local= ... local file name ... (e.g.c:\\somedir\somefile.xsl)
    * remote=... remove file name ... (e.g. local:///somefile.xsl)
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4697,21 +4742,21 @@ public class Soma {
   /**
    * This method implements the SetLogLevel operation, which sets the minimum
    * level of severity for entries recorded in the default log.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * loglevel= (debug | info | notice | warn | error | critic | alert | emerg)
    *
    * When domain=default, then the params may contain:
-   * 
+   *
    * internallog=on or off
    * rbmlog=on or off
-   * 
+   *
    * The params may contain:
-   * 
+   *
    *ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4752,15 +4797,15 @@ public class Soma {
   /**
    * This method implements the SetRBMLogLevel operation, which turns
    * RBM detailed logging (to the default log) on and off.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * rbmlog=on or off
    *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4793,16 +4838,16 @@ public class Soma {
   /**
    * This method implements the SetSystemVar operation, which stores
    * a value in the specified system variable.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * name=... name of a predefined system variable (e.g. var://system/amp/debug) ...
    * value=... new value of the variable ...
    *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4836,14 +4881,14 @@ public class Soma {
   /**
    * This method implements the SetTimeAndDate operation, which sets
    * the system time and/or date.
-   * 
+   *
    * The params may contain:
-   * 
-   * time= ... time as you would enter it in the CLI or web gui ... 
+   *
+   * time= ... time as you would enter it in the CLI or web gui ...
    * date= ... time as you would enter it in the CLI or web gui ...
-   *  
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4877,17 +4922,17 @@ public class Soma {
   /**
    * This method implements the Shutdown operation, which restarts
    * or halts the system.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * mode= (reboot | reload | halt)
-   * 
+   *
    * The params may contain:
-   * 
-   * delay= ... number of seconds to delay ... 
-   *  
+   *
+   * delay= ... number of seconds to delay ...
+   *
    * ignore-errors=on or off
-   * 
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4920,19 +4965,19 @@ public class Soma {
 
 
   /**
-   * This method implements the TCPConnectionTest operation, which opens 
+   * This method implements the TCPConnectionTest operation, which opens
    * (then closes) a connection to the specified host and port.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * host= ... DNS-resolvable host name, or a dotted decimal address ...
    * port= ... port in the range of 1 through 65535 ...
-   * 
+   *
    * The params may contain:
-   *  
-   * useipv=4 or 6 (default 4) 
+   *
+   * useipv=4 or 6 (default 4)
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -4967,17 +5012,17 @@ public class Soma {
 
   /**
    * This method implements the TestPasswordMap operation.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * aliasname= ... publicly visible "password"
-   * type= ... key | cert 
-   * remote= ... URL ... 
-   * 
+   * type= ... key | cert
+   * remote= ... URL ...
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -5011,19 +5056,19 @@ public class Soma {
 
 
   /**
-   * This method implements the TestURLMap operation, which tests 
+   * This method implements the TestURLMap operation, which tests
    * the supplied URL against the specified URLMap object.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * name= ... name of the URLMap object ...
    * url= ... URL ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -5032,7 +5077,7 @@ public class Soma {
     params.insistOn (new String[] {"domain", "name", "url"});
 
     // Make the request of the XML Management Interface.
-    String body = "<TestURLMap>" + 
+    String body = "<TestURLMap>" +
     "<URLMap>" + params.get("name") + "</URLMap>" +
     "<URL>" + params.get("url") + "</URL>" +
     "</TestURLMap>";
@@ -5054,19 +5099,19 @@ public class Soma {
 
 
   /**
-   * This method implements the TestURLRefresh operation, which tests 
+   * This method implements the TestURLRefresh operation, which tests
    * the supplied URL against the specified URLRefresh object.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * name= ... name of the URLRefresh object ...
    * url= ... URL ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -5075,7 +5120,7 @@ public class Soma {
     params.insistOn (new String[] {"domain", "name", "url"});
 
     // Make the request of the XML Management Interface.
-    String body = "<TestURLRefresh>" + 
+    String body = "<TestURLRefresh>" +
     "<URLRefreshPolicy>" + params.get("name") + "</URLRefreshPolicy>" +
     "<URL>" + params.get("url") + "</URL>" +
     "</TestURLRefresh>";
@@ -5097,19 +5142,19 @@ public class Soma {
 
 
   /**
-   * This method implements the TestURLRewrite operation, which tests 
+   * This method implements the TestURLRewrite operation, which tests
    * the supplied URL against the specified URLRewrite object.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * name= ... name of the URLRewrite object ...
    * url= ... URL ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -5118,7 +5163,7 @@ public class Soma {
     params.insistOn (new String[] {"domain", "name", "url"});
 
     // Make the request of the XML Management Interface.
-    String body = "<TestURLRewrite>" + 
+    String body = "<TestURLRewrite>" +
     "<URLRewritePolicy>" + params.get("name") + "</URLRewritePolicy>" +
     "<URL>" + params.get("url") + "</URL>" +
     "</TestURLRewrite>";
@@ -5140,19 +5185,19 @@ public class Soma {
 
 
   /**
-   * This method implements the TestValidateSchema operation, which tests 
+   * This method implements the TestValidateSchema operation, which tests
    * the supplied XML file (URL) against the specified Schema file (URL).
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * xml= ... URL (possibly on box, e.g. local:///file.xml) for the XML to validate ...
    * schema= ... URL (possibly on box, e.g. local:///schema.xsd) for the schema to use in validating the XML ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -5161,7 +5206,7 @@ public class Soma {
     params.insistOn (new String[] {"domain", "xml", "schema"});
 
     // Make the request of the XML Management Interface.
-    String body = "<TestValidateSchema>" + 
+    String body = "<TestValidateSchema>" +
     "<XMLFile>" + params.get("xml") + "</XMLFile>" +
     "<SchemaFile>" + params.get("schema") + "</SchemaFile>" +
     "</TestValidateSchema>";
@@ -5185,17 +5230,17 @@ public class Soma {
   /**
    * This method implements the UndoConfig operation.  Wish I was sure
    * I knew what it does.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * classname= ... some DP object class name ...
    * objname= ... name of an object ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -5227,23 +5272,23 @@ public class Soma {
 
   /**
    * This method implements the UniversalPacketCaptureDebug operation.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * type=Ethernet, VLAN, Loopback, or All
-   * maxsize= ... max size of capture in KB ... 
-   * maxpacketsize= ... max packets size in bytes (e.g. 9000) ... 
+   * maxsize= ... max size of capture in KB ...
+   * maxpacketsize= ... max packets size in bytes (e.g. 9000) ...
    * maxtime= ... seconds ... (required in 3.8.2, optional in 4.0.2 and later)
-   * 
+   *
    * The params may contain:
-   *  
-   * ethernet-int= ... ethernet object name (e.g. eth0) ... 
-   * vlan-int= ... VLAN object name ... 
-   * mode=timed or continuous (default timed) 
+   *
+   * ethernet-int= ... ethernet object name (e.g. eth0) ...
+   * vlan-int= ... VLAN object name ...
+   * mode=timed or continuous (default timed)
    * maxtime= ... seconds ... (required in 3.8.2, optional in 4.0.2 and later)
-   * filter= ... filter string - see web gui ... 
+   * filter= ... filter string - see web gui ...
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -5298,17 +5343,17 @@ public class Soma {
 
   /**
    * This method implements the UniversalStopPacketCapture operation.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * type=Ethernet, VLAN, Loopback, or All
-   * 
+   *
    * The params may contain:
-   * 
-   * ethernet-int= ... ethernet object name (e.g. eth0) ... 
-   * vlan-int= ... VLAN object name ... 
+   *
+   * ethernet-int= ... ethernet object name (e.g. eth0) ...
+   * vlan-int= ... VLAN object name ...
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -5346,12 +5391,12 @@ public class Soma {
 
   /**
    * This function implements the Unquiesce operation for a device.
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -5379,16 +5424,16 @@ public class Soma {
 
   /**
    * This function implements the Unquiesce operation for a domain.
-   *  
-   * The params must contain: 
-   *  
-   * domain= ... some domain name ... 
-   *  
+   *
+   * The params must contain:
+   *
+   * domain= ... some domain name ...
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -5419,20 +5464,20 @@ public class Soma {
 
   /**
    * This function implements the Unquiesce operation for a front side handler.
-   *  
-   * The params must contain: 
-   *  
-   * domain= ... some domain name ... 
-   * type= ... Service class name (e.g. MultiProtocolGateway) ... 
-   * objname= ... name of service object ... 
-   * fehtype= ... FSH class name (e.g. HTTPSourceProtocolHandler) ... 
-   * fehname= ... FSH object name ... 
-   *  
+   *
+   * The params must contain:
+   *
+   * domain= ... some domain name ...
+   * type= ... Service class name (e.g. MultiProtocolGateway) ...
+   * objname= ... name of service object ...
+   * fehtype= ... FSH class name (e.g. HTTPSourceProtocolHandler) ...
+   * fehname= ... FSH object name ...
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -5466,18 +5511,18 @@ public class Soma {
 
   /**
    * This function implements the Unquiesce operation for a service.
-   *  
-   * The params must contain: 
-   *  
-   * domain= ... some domain name ... 
-   * type= ... service class name (e.g. MultiProtocolGateway) ... 
-   * objname= ... service object name ... 
-   *  
+   *
+   * The params must contain:
+   *
+   * domain= ... some domain name ...
+   * type= ... service class name (e.g. MultiProtocolGateway) ...
+   * objname= ... service object name ...
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   * 
-   * @param params 
+   *
+   * @param params
    * @return The NamedParams result.
    * @throws Exception
    */
@@ -5507,21 +5552,21 @@ public class Soma {
   }
 
   /**
-   * This method uploads files from the local computer to DataPower.  You cannot rename files 
-   * using this mechanism.  (e.g. local=abc.cer remote=def.cer) 
-   * 
+   * This method uploads files from the local computer to DataPower.  You cannot rename files
+   * using this mechanism.  (e.g. local=abc.cer remote=def.cer)
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
-   * remote= ... target filestore and directory (not filename) ... 
-   * 
+   * remote= ... target filestore and directory (not filename) ...
+   *
    * The params may contain:
-   * 
+   *
    * local= ... directory on local computer ...  (defaults to current directory)
-   * pattern= PCRE for files to upload (defaults to '.*') 
+   * pattern= PCRE for files to upload (defaults to '.*')
    * recurse= true | false (default to false)
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -5598,19 +5643,19 @@ public class Soma {
 
 
   /**
-   * This method implements the UserForcePasswordChange operation, which requires 
+   * This method implements the UserForcePasswordChange operation, which requires
    * a user to choose a new password when next logging into the web gui.  I'm not
-   * sure what effect this has on users that can only log in via SSH or the XML 
+   * sure what effect this has on users that can only log in via SSH or the XML
    * management interface.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * dpuid=... some user id ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -5619,7 +5664,7 @@ public class Soma {
     params.insistOn (new String[] {"dpuid"});
 
     // Make the request of the XML Management Interface.
-    String body = "<UserForcePasswordChange>" + 
+    String body = "<UserForcePasswordChange>" +
     "<User>" + params.get("dpuid") + "</User>" +
     "</UserForcePasswordChange>";
     String request = SomaUtils.getDoActionEnvelope ("default", body);
@@ -5641,15 +5686,15 @@ public class Soma {
 
   /**
    * This method implements the UserResetFailedLogin operation.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * dpuid=... some user id ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -5658,7 +5703,7 @@ public class Soma {
     params.insistOn (new String[] {"dpuid"});
 
     // Make the request of the XML Management Interface.
-    String body = "<UserResetFailedLogin>" + 
+    String body = "<UserResetFailedLogin>" +
     "<User>" + params.get("dpuid") + "</User>" +
     "</UserResetFailedLogin>";
     String request = SomaUtils.getDoActionEnvelope ("default", body);
@@ -5680,16 +5725,16 @@ public class Soma {
 
   /**
    * This method implements the UserResetPassword operation.
-   * 
+   *
    * The params must contain:
-   * 
-   * dpuid= ... some user id ... 
+   *
+   * dpuid= ... some user id ...
    * dppwd= ... password ...
-   * 
+   *
    * The params may contain:
-   * 
+   *
    * ignore-errors=on or off
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -5698,7 +5743,7 @@ public class Soma {
     params.insistOn (new String[] {"dpuid", "dppwd"});
 
     // Make the request of the XML Management Interface.
-    String body = "<UserResetPassword>" + 
+    String body = "<UserResetPassword>" +
     "<User>" + params.get("dpuid") + "</User>" +
     "<Password>" + params.get("dppwd") + "</Password>" +
     "</UserResetPassword>";
@@ -5721,11 +5766,11 @@ public class Soma {
 
   /**
    * This method implements the ValCredAddCertsFromDir operation.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -5755,12 +5800,12 @@ public class Soma {
   /**
    * This method implements the WSRRSynchronize operation, which forces the
    * specified WSRR subscription to be updated from WSRR.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ...
    * name= ... name of a WSRRSubscription object on DP ...
-   *                
+   *
    * @param params
    * @return NamedParams "rawresponse".
    * @throws Exception
@@ -5799,22 +5844,22 @@ public class Soma {
 
   /**
    * This method implements the set-file operation.
-   * 
+   *
    * The params must contain:
-   * 
+   *
    * domain= ... some domain name ... (e.g. default, regroot, etc.)
    * local= ... local file name ... (e.g.c:\\somedir\somefile.xsl)
    * remote=... remove file name ... (e.g. local:///somefile.xsl)
-   * 
+   *
    * Returns a NamedParams containing a key/value pair for "rawresponse".
-   * 
+   *
    */
   private NamedParams doSetFileImpl (NamedParams params, String base64FileContent) throws Exception {
     params.insistOn (new String[] {"domain", "remote"});
 
     // Make the request of the XML Management Interface.
-    String body = "<soma:set-file name=\"" + params.get("remote") + "\">" + 
-    base64FileContent + 
+    String body = "<soma:set-file name=\"" + params.get("remote") + "\">" +
+    base64FileContent +
     "</soma:set-file>";
     String request = SomaUtils.getGeneralEnvelope (params.get("domain"), body);
     NamedParams result = params;
@@ -5853,7 +5898,7 @@ public class Soma {
   /**
    * Test whether result.get("rawresponse") contains an element for
    * /env:Envelope/env:Body/soma:response/soma:result=OK
-   * 
+   *
    * @param result the results of a call to SSLConnection.sendAndReceive().
    * @throws Exception when the result isn't successful.
    */
@@ -5877,13 +5922,13 @@ public class Soma {
 
 
   /**
-   * Determine whether the specified parameter is "true", which tests without regard to case for 
-   * 'yes', 'true', 'on', or '1'. 
-   * 
-   * @param params 
-   * @param paramName 
-   * 
-   * @return boolean 
+   * Determine whether the specified parameter is "true", which tests without regard to case for
+   * 'yes', 'true', 'on', or '1'.
+   *
+   * @param params
+   * @param paramName
+   *
+   * @return boolean
    */
   private boolean isTrue (NamedParams params, String paramName) {
     boolean bRet = false;
@@ -5981,4 +6026,4 @@ public class Soma {
       }
     }
   }
-} 
+}
