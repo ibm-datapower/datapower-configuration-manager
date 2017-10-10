@@ -97,6 +97,9 @@ Complete list of current DCM target commands. (* = matching plug-in step)
 
 - __object-status__ - check the opstate of objects are as required based on a dcm:definition file
 
+- __password-alias-create__ - Create PasswordAlias object
+- __password-alias-update__ - Update password in PasswordAlias object
+
 - __raw-mgmt-call__* - make a raw management (SOMA or AMP etc) call based on raw request file input
 
 - __reboot__ - make an appliance reboot request
