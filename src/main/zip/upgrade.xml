@@ -553,4 +553,7 @@
   <migrate to-version="16">
   </migrate>
 
+  <migrate to-version="17">
+  </migrate>
+
 </plugin-upgrade>
