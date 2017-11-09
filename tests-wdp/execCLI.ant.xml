@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project name="execCLI" basedir="." default="execCLI">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="execCLI">
+        
+        <wdp operation="ExecCLI" successprop="execCLI-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <cli>show system</cli>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${execCLI-successprop}" arg2="true"/>
+            <then>
+                <echo>Executed CLI "show system" in ${domain} on ${hostname}</echo>
+            </then>
+            <else>
+                <echo>Failed execute CLI "show system" in ${domain} on ${hostname}</echo>
+            </else>
+        </if>
+        
+    </target>
+    
+</project>

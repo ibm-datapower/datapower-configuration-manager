@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<project name="config-execconfig" basedir="." default="config-execconfig">
+    
+    <!--
+        Execute a CLI file.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="config-execconfig">
+        
+        <!-- Ensure the necessary CLI file is present. -->
+        <ant antfile="common-file-set.ant.xml">
+            <property name="local" location="config-execconfig.cli"/>
+            <property name="remote" value="temporary:///config-execconfig.cli"/>
+        </ant>
+        
+        <wdp operation="ExecConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <remote>temporary:///config-execconfig.cli</remote>
+            <hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully executed the CLI commands in ${domain} on ${hostname}</echo>
+        
+    </target>
+    
+</project>

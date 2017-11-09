@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project name="config-get-object" basedir="." default="config-get-object">
+    
+    <!--
+        Get the configuration of some object.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="config-get-object">
+        
+        <local name="config"/>
+        
+        <property name="tmpdir" location="tmp"/>    <!-- temp directory - override from command line. -->
+        <property name="tmpdir.absolute" location="${tmpdir}"/> <!-- Ensure that we know the fully qualified temp directory path.  Don't override. -->
+        
+        <mkdir dir="${tmpdir.absolute}"/> <!-- doesn't care if the directory already exists. -->
+        
+        
+        <wdp operation="GetConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <classname>XMLManager</classname>
+        	<objname>default</objname>
+            <recursive>true</recursive>
+            <hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>default</domain>
+            <return antprop="config" somaprop="config"/>
+        </wdp>
+        
+        <echo>Got the configuration information for the default XML manager in 'default' on ${hostname}</echo>
+        <echo file="${tmpdir.absolute}/config-get-object.xml">${config}</echo>
+        
+    </target>
+    
+</project>

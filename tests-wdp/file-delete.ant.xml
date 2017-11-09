@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<project name="file-delete" basedir="." default="file-delete">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="file-delete">
+        
+        <local name="file"/>
+        <local name="file.absolute"/>
+        <local name="remote"/>
+        
+        <property name="file" value="file-delete.ant.xml"/>
+        <property name="file.absolute" location="${file}"/>
+        
+        <property name="remote" value="temporary:///${file}"/>
+        
+        <!-- Ensure the file exists on DP so that it can be deleted. -->
+        <ant antfile="common-file-set.ant.xml">
+            <property name="local" value="${file.absolute}"/>
+            <property name="remote" value="${remote}"/>
+        </ant>
+        
+        <wdp operation="DeleteFile" successprop="file-delete-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <remote>${remote}</remote>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${file-delete-successprop}" arg2="true"/>
+            <then>
+                <echo>${remote} successfully deleted from ${domain} on ${hostname}</echo>
+            </then>
+            <else>
+                <echo>Failed to delete ${remote} from ${domain} on ${hostname}</echo>
+            </else>
+        </if>
+        
+    </target>
+    
+</project>

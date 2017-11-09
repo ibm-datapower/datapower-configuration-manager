@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<project name="file-move" basedir="." default="file-move">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="file-move">
+        
+        <local name="file"/>
+        <local name="file.absolute"/>
+        <local name="remote"/>
+        <local name="remote2"/>
+        
+        <property name="file" value="file-move.ant.xml"/>
+        <property name="file.absolute" location="${file}"/>
+        
+        <property name="remote" value="temporary:///${file}"/>
+        <property name="remote2" value="temporary:///${file}.x"/>
+        
+        <!-- Ensure the file exists on DP so that it can be moved. -->
+        <ant antfile="common-file-set.ant.xml">
+            <property name="local" value="${file.absolute}"/>
+            <property name="remote" value="${remote}"/>
+        </ant>
+        
+      <wdp operation="MoveFile" successprop="file-move-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <source>${remote}</source>
+            <destination>${remote2}</destination>
+            <hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${file-move-successprop}" arg2="true"/>
+            <then>
+                <echo>${remote} successfully moved to ${remote2} in ${domain} on ${hostname}</echo>
+            </then>
+            <else>
+                <echo>Failed to move ${remote} to ${remote2} in ${domain} on ${hostname}</echo>
+            </else>
+        </if>
+        
+    </target>
+    
+</project>

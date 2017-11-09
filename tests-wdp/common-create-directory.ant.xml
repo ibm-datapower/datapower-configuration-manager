@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project name="common-create-directory" basedir="." default="common-create-directory">
+    
+    <!-- 
+        Create directory ${dir} in domain ${domain} on ${hostname} with ${uid} and ${pwd}.
+    -->
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="common-create-directory">
+        
+        <local name="successprop"/>
+        
+        <wdp operation="CreateDirectory" successprop="successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <remote>${dir}</remote>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${successprop}" arg2="true"/>
+            <then>
+                <echo>${dir} successfully created in ${domain} on ${hostname}</echo>
+            </then>
+            <else>
+                <echo>Failed to create ${dir} in ${domain} on ${hostname}</echo>
+            </else>
+        </if>
+        
+    </target>
+    
+</project>

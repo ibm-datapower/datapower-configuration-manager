@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<project name="file-dir-delete" basedir="." default="file-dir-delete">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="file-dir-delete">
+        
+        <local name="dir"/>
+        
+        <property name="dir" value="local:///x"/>
+        
+        <ant antfile="common-create-directory.ant.xml"> <!-- Ensure that the directory exists, so we can delete it. -->
+            <property name="dir" value="${dir}"/>
+        </ant>
+        
+        <wdp operation="RemoveDirectory" successprop="file-dir-delete-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <remote>${dir}</remote>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${file-dir-delete-successprop}" arg2="true"/>
+            <then>
+                <echo>${dir} successfully deleted in ${domain} on ${hostname}</echo>
+            </then>
+            <else>
+                <echo>Failed to delete ${dir} in ${domain} on ${hostname}</echo>
+            </else>
+        </if>
+        
+    </target>
+    
+</project>

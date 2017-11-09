@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright 2014, 2015 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **/
+-->
+<!--
+
+  This build file can:
+
+    1. Produce a DCM command-line zip file
+    2. Produce an UrbanCode Deploy DataPower plugin
+    3. Produce a new distribution of the whole DCM (command line plus UCD plugin)
+
+  The current directory must be "dcm", containing "src", "UrbanCode", and the other
+  directories from github.
+
+-->
+<project name="dcm" basedir="." default="distro">
+
+  <description>Build DCM components</description>
+
+  <!-- Locations of directories so we don't hard code them all over the file. -->
+  <property name="build" value="build/locale"/>
+  <property name="dist" value="dist"/>
+  <property name="distro" location="dcm-distros/dcm"/>
+  <property name="lib" value="lib"/>
+  <property name="src" value="src"/>
+
+  <!-- Java-related defaults -->
+  <property name="java.debug" value="true"/>
+  <property name="needed.java.version" value="1.6"/>
+
+  <!-- Which Xalan version to include -->
+  <property name="needed.xalan.version" value="2.7.2"/>
+
+  <!-- Which Ant version to include -->
+  <property name="needed.ant.version" value="1.9.9"/>
+
+  <!-- Plugin version during build time -->
+  <property name="plugin.version" value="dev"/>
+
+  <target name="distro" description="Produce a new distribution" depends="clean,plugin">
+
+    <mkdir dir="${distro}"/>
+
+    <!-- Copy a bunch of files to the new directory. -->
+    <copy todir="${distro}">
+      <fileset dir=".">
+        <include name="Apache*.txt"/>
+        <include name="build.xml"/>
+        <include name="deploy.ant.xml"/>
+        <include name="dist/**"/>
+        <include name="imports/**"/>
+        <include name="src/*.x*"/>
+        <include name="tests-deploy.ant/**"/>
+        <include name="tests-wdp/**"/>
+      </fileset>
+    </copy>
+
+    <!-- Create the .zip file for the entire distribution. -->
+    <zip basedir="${distro}" destfile="${distro}.zip"/>
+
+  </target>
+
+  <target name="plugin" description="Produce an UrbanCode Deploy DataPower plugin" depends="-get-ant,commandline">
+
+    <!-- Extract the Ant distribution into the tmp directory, where we are collecting the files for the plugin. -->
+    <mkdir dir="tmp"/>
+    <unzip src="${lib}/ant.zip" dest="tmp/dcm">
+      <patternset>
+        <exclude name="apache-ant-*/manual/**" />
+      </patternset>
+    </unzip>
+
+    <!-- Copy the base DCM implementation. -->
+    <copy todir="tmp/dcm">
+      <fileset dir=".">
+        <include name="Apache*.txt"/>
+        <include name="deploy.ant.xml"/>
+        <include name="dist/**"/>
+        <include name="src/*.x*"/>
+        <exclude name="src/main/**"/>
+      </fileset>
+    </copy>
+    <copy todir="tmp">
+      <fileset dir="src/main/zip">
+        <include name="**"/>
+      </fileset>
+    </copy>
+    <copy todir="tmp/dcm/apache-ant-${needed.ant.version}/lib">
+      <fileset dir="${lib}">
+        <include name="xalan-${needed.xalan.version}.jar"/>
+        <include name="serializer-${needed.xalan.version}.jar"/>
+      </fileset>
+    </copy>
+
+    <!-- Update the info.xml version with the ${plugin.version} value. Used in Travis CI builds -->
+    <replace file="tmp/info.xml" token="#DEV_VERSION#" value="${plugin.version}" />
+
+    <!-- Zip the tmp dir to produce the final plugin file. -->
+    <zip basedir="tmp" destfile="${dist}/datapower-v${plugin.version}.zip"/>
+
+    <delete dir="tmp"/>
+
+  </target>
+
+  <target name="commandline" description="Produce a DCM zip file for command line support" depends="clean">
+
+    <mkdir dir="${build}"/>
+    <mkdir dir="${dist}"/>
+    <mkdir dir="${lib}"/>
+    <get src="http://search.maven.org/remotecontent?filepath=xalan/xalan/${needed.xalan.version}/xalan-${needed.xalan.version}.jar" dest="${lib}/xalan-${needed.xalan.version}.jar" skipexisting="true"/>
+    <get src="http://search.maven.org/remotecontent?filepath=xalan/serializer/${needed.xalan.version}/serializer-${needed.xalan.version}.jar" dest="${lib}/serializer-${needed.xalan.version}.jar" skipexisting="true"/>
+
+    <javac srcdir="${src}" destdir="${build}" includeantruntime="true" classpath="${lib}/xalan-${needed.xalan.version}.jar" debug="${java.debug}" target="${needed.java.version}" source="${needed.java.version}"/>
+    <copy file="${src}/com/ibm/antlib.xml" todir="${build}/com/ibm"/>
+    <unzip src="${lib}/xalan-${needed.xalan.version}.jar" dest="${build}"/>
+    <unzip src="${lib}/serializer-${needed.xalan.version}.jar" dest="${build}"/>
+    <jar destfile="${dist}/dcm.jar" basedir="${build}"/>
+
+  </target>
+
+	<target name="clean" description="Delete all generated files and directories.">
+		<delete dir="build" />
+		<delete dir="dist" />
+		<delete dir="distro" />
+		<delete dir="dcm-distros" />
+		<delete dir="tmp" />
+	</target>
+
+	<target name="clean-lib" description="Delete all downloaded files. Use this target to fully validate the build as the various get tasks will fail when Apache distributions are updated/delete/moved">
+		<delete dir="${lib}" />
+	</target>
+
+	<target name="-get-ant" depends="clean">
+		<mkdir dir="${lib}" />
+		<get src="https://archive.apache.org/dist/ant/binaries/apache-ant-${needed.ant.version}-bin.zip" dest="${lib}/ant.zip" skipexisting="true" />
+	</target>
+
+</project>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<project name="security-secure-restore" basedir="." default="security-secure-restore">
+    
+    <!--
+        Securely restore the device.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="security-secure-restore">
+        
+        <wdp operation="SecureRestore" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <objname>device-id</objname>
+            <remote>export:///secure-backup.zip</remote>
+            <validate>on</validate>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>Successfully securely restored on ${hostname}</echo>
+        
+    </target>
+    
+</project>

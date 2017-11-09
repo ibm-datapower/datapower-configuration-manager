@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<project name="quiesce-operations" basedir="." default="quiesce-operations">
+    
+    <!--
+        Quiesce/unquiesce at various granularities.
+    -->
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="quiesce-operations">
+        
+        <local name="checkpoint.name"/>
+        
+        <property name="checkpoint.name" value="some-checkpoint"/>
+        
+        
+        <wdp operation="QuiesceDevice" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <timeout>60</timeout>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully quiesced all services on ${hostname}</echo>
+        
+        <wdp operation="UnquiesceDevice" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully unquiesced all services on ${hostname}</echo>
+        
+        
+        <wdp operation="QuiesceDomain" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <timeout>60</timeout>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully quiesced all services in domain ${domain} on ${hostname}</echo>
+        
+        <wdp operation="UnquiesceDomain" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully unquiesced all services in domain ${domain} on ${hostname}</echo>
+        
+<!--        
+    
+    This doesn't seem to even result in CLI commands that are recognized...
+    
+        <wdp operation="QuiesceFSH" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <type>MultiProtocolGateway</type>
+            <objname>loopback</objname>
+            <fehtype>HTTPSourceProtocolHandler</fehtype>
+            <fehname>loopback-http-fsh</fehname>
+            <timeout>60</timeout>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully quiesced FSH HTTPSourceProtocolHandler/loopback-http-fsh in service MultiProtocolGateway/loopback in domain ${domain} on ${hostname}</echo>
+        
+        <wdp operation="UnquiesceFSH" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <type>MultiProtocolGateway</type>
+            <objname>loopback</objname>
+            <fehtype>HTTPSourceProtocolHandler</fehtype>
+            <fehname>loopback-http-fsh</fehname>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully unquiesced FSH HTTPSourceProtocolHandler/loopback-http-fsh in service MultiProtocolGateway/loopback in domain ${domain} on ${hostname}</echo>
+-->
+<!--  This hangs in 7.2.0.8 - the firmware shows the service as down but not quiesced...
+        <wdp operation="QuiesceService" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <type>MultiProtocolGateway</type>
+            <objname>loopback</objname>
+            <timeout>60</timeout>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully quiesced service MultiProtocolGateway/loopback in domain ${domain} on ${hostname}</echo>
+-->        
+        <wdp operation="UnquiesceService" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <type>MultiProtocolGateway</type>
+            <objname>loopback</objname>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully unquiesced in service MultiProtocolGateway/loopback in domain ${domain} on ${hostname}</echo>
+        
+        
+    </target>
+    
+</project>

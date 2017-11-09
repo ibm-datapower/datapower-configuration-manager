@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<project name="cache-operations" basedir="." default="cache-operations">
+    
+    <!--
+        This script fires a bunch of cache operations.  I didn't split them into a bunch
+        of separate files because there didn't seem to be any benefit.
+    -->
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="cache-operations">
+        
+        <!-- Force things into a cache -->
+<!--
+    Interesting.  This fails when testing against either 4.0.2.4 or 3.8.2.11.
+    This SOMA request ends up being converted to:
+    
+      cache schema "default" "store:///xml-mgmt.xsd" ""
+        
+    When I ssh into the device and enter the same command, I get this complaint:
+    
+      xi50(config)# cache schema "default" "store:///xml-mgmt.xsd" ""
+      Usage: cache schema <xmlmgr> <url> [mode]
+    
+    I also tried changing the "" at the end of the command to "general", still failed.
+    Only when I removed the 'mode' parameter did the command work properly.
+    
+        <wdp operation="CacheSchema" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <url>store:///xml-mgmt.xsd</url>
+            <objname>default</objname>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>CacheSchema succeeded.</echo>
+-->        
+        
+        <wdp operation="CacheStylesheet" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <url>store:///identity.xsl</url>
+            <objname>default</objname> <!-- XML Manager object -->
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>CacheStylesheet succeeded.</echo>
+        
+        <wdp operation="CacheWSDL" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <url>store:///xml-mgmt.wsdl</url>
+            <objname>default</objname> <!-- XML Manager object -->
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>CacheWSDL succeeded.</echo>
+        
+        <!-- Flush various caches -->
+        
+        <wdp operation="FlushAAACache" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <policy>none</policy> <!-- non-existent policy, doesn't matter. -->
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>FlushAAACache succeeded.</echo>
+        
+        <wdp operation="FlushArpCache" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>FlushArpCache succeeded.</echo>
+        
+        <wdp operation="FlushDNSCache" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>FlushDNSCache succeeded.</echo>
+        
+        <wdp operation="FlushDocumentCache" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>FlushDocumentCache succeeded.</echo>
+        
+        <wdp operation="FlushNDCache" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>FlushNDCache succeeded.</echo>
+
+<!-- 
+        This SOMA request gets translated into a CLI command, which fails.  When I
+        try this via ssh, I get this:
+        
+          xi50(config)# flush nss cache "none"
+          Unknown command or macro (flush nss cache "none")
+        
+        <wdp operation="FlushNSSCache" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <client>none</client>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>FlushNSSCache succeeded.</echo>
+-->
+<!-- 
+        Need to actually set up a PDP to be able to test this.
+        
+        <wdp operation="FlushPDPCache" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <name>store:///identity.xsl</name>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>FlushPDPCache succeeded.</echo>
+-->        
+        <wdp operation="FlushRBMCache" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>FlushRBMCache succeeded.</echo>
+        
+        <wdp operation="FlushStylesheetCache" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+
+        <echo>FlushStylesheetCache succeeded.</echo>
+        
+        <!-- Refresh things in caches -->
+        
+        <wdp operation="RefreshDocument" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <xmlmanager>default</xmlmanager>
+            <doc>store:///AAAInfo.xml</doc>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>RefreshDocument succeeded.</echo>
+        
+        <wdp operation="RefreshStylesheet" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <xmlmanager>default</xmlmanager>
+            <stylesheet>store:///identity.xsl</stylesheet>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>RefreshStylesheet succeeded.</echo>
+        
+<!--        
+        <wdp operation="RefreshTAMCerts" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+-->
+        
+        <wdp operation="RemoveStylesheet" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <xmlmanager>default</xmlmanager>
+            <pattern>.*\.xsl</pattern>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>RemoveStylesheet succeeded.</echo>
+        
+    </target>
+    
+</project>

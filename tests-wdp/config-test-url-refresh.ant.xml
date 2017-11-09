@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<project name="config-test-url-refresh" basedir="." default="config-test-url-refresh">
+    
+    <!--
+        Test a simple URL Refresh policy (anything from store:///*).  Kind of silly because the 
+        the output goes to the log and is not returned to <wdp>.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="config-test-url-refresh">
+        
+        <!-- Ensure the URLRefresh policy is present. -->
+        <ant antfile="common-import-service.ant.xml">
+            <property name="zipfile" location="../imports/simple-urlrefresh.4.0.2.4.zip"/>
+        </ant>
+        
+        <wdp operation="TestURLRefresh" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <name>simple</name>
+            <url>store:///xml-mgmt.xsd</url>
+            <hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Tested a simple URL Refresh policy in ${domain} on ${hostname}</echo>
+        
+    </target>
+    
+</project>

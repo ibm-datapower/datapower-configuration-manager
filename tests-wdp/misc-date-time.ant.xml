@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<project name="misc-date-time" basedir="." default="misc-date-time">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="misc-date-time">
+        
+        <wdp operation="GetStatuses" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>default</domain>
+        	<statuses>DateTimeStatus</statuses>
+        	<return antprop="misc-date-time.status" somaprop="status"/>
+        </wdp>
+        
+        <echo>misc-date-time.status=${misc-date-time.status}</echo>
+        
+    </target>
+    
+</project>

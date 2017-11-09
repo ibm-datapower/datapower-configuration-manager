@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project name="misc-wsrr-sync" basedir="." default="misc-wsrr-sync">
+    
+    <!--
+        WSRR Synchronize.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="misc-wsrr-sync">
+        
+<!--
+    
+    Unable to test this since I don't have WSRR available at the moment.
+    
+        <wdp operation="WSRRSynchronize" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <name>something</name>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully synchronized a WSRR subscription on ${hostname}</echo>
+-->
+        
+    </target>
+    
+</project>

@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<project name="misc-create-tam-files" basedir="." default="misc-create-tam-files">
+    
+    <!--
+        Create TAM files based on a whole bunch of parameters.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="misc-create-tam-files">
+        
+<!-- 
+    Don't know enough to get the necessary parameters together.
+    
+        <wdp operation="CreateTAMFiles" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <createcopy>off</createcopy>
+            <outputconfigfile>temporary:///create-tam-files.txt</outputconfigfile>
+            <administrator-uid>myid</administrator-uid>
+            <administrator-pwd>mypwd</administrator-pwd>
+            <tamdomain>somedomain</tamdomain>
+            <application>app</application>
+            <tamhost>1.2.3.4</tamhost>
+            <tamport>1234</tamport>
+            <sslkeyfilelifetime>1</sslkeyfilelifetime>
+            <ssltimeout>2</ssltimeout>
+            <localmode>off</localmode>
+            <useadregistry>off</useadregistry>
+            <ldapserver>4.5.6.7</ldapserver>
+            <ldapport>4567</ldapport>
+            <ldapauthtimeout>3</ldapauthtimeout>
+            <ldapsearchtimeout>4</ldapsearchtimeout>
+            
+            <host>${hostname}</host>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully created TAM files on ${hostname}</echo>
+-->
+        
+    </target>
+    
+</project>

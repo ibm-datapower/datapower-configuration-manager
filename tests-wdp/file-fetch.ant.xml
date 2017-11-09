@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project name="file-fetch" basedir="." default="file-fetch">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="file-fetch">
+        
+        <local name="file"/>
+        <local name="url"/>
+        
+        <property name="file" value="temporary:///index.html"/>
+        <property name="url" value="http://www.ibm.com/index.html"/>
+        
+        <wdp operation="FetchFile" successprop="file-fetch-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <remote>${file}</remote>
+            <url>${url}</url>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${file-fetch-successprop}" arg2="true"/>
+            <then>
+                <echo>${url} successfully fetched and stored as ${file} in ${domain} on ${hostname}</echo>
+            </then>
+            <else>
+                <echo>Failed to fetch ${url} and store it as ${file} in ${domain} on ${hostname}</echo>
+            </else>
+        </if>
+        
+    </target>
+    
+</project>

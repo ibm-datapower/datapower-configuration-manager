@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<project name="config-pubcert-valcred" basedir="." default="config-pubcert-valcred">
+    
+    <!--
+        Create a valcred based on all the certs in the pubcert: filestore.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="config-pubcert-valcred">
+        
+        <wdp operation="ValCredAddCertsFromDir" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Created valcred from pubcert: in ${domain} on ${hostname}</echo>
+        
+    </target>
+    
+</project>

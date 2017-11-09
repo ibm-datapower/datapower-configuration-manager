@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project name="troubleshooting-send-error-report" basedir="." default="troubleshooting-send-error-report">
+    
+    <!--
+        Ping some host.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="troubleshooting-send-error-report">
+        
+<!--
+    Would like to test this but don't have an SMTP server to hit.
+    
+        <wdp operation="SendErrorReport" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <host>smtp.server</host>
+            <location>temporary:///error-report.txt.gz</location> <! - - Created by GenerateErrorReport - - >
+            <address>me@123.com</address>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully emailed an error report from ${hostname}</echo>
+-->
+
+    </target>
+    
+</project>

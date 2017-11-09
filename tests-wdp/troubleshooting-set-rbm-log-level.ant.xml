@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<project name="troubleshooting-set-rbm-log-level" basedir="." default="troubleshooting-set-rbm-log-level">
+    
+    <!--
+        Set the log level in the domain.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="troubleshooting-set-rbm-log-level">
+        
+    
+        <wdp operation="SetRBMLogLevel" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <rbmlog>off</rbmlog>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully turned off RBM logging on ${hostname}</echo>
+
+    </target>
+    
+</project>

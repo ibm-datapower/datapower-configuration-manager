@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<project name="restore-domain" basedir="." default="restore-domain">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="restore-domain">
+        
+        <local name="zipfile"/>
+
+        <property name="tmpdir" location="tmp"/>    <!-- temp directory - override from command line. -->
+        <property name="tmpdir.absolute" location="${tmpdir}"/> <!-- Ensure that we know the fully qualified temp directory path.  Don't override. -->
+        
+        <mkdir dir="${tmpdir.absolute}"/>  <!-- no complaint if the directory already exists. -->
+
+
+        <property name="zipfile" location="${tmpdir.absolute}/backup-domains.zip"/>
+        
+        <!-- Export the domain. -->
+        <wdp operation="Restore" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <local>${zipfile}</local>
+            <dry-run>true</dry-run>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Restore of domain ${domain} successfully made on ${hostname} from ${zipfile}.</echo>
+        
+    </target>
+    
+</project>

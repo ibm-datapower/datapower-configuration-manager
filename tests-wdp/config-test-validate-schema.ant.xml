@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<project name="config-test-validate-schema" basedir="." default="config-test-validate-schema">
+    
+    <!--
+        Test an XML file against a schema.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="config-test-validate-schema">
+        
+        <wdp operation="TestValidateSchema" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <xml>store:///healthcheck.xml</xml>
+            <schema>store:///schemas/soap-envelope.xsd</schema>
+            <hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Tested an XML file against a schema in ${domain} on ${hostname}</echo>
+        
+    </target>
+    
+</project>

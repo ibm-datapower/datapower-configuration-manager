@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<project name="config-import-execute" basedir="." default="config-import-execute">
+    
+    <!--
+        Test "ImportExecute" by importing an ImportPackage object and then executing it.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="config-import-execute">
+        
+        <!-- Ensure the necessary ZIP file is present. -->
+        <ant antfile="common-file-set.ant.xml">
+            <property name="local" location="../imports/simple-urlrewrite.4.0.2.4.zip"/>
+            <property name="remote" value="temporary:///simple-urlrewrite.4.0.2.4.zip"/>
+        </ant>
+        
+        <!-- Ensure the ImportPackage object is present. -->
+        <ant antfile="common-import-service.ant.xml">
+            <property name="zipfile" location="../imports/simple-importobject.4.0.2.4.zip"/>
+        </ant>
+        
+        <wdp operation="ImportExecute" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <name>simple</name>
+            <hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully executed ImportPackage 'simple' in ${domain} on ${hostname}</echo>
+        
+    </target>
+    
+</project>

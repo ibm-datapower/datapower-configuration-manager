@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<project name="common-crrd" basedir="." default="common-crrd">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="common-crrd">
+        
+        <wdp operation="SetConfig" successprop="domain-crrd-create-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <config>
+              <Domain name="${domain}">
+                <mAdminState>enabled</mAdminState>
+                <NeighborDomain class="Domain">default</NeighborDomain>
+                <ConfigMode>local</ConfigMode>
+              </Domain>  
+            </config>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${domain-crrd-create-successprop}" arg2="true"/>
+            <then>
+                <echo>Domain ${domain} successfully created on ${hostname}.</echo>
+            </then>
+            <else>
+                <echo>FAILED to create domain ${domain} on ${hostname}.</echo>
+            </else>
+        </if>
+        
+        
+        <wdp operation="ResetDomain" successprop="domain-crrd-reset-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${domain-crrd-reset-successprop}" arg2="true"/>
+            <then>
+                <echo>Domain ${domain} successfully reset on ${hostname}.</echo>
+            </then>
+            <else>
+                <echo>FAILED to reset domain ${domain} on ${hostname}.</echo>
+            </else>
+        </if>
+        
+        
+        <wdp operation="RestartDomain" successprop="domain-crrd-restart-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${domain-crrd-restart-successprop}" arg2="true"/>
+            <then>
+                <echo>Domain ${domain} successfully restarted on ${hostname}.</echo>
+            </then>
+            <else>
+                <echo>FAILED to restart domain ${domain} on ${hostname}.</echo>
+            </else>
+        </if>
+        
+        
+        <wdp operation="DeleteConfig" successprop="domain-crrd-delete-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <classname>Domain</classname>
+            <objname>${domain}</objname>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${domain-crrd-delete-successprop}" arg2="true"/>
+            <then>
+                <echo>Domain ${domain} successfully deleted on ${hostname}.</echo>
+            </then>
+            <else>
+                <echo>FAILED to delete domain ${domain} on ${hostname}.</echo>
+            </else>
+        </if>
+        
+        
+        <wdp operation="SaveConfig" successprop="domain-crrd-save-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+            <ignore-errors>true</ignore-errors>
+        </wdp>
+        
+        <if>
+            <equals arg1="${domain-crrd-save-successprop}" arg2="true"/>
+            <then>
+                <echo>Domain 'default' successfully save on ${hostname}.</echo>
+            </then>
+            <else>
+                <echo>FAILED to save domain 'default' on ${hostname}.</echo>
+            </else>
+        </if>
+        
+        
+    </target>
+    
+</project>

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<project name="export-service" basedir="." default="export-service">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="export-service">
+        
+        <local name="errors"/>
+        <local name="rawresponse"/>
+        <local name="service"/>
+        <local name="type"/>
+        <local name="zipfile"/>
+        
+        <property name="tmpdir" location="tmp"/>    <!-- temp directory - override from command line. -->
+        <property name="tmpdir.absolute" location="${tmpdir}"/> <!-- Ensure that we know the fully qualified temp directory path.  Don't override. -->
+        
+        <mkdir dir="${tmpdir.absolute}"/>  <!-- no complaint if the directory already exists. -->
+        
+        
+        <property name="service" value="loopback"/>
+        <property name="type" value="MultiProtocolGateway"/>
+        <property name="zipfile" location="${tmpdir.absolute}/export-service.zip"/>
+
+        <!-- Export the service. -->
+        <wdp operation="Export" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <objects xmlns:soma="http://www.datapower.com/schemas/management">
+                <soma:object class="${type}" name="${service}" ref-objects="true" ref-files="true"/>
+            </objects>
+            <local>${zipfile}</local>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully exported ${type} ${service} from domain ${domain} on ${hostname} into ${zipfile}.</echo>
+        
+    </target>
+    
+</project>

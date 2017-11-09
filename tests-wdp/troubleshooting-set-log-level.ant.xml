@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<project name="troubleshooting-set-log-level" basedir="." default="troubleshooting-set-log-level">
+    
+    <!--
+        Set the log level in the domain.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="troubleshooting-set-log-level">
+        
+    
+        <wdp operation="SetLogLevel" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <loglevel>debug</loglevel>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully set the log level in ${domain} on ${hostname}</echo>
+
+    </target>
+    
+</project>

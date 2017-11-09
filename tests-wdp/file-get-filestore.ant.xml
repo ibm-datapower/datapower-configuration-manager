@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<project name="file-get-filestore" basedir="." default="file-get-filestore">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="file-get-filestore">
+        
+        <local name="dirlist"/>
+        <local name="file"/>
+        <local name="file.absolute"/>
+        <local name="filestore"/>
+        
+        <property name="tmpdir" location="tmp"/>    <!-- temp directory - override from command line. -->
+        <property name="tmpdir.absolute" location="${tmpdir}"/> <!-- Ensure that we know the fully qualified temp directory path.  Don't override. -->
+        
+        <mkdir dir="${tmpdir.absolute}"/> <!-- doesn't care if the directory already exists. -->
+        
+        <property name="file" value="file-get-filestore.xml"/>
+        <property name="file.absolute" value="${tmpdir.absolute}/${file}"/>
+        
+        <property name="filestore" value="local:"/>
+        
+        <wdp operation="GetFilestore" successprop="file-get-filestore-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <filestore>${filestore}</filestore>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+            <return antprop="dirlist" somaprop="location"/>
+        </wdp>
+        
+        <if>
+            <equals arg1="${file-get-filestore-successprop}" arg2="true"/>
+            <then>
+                <echo>${filestore} listing successfully fetched from ${domain} on ${hostname}</echo>
+                <echo file="${file.absolute}">${dirlist}</echo> <!-- Store the directory listing in a file. -->
+            </then>
+            <else>
+                <echo>Failed to fetch ${filestore} listing from ${domain} on ${hostname}</echo>
+            </else>
+        </if>
+        
+    </target>
+    
+</project>

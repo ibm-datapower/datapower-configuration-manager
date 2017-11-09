@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<project name="config-conformance-report" basedir="." default="config-conformance-report">
+    
+    <!--
+        Compare the conformance report for some service.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+
+    <property name="tmpdir" location="tmp"/>    <!-- temp directory - override from command line. -->
+    <property name="tmpdir.absolute" location="${tmpdir}"/> <!-- Ensure that we know the fully qualified temp directory path.  Don't override. -->
+    
+    <mkdir dir="${tmpdir.absolute}"/> <!-- doesn't care if the directory already exists. -->
+    
+    
+    <target name="config-conformance-report">
+        
+        <local name="class"/>
+        <local name="name"/>
+        <local name="rawresponse"/>
+        
+        <property name="class" value="WSGateway"/>
+        <property name="name" value="logsoap"/>
+        
+        <wdp operation="GetConformanceReport" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <class>${class}</class>
+            <name>${name}</name>
+            <profile>dp-wsi-bp.xsl</profile>
+            <!-- <profile>dp-wsi-bsp-1.0.xsl</profile> -->
+            <!-- <profile>dp-cfg-bp.xsl</profile> -->
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+            <return antprop="rawresponse" somaprop="rawresponse"/>
+        </wdp>
+        
+        <echo>Successfully fetched the conformance report for ${class}/${name} in ${domain} on ${hostname}</echo>
+        <xpath inprop="rawresponse" outfile="${tmpdir.absolute}/config-conformance-report.xml" xpath="/env:Envelope/env:Body/soma:response/soma:conformance-report" xpathtype="node"/>
+        
+    </target>
+    
+</project>

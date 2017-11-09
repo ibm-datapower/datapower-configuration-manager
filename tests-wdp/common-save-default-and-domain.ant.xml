@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project name="common-save-default-and-domain" basedir="." default="common-save-default-and-domain">
+    
+    <!-- 
+        Save both the 'default' domain and the ${domain} on ${hostname} with ${uid} and ${pwd}.
+    -->
+    
+    <target name="common-save-default-and-domain">
+        
+        <wdp operation="SaveConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+            <ignore-errors>true</ignore-errors>
+        </wdp>
+        
+        <wdp operation="SaveConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+            <ignore-errors>true</ignore-errors>
+        </wdp>
+        
+    </target>
+    
+</project>

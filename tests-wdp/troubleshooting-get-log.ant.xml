@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<project name="troubleshooting-get-log" basedir="." default="troubleshooting-get-log">
+    
+    <!--
+        Fetch the latest logtemp:///default-log-xml
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="troubleshooting-get-log">
+        
+        <local name="log"/>
+        
+        <property name="tmpdir" location="tmp"/>    <!-- temp directory - override from command line. -->
+        <property name="tmpdir.absolute" location="${tmpdir}"/> <!-- Ensure that we know the fully qualified temp directory path.  Don't override. -->
+        
+        <mkdir dir="${tmpdir.absolute}"/> <!-- doesn't care if the directory already exists. -->
+        
+        
+        <wdp operation="GetLog" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+            <return antprop="log" somaprop="log"/>
+        </wdp>
+        
+        <echo file="${tmpdir.absolute}/default-log-xml.xml">${log}</echo>
+        
+        <echo>Successfully fetched default-log-xml from ${domain} ${hostname}</echo>
+        
+    </target>
+    
+</project>

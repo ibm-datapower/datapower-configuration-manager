@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<project name="file-clear-filestore" basedir="." default="file-clear-filestore">
+    
+    <!--
+        Clear all files and directories from a filestore (e.g. local:, temporary:, etc.).
+    -->
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="file-clear-filestore">
+        
+        <wdp operation="ClearFilestore" successprop="file-clear-filestore-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <filestore>local:</filestore>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${file-clear-filestore-successprop}" arg2="true"/>
+            <then>
+                <echo>local: successfully cleared in ${domain} on ${hostname}</echo>
+            </then>
+            <else>
+                <echo>Failed to clear local: in ${domain} on ${hostname}</echo>
+            </else>
+        </if>
+        
+    </target>
+    
+</project>

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<project name="import-domain" basedir="." default="import-domain">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="import-domain">
+        
+        <local name="zipfile"/>
+        <local name="rawresponse"/>
+        <local name="errors"/>
+
+        <!-- Ensure the domain does not exist. -->
+        <ant antfile="${basedir}/common-delete-domain.ant.xml"/>
+        
+        <!-- Import the specified zipfile, creating the domain named in the .zip file. -->
+        
+        <property name="zipfile" location="domain-export.zip"/>
+        
+        <wdp operation="ImportConfig" successprop="import-domain-import-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <local>${zipfile}</local>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>default</domain>
+            <return antprop="rawresponse" somaprop="rawresponse"/>
+        </wdp>
+        
+        <!-- 
+            Unlike many <wdp> operations, you have to check the results of ImportConfig explicitly.  This expression considers
+            an error (terms of the xpath from left to right):
+               1. Failure to import any object
+               2. Failure to import any file
+               3. General failure (e.g. Authentication Failure)
+        -->
+        <xpath inprop="rawresponse" outprop="errors" xpath="/env:Envelope/env:Body/soma:response/soma:import/import-results/exec-script-results/cfg-result[@status!='SUCCESS'] | /env:Envelope/env:Body/soma:response/soma:import/import-results/file-copy-log/file-result[not(@result='OK' or @result='ignored')] | /env:Envelope/env:Body/soma:response/soma:result"/>
+        <if>
+            <and>
+                <equals arg1="${import-domain-import-successprop}" arg2="true"/>
+                <equals arg1="${errors}" arg2=""/>
+            </and>
+            <then>
+                <echo>${zipfile} successfully imported on ${hostname}.</echo>
+            </then>
+            <else>
+                <echo>FAILED to import ${zipfile} on ${hostname}.</echo>
+            </else>
+        </if>
+        
+    </target>
+    
+</project>

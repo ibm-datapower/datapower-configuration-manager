@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<project name="common-file-delete" basedir="." default="common-file-delete">
+    
+    <!-- 
+        Delete the file ${remote} in domain ${domain} on ${hostname} with ${uid} and ${pwd}.
+        ${remote} is a full DP path name.  For example:
+        
+          <ant antfile="common-file-delete.ant.xml">
+            <property name="remote" value="local:///def.xml"/>
+          </ant>
+    -->
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="common-file-delete">
+        
+        <local name="successprop"/>
+        
+        <wdp operation="DeleteFile" successprop="successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <remote>${remote}</remote>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+            <ignore-errors>true</ignore-errors>
+        </wdp>
+        
+        <if>
+            <equals arg1="${successprop}" arg2="true"/>
+            <then>
+                <echo>Successfully deleted ${remote} in ${domain} on ${hostname}</echo>
+            </then>
+            <else>
+                <echo>Failed to delete ${remote} in ${domain} on ${hostname}</echo>
+            </else>
+        </if>
+        
+    </target>
+    
+</project>

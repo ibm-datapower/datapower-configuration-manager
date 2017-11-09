@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project name="file-set" basedir="." default="file-set">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="file-set">
+        
+        <local name="file"/>
+        <local name="file.absolute"/>
+        
+        <property name="file" value="file-set.ant.xml"/>
+        <property name="file.absolute" location="${file}"/>
+        
+        <wdp operation="SetFile" successprop="file-set-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <local>${file.absolute}</local>
+            <remote>temporary:///${file}</remote>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${file-set-successprop}" arg2="true"/>
+            <then>
+                <echo>${file} successfully stored in ${domain} on ${hostname}</echo>
+            </then>
+            <else>
+                <echo>Failed to store ${file} in ${domain} on ${hostname}</echo>
+            </else>
+        </if>
+        
+    </target>
+    
+</project>

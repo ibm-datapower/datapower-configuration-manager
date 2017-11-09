@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<project name="crypto-keycert-operations" basedir="." default="crypto-keycert-operations">
+    
+    <!--
+        Test several operations related to keys/certs.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="crypto-keycert-operations">
+        
+        <!-- Ensure the necessary key/cert files/objects are present. -->
+        <ant antfile="common-import-service.ant.xml">
+            <property name="zipfile" location="../imports/simple-keycert.4.0.2.4.zip"/>
+        </ant>
+        
+        <!-- Ensure that the output files do not exist. -->
+        <ant antfile="common-file-delete.ant.xml">
+            <property name="remote" value="temporary:///convert-certificate.sshrsa"/>
+        </ant>
+        <ant antfile="common-file-delete.ant.xml">
+            <property name="remote" value="temporary:///convert-key.sshrsa"/>
+        </ant>
+        <ant antfile="common-file-delete.ant.xml">
+            <property name="remote" value="temporary:///export-cert.sshrsa"/>
+        </ant>
+
+
+        <wdp operation="ConvertCertificate" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <objname>simple</objname>
+            <remote>temporary:///convert-certificate.sshrsa</remote>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully converted a certificate in ${domain} on ${hostname}</echo>
+        
+        
+        <wdp operation="ConvertKey" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <objname>simple</objname>
+            <remote>temporary:///convert-key.sshrsa</remote>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully converted a key in ${domain} on ${hostname}</echo>
+        
+        
+        <wdp operation="CryptoExport" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <objtype>cert</objtype>
+            <name>simple</name>
+            <remote>export-cert.sshrsa</remote>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully exported a certificate in ${domain} on ${hostname}</echo>
+        
+        <!-- Delete the certificate so that we can import it again. -->
+<!--        
+        <wdp operation="DeleteConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <classname>CryptoCertificate</classname>
+            <objname>simple</objname>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <wdp operation="CryptoImport" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <objtype>cert</objtype>
+            <name>simple</name>
+            <remote>temporary:///export-cert.sshrsa</remote>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully imported a certificate in ${domain} on ${hostname}</echo>
+-->
+    </target>
+    
+</project>

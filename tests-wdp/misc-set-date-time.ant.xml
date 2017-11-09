@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<project name="misc-set-date-time" basedir="." default="misc-set-date-time">
+    
+    <!--
+        Set a system date and time.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="misc-set-date-time">
+        
+        
+        <wdp operation="SetTimeAndDate" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully set the date and time on ${hostname}</echo>
+        
+    </target>
+    
+</project>

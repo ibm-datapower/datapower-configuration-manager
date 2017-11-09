@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<project name="troubleshooting-tcp-connection" basedir="." default="troubleshooting-tcp-connection">
+    
+    <!--
+        Test a TCP connection to some host.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="troubleshooting-tcp-connection">
+        
+    
+        <wdp operation="TCPConnectionTest" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <host>${hostname}</host>
+            <port>5550</port>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully tested a TCP connection to ${hostname} port 5550</echo>
+
+    </target>
+    
+</project>

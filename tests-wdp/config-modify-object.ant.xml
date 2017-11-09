@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<project name="config-modify-object" basedir="." default="config-modify-object">
+
+    <!--
+        Modify the standard loopback service to listen on a different port.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+
+    <target name="config-modify-object">
+
+        <wdp operation="ModifyConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <config>
+                <HTTPSourceProtocolHandler name="loopback-http-fsh">
+                    <LocalPort>2</LocalPort>
+                </HTTPSourceProtocolHandler>
+            </config>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+
+        <echo>Modified port for loopback service in ${domain} on ${hostname}</echo>
+
+    </target>
+
+</project>

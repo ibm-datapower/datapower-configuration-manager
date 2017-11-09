@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<project name="misc-wdp" basedir="." default="misc-wdp">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="misc-wdp">
+        
+        <property name="isTrue" value="true"/>
+        <property name="isFalse" value="false"/>
+        
+        <!--
+            Test the various basic features of the <wdp> task itself.
+        -->
+        <wdp operation="GetStatuses" responseprop="misc-wdp-responseprop" successprop="misc-wdp-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>default</domain>
+        	<statuses>Version</statuses>
+        	<return antprop="misc-date-time.status" somaprop="status"/>
+        </wdp>
+        
+        <echo>misc-wdp-responseprop=${misc-wdp-responseprop}</echo>
+        <echo>misc-wdp-successprop=${misc-wdp-successprop}</echo>
+        
+        <wdp operation="GetStatuses" xpathprop="misc-wdp-xpathprop" xpath="/*" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+            <statuses>Version</statuses>
+            <return antprop="misc-date-time.status" somaprop="status"/>
+        </wdp>
+        
+        <echo>misc-wdp-xpathprop=${misc-wdp-xpathprop}</echo>
+        
+        <wdp operation="GetStatuses" if="isTrue" successprop="misc-wdp-1" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+            <statuses>Version</statuses>
+        </wdp>
+        
+        <if>
+            <equals arg1="${misc-wdp-1}" arg2="true"/>
+            <then>
+                <echo>Works correctly for if="true"</echo>
+            </then>
+            <else>
+                <echo>FAILS for if="true"</echo>
+            </else>
+        </if>
+        
+        <wdp operation="GetStatuses" if="isFalse" successprop="misc-wdp-2" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+            <statuses>Version</statuses>
+        </wdp>
+        
+        <if>
+            <equals arg1="${misc-wdp-2}" arg2="true"/>
+            <then>
+                <echo>FAILS for if="false"</echo>
+            </then>
+            <else>
+                <echo>Works correctly for if="false"</echo>
+            </else>
+        </if>
+        
+        <wdp operation="GetStatuses" unless="isFalse" successprop="misc-wdp-3" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+            <statuses>Version</statuses>
+        </wdp>
+        
+        <if>
+            <equals arg1="${misc-wdp-3}" arg2="true"/>
+            <then>
+                <echo>Works correctly for unless="false"</echo>
+            </then>
+            <else>
+                <echo>FAILS for unless="false"</echo>
+            </else>
+        </if>
+        
+        <wdp operation="GetStatuses" unless="isTrue" successprop="misc-wdp-4" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+            <statuses>Version</statuses>
+        </wdp>
+        
+        <if>
+            <equals arg1="${misc-wdp-4}" arg2="true"/>
+            <then>
+                <echo>FAILS for unless="true"</echo>
+            </then>
+            <else>
+                <echo>Works correctly for unless="true"</echo>
+            </else>
+        </if>
+        
+    </target>
+    
+</project>

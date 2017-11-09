@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<project name="crypto-keygen" basedir="." default="crypto-keygen">
+    
+    <!--
+        Generate a key/cert pair.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="crypto-keygen">
+        
+
+        <!-- Generate the device certificate. -->
+        <wdp operation="DeviceCertificate" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <host>${hostname}</host>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>Successfully generated a device certificate for ${hostname}</echo>
+        
+    </target>
+    
+</project>

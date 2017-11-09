@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<project name="config-get-some-statuses" basedir="." default="config-get-some-statuses">
+    
+    <!--
+        Get selected object statuses.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+
+    <property name="tmpdir" location="tmp"/>    <!-- temp directory - override from command line. -->
+    <property name="tmpdir.absolute" location="${tmpdir}"/> <!-- Ensure that we know the fully qualified temp directory path.  Don't override. -->
+    
+    <mkdir dir="${tmpdir.absolute}"/> <!-- doesn't care if the directory already exists. -->
+    
+    
+    <target name="config-get-some-statuses">
+        
+        <local name="status"/>
+        
+        <wdp operation="GetObjectStatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+            <return antprop="status" somaprop="XMLManager.default"/>
+        </wdp>
+        
+        <echo>Get all object status of the default XML manager ${domain} on ${hostname}</echo>
+        <echo file="${tmpdir.absolute}/config-get-some-statuses.xml">${status}</echo>
+        
+    </target>
+    
+</project>

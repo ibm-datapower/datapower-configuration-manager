@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Test data for testing the remove-unwanted-elements.xsl stylesheet.
+  
+  Environments: dev, qa, prod
+  Devices: dev1, dev2, prod1, prod2
+  
+-->
+<testdata>
+  
+  <one/>
+  
+  <two environment="prod"/>
+  
+  <three deviceid="dev2"/>
+  
+  <four environment="qa, prod"/>
+  
+  <five deviceid="prod1, prod2"/>
+  
+  <a environment="dev" deviceid="dev2"/>
+  
+  <b environment="dev" deviceid="dev1, dev2"/>
+  
+  <c environment="dev, qa" deviceid="dev2"/>
+  
+  <d environment="qa, prod" deviceid="prod1, prod2"/>
+  
+</testdata>

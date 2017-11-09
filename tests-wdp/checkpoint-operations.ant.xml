@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<project name="checkpoints" basedir="." default="checkpoints">
+    
+    <!--
+        Create a checkpoint, roll back to it, then delete it.
+    -->
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="checkpoints">
+        
+        <local name="checkpoint.name"/>
+        
+        <property name="checkpoint.name" value="some-checkpoint"/>
+        
+        <!-- Ensure that we have a domain containing something. -->
+        <echo>Preparing the test domain.</echo>
+        <ant antfile="common-create-empty-domain.ant.xml"/>
+        <ant antfile="common-import-service.ant.xml">
+            <property name="zipfile" location="../imports/simple-loopback.v1.3.8.1.7.zip"/>
+        </ant>
+        <echo>The test domain is ready.</echo>
+        
+        
+        <wdp operation="SaveCheckpoint" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <name>${checkpoint.name}</name>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Checkpoint ${checkpoint.name} successfully created in ${domain} on ${hostname}</echo>
+        
+        
+        <wdp operation="RollbackCheckpoint" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <name>${checkpoint.name}</name>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Checkpoint ${checkpoint.name} successfully rolled back in ${domain} on ${hostname}</echo>
+        
+        
+        <wdp operation="RemoveCheckpoint" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <name>${checkpoint.name}</name>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Checkpoint ${checkpoint.name} successfully removed from ${domain} on ${hostname}</echo>
+        
+    </target>
+    
+</project>

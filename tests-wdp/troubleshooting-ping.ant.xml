@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<project name="troubleshooting-ping" basedir="." default="troubleshooting-ping">
+    
+    <!--
+        Ping some host.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="troubleshooting-ping">
+        
+        
+        <wdp operation="Ping" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <host>${hostname}</host>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully pinged ${hostname} from ${hostname}</echo>
+        
+    </target>
+    
+</project>

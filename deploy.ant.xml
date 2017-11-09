@@ -1,0 +1,1547 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright 2014, 2017 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ **/
+ -->
+<!--
+  This stylesheet performs DataPower deployment operations (* = matching plug-in step):
+
+  backup-device*  - Backup all domains on a device (minus key/certificate files)
+  backup-domains* - Backup one or more domains on a device (minus key/certificate files)
+
+  certificate-from-def - upload a cert (or multiple certs) based on a dcm:definition (with Crypto Certificate objects, of course)
+
+  check-access - check whether the device is accessible and that the userid/password works
+
+  checkpoint-delete*  - delete the specified checkpoint
+  checkpoint-restore* - restore from the specified checkpoint
+  checkpoint-save*    - create/overwrite the specified checkpoint
+
+  create-tam-files - Create TAM files based on a whole bunch of parameters
+
+  clean - delete any temp files created by this ant script
+
+  domain-create*    - ensure the domain exists
+  domain-delete*    - delete the domain
+  domain-init       - delete and recreate the domain, then upload the standard files
+  domain-quiesce*   - quiesce all the services in the domain
+  domain-recreate   - delete and recreate the domain, then save
+  domain-reset      - clear all the objects from the domain (but not files)
+  domain-restart*   - restart the domain
+  domain-unquiesce* - unquiesce all the services in the domain
+
+  download-files* - Download target files or all files from a filestore
+
+  export-object* - export an object i.e. service
+  export-objects - export objects based on a dcm:definition file
+
+  firmware-rollback - Rollback to the previous firmware (and filesystem contents!)
+  firmware-update   - Update to a new level of firmware
+
+  host-alias-remove* - remove a specific host alias
+  host-alias-set*    - create/overwrite a host alias
+
+  idcred-from-def* - create an idcred object based on a dcm:definition
+  idcred-from-key-and-cert - create an idcred object after uploading matching key and certificate files
+  idcred-from-p12  - create an idcred object after uploading a #PKCS12 file containing matching key and certificate
+
+  import-changed   - import a specified .zip or .xcfg file into the domain, making changes along the way
+  import-from-def* - ditto
+  import-dpo*      - import a specified .zip or .xcfg file into the domain, making changes along the way
+
+  key-from-def - upload a key (or multiple keys) based on a dcm:definition (with Crypto Key objects, of course)
+
+  load-balancer-group-from-def* - create/overwrite a load balancer group object
+
+  ltpa-password - prompt the console user for the LTPA shared-secret password
+
+  main (default target) - execute the import-changed and save targets (in that order)
+
+  objects-from-def - create, delete, or modify objects based on dcm:object-* elements
+
+  object-status - check the opstate of objects are as required based on a dcm:definition file
+
+  password-alias-create - Create PasswordAlias object
+  password-alias-update - Update password in PasswordAlias object
+
+  raw-mgmt-call* - make a raw management (SOMA or AMP etc) call based on raw request file input
+
+  reboot - make an appliance reboot request
+
+  restore-backup* - Restore one or more domains from backup file (see Backup Device or Backup Domains)
+
+  save* - save the domain
+
+  secure-backup-device - secure backup of device
+
+  service-quiesce   - quiesce a service
+  service-unquiesce - unquiesce a service
+  service-status    - get the opstate of a service
+
+  upload-dir*      - upload an entire directory
+  upload-from-def* - upload files specified in dcm:definition/dcm:upload elements
+
+  valcred-from-def* - create a valcred object based on a dcm:definition
+  valcred-from-dir  - create a valcred object from a set of certificates in a directory
+
+  This script relies on the following ANT properties:
+
+    host - the hostname or IP address of the DataPower device
+    domain - the name of the domain on that device
+    uid - the userid on that device
+    pwd - the password for the userid on that device
+    port - the XML Management Interface port on that device (optional, defaults to 5550)
+
+    dcm.jar - location of DCM jar file
+    work.dir - location of DCM temp directory
+    dcm.dir - location of DCM stylesheets directory
+    schema.dir - location of directory used by DCM to cache internally-generated schemas
+
+  IF YOU ARE NEW TO ANT:
+
+    Ant executes the specified "targets" in the order that you specified them on the command line, or
+    it executes the "main" target, which is the default.  Each target may depend on other targets, and those
+    will be executed first.  For example, the "main" target depends on "domain-create", which in turn depends on
+    "check-access".  So Ant will begin by executing the "check-access" target, then the "domain-create"
+    target, and finally the "main" target.  Oh, and the code preceding all the <target> elements is initialization
+    code and will be executed before everything else.  Targets that are defined but not needed are ignored.
+
+    Properties are the lifeblood of Ant.  A property is simply a name/value pair and it can be set once.  Further
+    changes to a property are ignored.  For example, if the property xyz is defined on the command line like this:
+
+      ant -Dxyz=10
+
+    then xyz will have that value for the life of the Ant execution, regardless of how many times you attempt to
+    set xyz after that.  Several places in the script provide default values for some properties but it isn't
+    possible (or generally desirable) to prevent the user from setting a property either on the command line,
+    or through a property file named on the command line.
+
+    Properties, once defined, exist for the rest of Ant's execution.  With one exception of course. ;)
+    The lifetime of Ant properties can be confined by writing code this way:
+
+      <sequential>
+        <local name="def"/>
+        <property name="def" value="123"/>
+        ...
+      </sequential>
+
+    The property "def" will be forgotten at the end of the <sequential> task.
+
+    There you go.  With these concepts in hand, Ant scripts are generally straightforward to read.
+
+-->
+<project name="deploy" default="main" xmlns:props="antlib:ibm">
+
+  <description>Implement various DataPower deployment operations.</description>
+
+  <!-- Ensure we know where DCM is located. -->
+  <fail message="Please define the ANT property 'dcm.dir', which points to the directory where DCM is installed." unless="dcm.dir"/>
+  <available filepath="${dcm.dir}" file="dist/dcm.jar" property="dcm.dir.good"/>
+  <fail message="The Ant property 'dcm.dir' doesn't seem to point to DCM since ${dcm.dir}/dist/dcm.jar is not found." unless="dcm.dir.good"/>
+
+  <!-- Provide reasonable defaults for some optional properties. -->
+  <property name="dcm.jar" location="${dcm.dir}/dist/dcm.jar"/>
+  <property name="work.dir" location="./tmp"/>
+  <property name="schema.dir" location="${dcm.dir}/schemas"/>
+  <property name="capturesoma" value=""/>
+  <property name="dumpinput" value="false"/>
+  <property name="dumpoutput" value="false"/>
+  <property name="mgmt.method" value="/service/mgmt/current"/>
+  <property name="reboot.mode" value="reboot"/>
+  <property name="ignore.error" value=""/>
+
+  <!--
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      Provide necessary definitions
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  -->
+
+  <!-- Definitions related to the DCM jar file. -->
+  <!--
+    (This block, along with the xmlns:props="antlib:ibm" above, allows the use of
+     nested Ant properties, which is sometimes useful.  For example, suppose the ant property
+     "environment" is defined as "SIT" and the ant property "xyz" is defined as "somedirectory_${environment}".
+     This <propertyhelper> definition means that ${xyz} correctly turns into "somedirectory_SIT".)
+  -->
+  <typedef uri="antlib:ibm" resource="com/ibm/antlib.xml" classpath="${dcm.jar}"/>
+  <propertyhelper>
+    <props:nested/>
+  </propertyhelper>
+
+  <include file="${dcm.dir}/src/dcm-taskdefs.ant.xml"/> <!-- pull in standard dcm taskdefs/macrodefs such as <createDomain> -->
+
+  <!--
+    Backup all the domains on the device.  Note that this is not a secure backup that includes
+    key and certificate files.
+  -->
+  <target name="backup-device" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'device.backup.file' is required but not defined.  This is the filename where the device backup will be written." unless="device.backup.file"/>
+    <sequential>
+      <local name="dirname"/>
+      <dirname property="dirname" file="${device.backup.file}"/>
+      <if>
+        <not>
+          <isfileselected file="${dirname}">
+            <writable/>
+          </isfileselected>
+        </not>
+        <then>
+          <fail message="Unable to write the device backup file : ${device.backup.file}"/>
+        </then>
+      </if>
+    </sequential>
+
+    <!--
+      Backup all the domains on the device, which is not a secure backup that includes
+      key and certificate files.
+    -->
+    <backupDevice host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" local="${device.backup.file}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+  </target>
+
+
+  <!--
+    Backup specific domains on the device.
+  -->
+  <target name="backup-domains" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'backup.file' is required but not defined.  This is the filename where the backup will be written." unless="backup.file"/>
+    <sequential>
+      <local name="dirname"/>
+      <dirname property="dirname" file="${backup.file}"/>
+      <if>
+        <not>
+          <isfileselected file="${dirname}">
+            <writable/>
+          </isfileselected>
+        </not>
+        <then>
+          <fail message="Unable to write the domain backup file : ${backup.file}"/>
+        </then>
+      </if>
+    </sequential>
+
+    <!--
+      Backup the specified domains on the device.
+    -->
+    <backupDomains host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" domains="${domains}" local="${backup.file}"  saveIfNeeded="true" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+  </target>
+
+
+  <target name="certificate-from-def" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'cert.file' is required but not defined.  This is the file containing the dcm:definition/dcm:certificate definition." unless="cert.file"/>
+    <if>
+      <not>
+        <available file="${cert.file}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the file containing the certificate definition : ${cert.file}"/>
+      </then>
+    </if>
+
+    <sequential>
+      <local name="tmpl-file"/>
+
+      <!-- Generate an ant script that will do the actual work. -->
+      <nxslt infile="${cert.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
+        <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
+      </nxslt>
+      <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
+      <nxslt inprop="tmp" outfile="${work.dir}/cert.ant.xml" xsl="${dcm.dir}/src/certificate-to-ant.xsl">
+        <param ant="tmpl-file" xsl="template-file"/>
+      </nxslt>
+
+      <!-- Run the little darling, inheriting all the currently-defined ant properties. -->
+      <ant antfile="${work.dir}/cert.ant.xml" inheritall="yes"/>
+    </sequential>
+
+  </target>
+
+
+  <target name="check-access" depends="-check-std-args">
+
+    <!--
+      Check whether we have access to the device by fetching the firmware version.  Throws an exception, terminating Ant,
+      in case of an error.  Also, detects that firmware.version is already set and does nothing in that case.
+      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+    -->
+    <checkDeviceAccess host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" versionprop="firmware.version" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+    <if>
+      <or>
+        <not>
+          <isset property="firmware.version"/>
+        </not>
+        <equals arg1="${firmware.version}" arg2=""/>
+      </or>
+      <then>
+        <fail message="Unable to reach ${host} or the userid/password doesn't work."/>
+      </then>
+    </if>
+  </target>
+
+
+  <target name="checkpoint-delete" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'checkpoint.name' is required but not defined.  This defines name of the checkpoint that will be deleted." unless="checkpoint.name"/>
+
+    <removeCheckpoint host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" checkpoint-name="${checkpoint.name}"
+      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+  </target>
+
+
+  <target name="checkpoint-restore" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'checkpoint.name' is required but not defined.  This defines name of the checkpoint that will be restored." unless="checkpoint.name"/>
+
+    <rollbackCheckpoint host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" checkpoint-name="${checkpoint.name}"
+      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+  </target>
+
+
+  <target name="checkpoint-save" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'checkpoint.name' is required but not defined.  This defines name of the checkpoint that will be saved." unless="checkpoint.name"/>
+
+    <saveCheckpoint host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" checkpoint-name="${checkpoint.name}"
+        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+  </target>
+
+
+  <!-- All ANT scripts support this by convention. -->
+  <target name="clean">
+    <delete dir="${work.dir}"/>
+  </target>
+
+
+  <target name="create-tam-files" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'tam.outputconfigfile' is required but not defined.  This defines the TAM files that will be created." unless="tam.outputconfigfile"/>
+    <fail message="The Ant property 'tam.administrator-uid' is required but not defined.  This is the TAM userid." unless="tam.administrator-uid"/>
+    <fail message="The Ant property 'tam.tamdomain' is required but not defined.  This is the TAM domain." unless="tam.tamdomain"/>
+    <fail message="The Ant property 'tam.application' is required but not defined.  This TAM Application ID." unless="tam.application"/>
+    <fail message="The Ant property 'tam.tamhost' is required but not defined.  This is the hostname or IP address of the TAM server." unless="tam.tamhost"/>
+    <fail message="The Ant property 'tam.tamport' is required but not defined.  This is the port for TAM on the TAM server." unless="tam.tamport"/>
+    <fail message="The Ant property 'tam.sslkeyfilelifetime' is required but not defined.  This is the number of days the generated SSL key will be valid." unless="tam.sslkeyfilelifetime"/>
+    <fail message="The Ant property 'tam.ssltimeout' is required but not defined.  This the number of seconds before the connection to TAM times out." unless="tam.ssltimeout"/>
+    <fail message="The Ant property 'tam.localmode' is required but not defined.  This defines whether to use a local authentication server (on/off)." unless="tam.localmode"/>
+    <fail message="The Ant property 'tam.useadregistry' is required but not defined.  This defines whether to use Active Directory (on/off)." unless="tam.useadregistry"/>
+
+    <if>
+      <and>
+        <not>
+          <isset property="tam.administrator-pwd"/>
+        </not>
+        <isset property="tam.administrator-uid"/>
+      </and>
+      <then>
+        <input message="Please enter the password for TAM userid '${tam.administrator-uid}' : " addproperty="tam.administrator-pwd">
+          <handler type="secure"/>
+        </input>
+      </then>
+    </if>
+
+    <if>
+      <and>
+        <not>
+          <isset property="tam.ldapbindpassword"/>
+        </not>
+        <isset property="tam.ldapserver"/>
+      </and>
+      <then>
+        <input message="Please enter the LDAP password for '${tam.ldapserver}' : " addproperty="tam.ldapbindpassword">
+          <handler type="secure"/>
+        </input>
+      </then>
+    </if>
+
+    <sequential>
+      <local name="okay"/>
+      <local name="response"/>
+      <local name="success"/>
+      <local name="createcopy"/>
+      <local name="listenmode"/>
+      <local name="localhost"/>
+      <local name="localport"/>
+      <local name="adpprimarydomain"/>
+      <local name="adpprimaryhost"/>
+      <local name="adpprimaryreplicas"/>
+      <local name="ldapserver"/>
+      <local name="ldapport"/>
+      <local name="ldapbindpassword"/>
+      <local name="ldapauthtimeout"/>
+      <local name="ldapsearchtimeout"/>
+      <local name="adpclienttimeout"/>
+      <local name="enableregistrycache"/>
+      <local name="ldapusercachesize"/>
+      <local name="ldappolicycachesize"/>
+      <local name="adldapcachesize"/>
+      <local name="adldapcachelife"/>
+      <local name="addnforpd"/>
+      <local name="adusemultidomain"/>
+      <local name="addomaindomain"/>
+      <local name="addomainhost"/>
+      <local name="addomainreplicas"/>
+      <local name="aduseemailuid"/>
+      <local name="adgchost"/>
+
+      <defprop-set name="createcopy" from="tam.createcopy" defvalue="off"/>
+      <defprop-set name="listenmode" from="tam.listenmode" defvalue="off"/>
+      <defprop-set name="localhost" from="tam.localhost" defvalue=""/>
+      <defprop-set name="localport" from="tam.localport" defvalue="0"/>
+      <defprop-set name="adpprimarydomain" from="tam.adpprimarydomain" defvalue=""/>
+      <defprop-set name="adpprimaryhost" from="tam.adpprimaryhost" defvalue=""/>
+      <defprop-set name="adpprimaryreplicas" from="tam.adpprimaryreplicas" defvalue=""/>
+      <defprop-set name="ldapserver" from="tam.ldapserver" defvalue=""/>
+      <defprop-set name="ldapport" from="tam.ldapport" defvalue="0"/>
+      <defprop-set name="ldapbindpassword" from="tam.ldapbindpassword" defvalue=""/>
+      <defprop-set name="ldapauthtimeout" from="tam.ldapauthtimeout" defvalue="30"/>
+      <defprop-set name="ldapsearchtimeout" from="tam.ldapsearchtimeout" defvalue="30"/>
+      <defprop-set name="adpclienttimeout" from="tam.adpclienttimeout" defvalue="30"/>
+      <defprop-set name="enableregistrycache" from="tam.enableregistrycache" defvalue="off"/>
+      <defprop-set name="ldapusercachesize" from="tam.ldapusercachesize" defvalue="256"/>
+      <defprop-set name="ldappolicycachesize" from="tam.ldappolicycachesize" defvalue="20"/>
+      <defprop-set name="adldapcachesize" from="tam.adldapcachesize" defvalue="251"/>
+      <defprop-set name="adldapcachelife" from="tam.adldapcachelife" defvalue="300"/>
+      <defprop-set name="addnforpd" from="tam.addnforpd" defvalue=""/>
+      <defprop-set name="adusemultidomain" from="tam.adusemultidomain" defvalue="off"/>
+      <defprop-set name="addomaindomain" from="tam.addomaindomain" defvalue=""/>
+      <defprop-set name="addomainhost" from="tam.addomainhost" defvalue=""/>
+      <defprop-set name="addomainreplicas" from="tam.addomainreplicas" defvalue=""/>
+      <defprop-set name="aduseemailuid" from="tam.aduseemailuid" defvalue="off"/>
+      <defprop-set name="adgchost" from="tam.adgchost" defvalue=""/>
+
+      <wdp operation="CreateTAMFiles" successprop="success" responseprop="response"  dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"
+        xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="okay">
+        <hostname>${host}</hostname>
+        <port>${port}</port>
+        <uid>${uid}</uid>
+        <pwd>${pwd}</pwd>
+        <domain>${domain}</domain>
+        <outputconfigfile>${tam.outputconfigfile}</outputconfigfile>
+        <administrator-uid>${tam.administrator-uid}</administrator-uid>
+        <administrator-pwd>${tam.administrator-pwd}</administrator-pwd>
+        <tamdomain>${tam.tamdomain}</tamdomain>
+        <application>${tam.application}</application>
+        <tamhost>${tam.tamhost}</tamhost>
+        <tamport>${tam.tamport}</tamport>
+        <sslkeyfilelifetime>${tam.sslkeyfilelifetime}</sslkeyfilelifetime>
+        <ssltimeout>${tam.ssltimeout}</ssltimeout>
+        <localmode>${tam.localmode}</localmode>
+        <useadregistry>${tam.useadregistry}</useadregistry>
+        <createcopy>${createcopy}</createcopy>
+        <listenmode>${listenmode}</listenmode>
+        <localhost>${localhost}</localhost>
+        <localport>${localport}</localport>
+        <adpprimarydomain>${adpprimarydomain}</adpprimarydomain>
+        <adpprimaryhost>${adpprimaryhost}</adpprimaryhost>
+        <adpprimaryreplicas>${adpprimaryreplicas}</adpprimaryreplicas>
+        <ldapserver>${ldapserver}</ldapserver>
+        <ldapport>${ldapport}</ldapport>
+        <ldapbindpassword>${ldapbindpassword}</ldapbindpassword>
+        <ldapauthtimeout>${ldapauthtimeout}</ldapauthtimeout>
+        <ldapsearchtimeout>${ldapsearchtimeout}</ldapsearchtimeout>
+        <adpclienttimeout>${adpclienttimeout}</adpclienttimeout>
+        <enableregistrycache>${enableregistrycache}</enableregistrycache>
+        <ldapusercachesize>${ldapusercachesize}</ldapusercachesize>
+        <ldappolicycachesize>${ldappolicycachesize}</ldappolicycachesize>
+        <adldapcachesize>${adldapcachesize}</adldapcachesize>
+        <adldapcachelife>${adldapcachelife}</adldapcachelife>
+        <addnforpd>${addnforpd}</addnforpd>
+        <adusemultidomain>${adusemultidomain}</adusemultidomain>
+        <addomaindomain>${addomaindomain}</addomaindomain>
+        <addomainhost>${addomainhost}</addomainhost>
+        <addomainreplicas>${addomainreplicas}</addomainreplicas>
+        <aduseemailuid>${aduseemailuid}</aduseemailuid>
+        <adgchost>${adgchost}</adgchost>
+      </wdp>
+
+      <if>
+        <and>
+          <istrue value="${success}"/>
+          <equals arg1="${okay}" arg2="OK"/>
+        </and>
+        <then>
+          <echo>Created TAM files (${tam.outputconfigfile}) in ${domain} on ${host}.</echo>
+        </then>
+        <else>
+          <echo>Raw response for TAM create files: ${response}</echo>
+          <fail message="Failed to create TAM files (${tam.outputconfigfile}) in ${domain} on ${host}."/>
+        </else>
+      </if>
+
+    </sequential>
+
+  </target>
+
+
+  <!-- All ANT scripts support this by convention. -->
+  <target name="debug">
+    <echo/>
+    <echoproperties/>
+    <echo/>
+  </target>
+
+
+  <target name="domain-create" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+
+    <!--
+      Creates the domain when it doesn't exist and prints whether it had to create the domain or not.
+      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+    -->
+    <createDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+    <sequential>
+      <local name="domainstatus"/>
+      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="default" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+    </sequential>
+
+  </target>
+
+
+  <target name="domain-delete" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+
+    <!--
+      Deletes the domain when it exists and prints whether it had to delete the domain or not.
+      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+    -->
+    <deleteDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+    <sequential>
+      <local name="domainstatus"/>
+      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="default" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+    </sequential>
+
+  </target>
+
+
+  <target name="domain-init" depends="domain-delete, domain-create">
+
+    <echo>Completed initialization of the domain.</echo>
+
+  </target>
+
+
+  <target name="domain-recreate" depends="domain-delete, domain-create, save"/>
+
+
+  <target name="domain-reset" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+
+    <!--
+      Resets the domain conventionally, when the domain exists, printing what it did.
+      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+    -->
+    <resetDomainConventionally host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+    <sequential>
+      <local name="domainstatus"/>
+      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+    </sequential>
+
+  </target>
+
+
+  <target name="domain-quiesce" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+
+    <!--
+      Quiesces the domain, when the domain exists, printing what it did.
+      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+    -->
+    <quiesceDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+  </target>
+
+
+  <target name="domain-restart" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+
+    <!--
+      Restarts the domain, when the domain exists, printing what it did.
+      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+    -->
+    <restartDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+  </target>
+
+
+  <target name="domain-unquiesce" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+
+    <!--
+      Unquiesces the domain, when the domain exists, printing what it did.
+      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+    -->
+    <unquiesceDomain host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+  </target>
+
+
+  <!--
+      Download target files or all files from a filestore
+  -->
+  <target name="download-files" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'filestore' is required but not defined.  This is filestore in the device." unless="filestore"/>
+  	<fail message="The Ant property 'download-dir.to' is required but not defined. This local directory will contain the downloaded files." unless="download-dir.to"/>
+
+    <if>
+      <isset property="files"/>
+      <then>
+      	<!-- download target files -->
+        <downloadFiles host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
+          dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"
+          filestore="${filestore}" local="${download-dir.to}" files="${files}" />
+      </then>
+      <else>
+        <!-- download all files from the target filestore -->
+        <downloadFilestore host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
+          dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"
+          filestore="${filestore}" local="${download-dir.to}" dcmdir="${dcm.dir}" />
+      </else>
+    </if>
+  </target>
+
+
+  <!--
+      Export an object from a domain on the device.
+  -->
+  <target name="export-object" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'object.class' is required but not defined.  This is the object's class." unless="object.class"/>
+    <fail message="The Ant property 'object.name' is required but not defined.  This is the name of the target object on the DataPower device." unless="object.name"/>
+    <fail message="The Ant property 'export.file' is required but not defined.  This is the filename where the backup will be written." unless="export.file"/>
+
+    <property name="ref.objects" value="true"/> <!-- provide defaults if not specified by user -->
+    <property name="ref.files" value="true"/>
+    <property name="all.files" value="false"/>
+
+    <sequential>
+      <local name="dirname"/>
+      <dirname property="dirname" file="${export.file}"/>
+      <if>
+        <not>
+          <isfileselected file="${dirname}">
+            <writable/>
+          </isfileselected>
+        </not>
+        <then>
+          <fail message="No permission to write ${export.file} into folder ${dirname}"/>
+        </then>
+      </if>
+    </sequential>
+
+    <exportObject host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" local="${export.file}"
+      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"
+      objclass="${object.class}" objname="${object.name}" refobjs="${ref.objects}" reffiles="${ref.files}" allfiles="${all.files}" />
+
+  </target>
+
+	  <!--
+	      Export objects based on a dcm:definition file.
+	  -->
+	  <target name="export-objects" depends="-init-dir, check-access">
+
+	    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+	    <fail message="The Ant property 'export-manifest.file' is required but not defined.  This is the required export-manifest dcm:definition file." unless="export-manifest.file"/>
+	    <fail message="The Ant property 'export.file' is required but not defined.  This is the filename where the backup will be written." unless="export.file"/>
+
+	    <property name="ref.objects" value="true"/> <!-- provide defaults if not specified by user -->
+	    <property name="ref.files" value="true"/>
+
+	    <sequential>
+	      <local name="dirname"/>
+	      <dirname property="dirname" file="${export.file}"/>
+	      <if>
+	        <not>
+	          <isfileselected file="${dirname}">
+	            <writable/>
+	          </isfileselected>
+	        </not>
+	        <then>
+	          <fail message="No permission to write ${export.file} into folder ${dirname}"/>
+	        </then>
+	      </if>
+
+			<!-- Generate a SOMA export objects request xml-->
+			<nxslt infile="${export-manifest.file}" outprop="tmp" xsl="${dcm.dir}/src/export-objects-request.xsl">
+				<param xsl="domain" ant="${domain}"/>
+			</nxslt>
+
+	    	<!-- Log results to console -->
+			<echo message="${tmp}" />
+
+	    	<exportObjects host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" local="${export.file}"
+		      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"
+		      objects="${tmp}" refobjs="${ref.objects}" reffiles="${ref.files}" />
+
+	    </sequential>
+
+	  </target>
+
+	<!--
+    Rollback to the previous firmware (and filesystem contents!).
+  -->
+  <target name="firmware-rollback" depends="-init-dir, check-access">
+
+    <firmwareRollback host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+  </target>
+
+
+  <!--
+    Update to a new level of firmware.
+  -->
+  <target name="firmware-update" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'new.firmware.file' is required but not defined.  This is the file containing the the new firmware for the appliance." unless="new.firmware.file"/>
+    <if>
+      <not>
+        <available file="${new.firmware.file}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the firmware file : ${new.firmware.file}"/>
+      </then>
+    </if>
+
+    <firmwareUpdate host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" scryptfile="${new.firmware.file}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+  </target>
+
+
+  <target name="host-alias-remove" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'host-alias.name' is required but not defined.  This is the name of the host alias (e.g. www.ibm.com) to delete." unless="host-alias.name"/>
+
+    <sequential>
+      <!-- Create or overwrite the specified host alias. -->
+      <objectDelete host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="default"
+        class="HostAlias" name="${host-alias.name}"
+        dcmdir="${dcm.dir}" workdir="${work.dir}"
+        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+    </sequential>
+
+  </target>
+
+
+  <target name="host-alias-set" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'host-alias.name' is required but not defined.  This is the name of the host alias (e.g. www.ibm.com) to create or overwrite." unless="host-alias.name"/>
+    <fail message="The Ant property 'host-alias.ip' is required but not defined.  This is the IP address to assign (e.g. 10.11.12.13)." unless="host-alias.ip"/>
+    <property name="host-alias.comment" value=""/>
+    <property name="host-alias.mAdminState" value="enabled"/>
+
+    <sequential>
+      <!-- Create or overwrite the specified host alias. -->
+      <objectCreateByInline host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="default" versionprop="firmware.version"
+        dcmdir="${dcm.dir}" schemadir="${schema.dir}" workdir="${work.dir}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+        <HostAlias name="${host-alias.name}">
+          <mAdminState>${host-alias.mAdminState}</mAdminState>
+          <UserSummary>${host-alias.comment}</UserSummary>
+          <IPAddress>${host-alias.ip}</IPAddress>
+        </HostAlias>
+      </objectCreateByInline>
+    </sequential>
+
+  </target>
+
+
+  <target name="idcred-from-def" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'idcred.file' is required but not defined.  This is the file containing the dcm:definition/dcm:idcred definition." unless="idcred.file"/>
+    <if>
+      <not>
+        <available file="${idcred.file}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the file containing the idcred definition : ${idcred.file}"/>
+      </then>
+    </if>
+
+    <sequential>
+      <local name="tmp"/>
+      <local name="tmpl-file"/>
+
+      <!-- Generate an ant script that will do the actual work. -->
+      <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
+      <nxslt infile="${idcred.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
+        <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
+      </nxslt>
+      <nxslt inprop="tmp" outfile="${work.dir}/idcred.ant.xml" xsl="${dcm.dir}/src/idcred-to-ant.xsl">
+        <param ant="tmpl-file" xsl="template-file"/>
+      </nxslt>
+
+      <!-- Run the little darling, inheriting all the currently-defined ant properties. -->
+      <ant antfile="${work.dir}/idcred.ant.xml" inheritall="yes"/>
+    </sequential>
+
+  </target>
+
+
+  <target name="idcred-from-key-and-cert" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'idcred.key.file' is required but not defined.  This is the file containing the key for the ID credential." unless="idcred.key.file"/>
+    <if>
+      <not>
+        <available file="${idcred.key.file}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the key file : ${idcred.key.file}"/>
+      </then>
+    </if>
+
+    <fail message="The Ant property 'idcred.cert.file' is required but not defined.  This is the file containing the certificate for the ID credential." unless="idcred.cert.file"/>
+    <if>
+      <not>
+        <available file="${idcred.cert.file}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the certificate file : ${idcred.cert.file}"/>
+      </then>
+    </if>
+
+    <fail message="The Ant property 'idcred.objname' is required but not defined.  This is the name for the ID Credential object to create/overwrite on DataPower." unless="idcred.objname"/>
+    <if>
+      <equals arg1="${idcred.objname}" arg2=""/>
+      <then>
+        <fail message="The Ant property 'idcred.objname', which is the name of the ID Credential object, is empty!"/>
+      </then>
+    </if>
+
+    <if>
+      <not>
+        <isset property="idcred.key.pwd"/>
+      </not>
+      <then>
+        <input message="What is the password for ${idcred.key.file} (Press Enter if none)? " addproperty="idcred.key.pwd">
+          <handler type="secure"/>
+        </input>
+      </then>
+    </if>
+
+    <if>
+      <not>
+        <isset property="idcred.cert.pwd"/>
+      </not>
+      <then>
+        <input message="What is the password for ${idcred.cert.file} (Press Enter if none)? " addproperty="idcred.cert.pwd">
+          <handler type="secure"/>
+        </input>
+      </then>
+    </if>
+
+
+    <sequential>
+      <local name="ignoreexpiration"/>
+
+      <if>
+        <and>
+          <isset property="${idcred.ignoreexpiration}"/>
+          <equals arg1="${idcred.ignoreexpiration}" arg2="true"/>
+        </and>
+        <then>
+          <property name="ignoreexpiration" value="on"/>
+        </then>
+        <else>
+          <property name="ignoreexpiration" value="off"/>
+        </else>
+      </if>
+
+      <idcredFromKeyAndCert host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
+        certfile="${idcred.cert.file}" certpwd="${idcred.cert.pwd}" keyfile="${idcred.key.file}" keypwd="${idcred.key.pwd}"
+        objname="${idcred.objname}" ignoreexpiration="${ignoreexpiration}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+    </sequential>
+
+  </target>
+
+
+  <target name="idcred-from-p12" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'idcred.p12.file' is required but not defined.  This is the #PKCS12-format file containing the key and certificate for the ID credential." unless="idcred.p12.file"/>
+    <if>
+      <not>
+        <available file="${idcred.p12.file}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the #PKCS12 file : ${idcred.p12.file}"/>
+      </then>
+    </if>
+
+    <fail message="The Ant property 'idcred.objname' is required but not defined.  This is the name for the ID Credential object to create/overwrite on DataPower." unless="idcred.objname"/>
+    <if>
+      <equals arg1="${idcred.objname}" arg2=""/>
+      <then>
+        <fail message="The Ant property 'idcred.objname', which is the name of the ID Credential object, is empty!"/>
+      </then>
+    </if>
+
+    <if>
+      <not>
+        <isset property="idcred.p12.pwd"/>
+      </not>
+      <then>
+        <input message="What is the password for ${idcred.p12.file}? " addproperty="idcred.p12.pwd">
+          <handler type="secure"/>
+        </input>
+      </then>
+    </if>
+
+    <sequential>
+      <local name="ignoreexpiration"/>
+
+      <if>
+        <and>
+          <isset property="${idcred.ignoreexpiration}"/>
+          <equals arg1="${idcred.ignoreexpiration}" arg2="true"/>
+        </and>
+        <then>
+          <property name="ignoreexpiration" value="on"/>
+        </then>
+        <else>
+          <property name="ignoreexpiration" value="off"/>
+        </else>
+      </if>
+
+      <idcredFromPKCS12 host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
+        p12file="${idcred.p12.file}" p12pwd="${idcred.p12.pwd}" objname="${idcred.objname}" ignoreexpiration="${ignoreexpiration}"
+        dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+    </sequential>
+
+  </target>
+
+
+  <target name="import-changed" depends="import-from-def"/>
+
+
+  <target name="import-from-def" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'import.file' is required but not defined.  This is the .zip or .xcfg file to import into the domain." unless="import.file"/>
+    <if>
+      <not>
+        <available file="${import.file}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the import file : ${import.file}"/>
+      </then>
+    </if>
+
+    <sequential>
+      <local name="dcmdefinition"/>
+      <local name="tmp"/>
+      <local name="tmp2"/>
+
+      <!-- Load and preprocess the set of deployment policies, or substitute an empty set. -->
+      <property name="import.changes.file" location="${dcm.dir}/src/no-changes.dcm.xml"/> <!-- provide a default, if property not defined. -->
+      <loadfile srcfile="${import.changes.file}" property="tmp">
+        <filterchain>
+          <expandproperties/>
+        </filterchain>
+      </loadfile>
+      <nxslt inprop="tmp" outprop="tmp2" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
+        <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
+      </nxslt>
+      <nxslt inprop="tmp2" outprop="dcmdefinition" xsl="${dcm.dir}/src/expand-black-white-modify.xsl"/>
+
+      <!-- <echo>dcmdefinition = ${dcmdefinition}</echo> -->
+
+      <!--
+        Import a plain .zip or .xcfg file into the domain, making no changes to the import objects or files.
+        In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+      -->
+      <importConfig host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
+        inputfile="${import.file}" ignoreError="${ignore.error}"
+        dcmdir="${dcm.dir}" workdir="${work.dir}" changes="${dcmdefinition}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+    </sequential>
+
+  </target>
+
+
+  <target name="import-dpo" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'import.file' is required but not defined.  This is the .zip or .xcfg file to import into the domain." unless="import.file"/>
+    <fail message="The Ant property 'deployment.policy.object' is required but not defined.  This name of a deployment policy object to apply during the import." unless="deployment.policy.object"/>
+    <if>
+      <not>
+        <available file="${import.file}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the import file : ${import.file}"/>
+      </then>
+    </if>
+
+    <sequential>
+
+      <!--
+        Import a plain .zip or .xcfg file into the domain, making no changes to the import objects or files.
+        In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+      -->
+      <importConfigDPO host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
+        inputfile="${import.file}" dpo="${deployment.policy.object}" ignoreError="${ignore.error}"
+        dcmdir="${dcm.dir}" workdir="${work.dir}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+    </sequential>
+
+  </target>
+
+
+  <target name="key-from-def" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'key.file' is required but not defined.  This is the file containing the dcm:definition/dcm:key definition." unless="key.file"/>
+    <if>
+      <not>
+        <available file="${key.file}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the file containing the key definition : ${key.file}"/>
+      </then>
+    </if>
+
+    <sequential>
+      <local name="tmpl-file"/>
+
+      <!-- Generate an ant script that will do the actual work. -->
+      <nxslt infile="${key.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
+        <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
+      </nxslt>
+      <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
+      <nxslt inprop="tmp" outfile="${work.dir}/key.ant.xml" xsl="${dcm.dir}/src/key-to-ant.xsl">
+        <param ant="tmpl-file" xsl="template-file"/>
+      </nxslt>
+
+      <!-- Run the little darling, inheriting all the currently-defined ant properties. -->
+      <ant antfile="${work.dir}/key.ant.xml" inheritall="yes"/>
+    </sequential>
+
+  </target>
+
+
+  <target name="load-balancer-group-from-def" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'lbg.file' is required but not defined.  This is the file containing the dcm:definition/dcm:loadbalancergroup definition." unless="lbg.file"/>
+    <if>
+      <not>
+        <available file="${lbg.file}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the file containing the load balancer group definition : ${lbg.file}"/>
+      </then>
+    </if>
+
+    <sequential>
+      <local name="tmp"/>
+      <local name="tmpl-file"/>
+
+      <!-- Generate an ant script that will do the actual work. -->
+      <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
+      <nxslt infile="${lbg.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
+        <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
+      </nxslt>
+      <nxslt inprop="tmp" outfile="${work.dir}/lbg.ant.xml" xsl="${dcm.dir}/src/load-balancer-group-to-ant.xsl">
+        <param ant="tmpl-file" xsl="template-file"/>
+        <param ant="firmware.version" xsl="firmware-version"/>
+      </nxslt>
+
+      <!-- Run the little darling, inheriting all the currently-defined ant properties. -->
+      <ant antfile="${work.dir}/lbg.ant.xml" inheritall="yes"/>
+    </sequential>
+
+  </target>
+
+
+  <target name="ltpa-password">
+
+    <!-- When ${ltpa.key.password} hasn't been set, ask the user for it. -->
+    <if>
+      <not>
+        <isset property="ltpa.key.password"/>
+      </not>
+      <then>
+        <input message="Please enter the password for the LTPA shared secret : " addproperty="ltpa.key.password">
+          <handler type="secure"/>
+        </input>
+      </then>
+    </if>
+
+  </target>
+
+
+  <target name="main" depends="import-changed, save">
+
+    <echo>Completed import.</echo>
+
+  </target>
+
+
+  <target name="objects-from-def" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'objects.file' is required but not defined.  This is the file containing the dcm:definition/dcm:object-* definition(s)." unless="objects.file"/>
+    <if>
+      <not>
+        <available file="${objects.file}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the file containing the object definitions : ${objects.file}"/>
+      </then>
+    </if>
+
+    <sequential>
+      <local name="tmp"/>
+      <local name="tmpl-file"/>
+
+      <!-- Generate an ant script that will do the actual work. -->
+      <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
+      <nxslt infile="${objects.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
+        <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
+      </nxslt>
+      <nxslt inprop="tmp" outfile="${work.dir}/objects.ant.xml" xsl="${dcm.dir}/src/objects-to-ant.xsl">
+        <param ant="tmpl-file" xsl="template-file"/>
+      </nxslt>
+
+      <!-- Run the little darling, inheriting all the currently-defined ant properties. -->
+      <ant antfile="${work.dir}/objects.ant.xml" inheritall="yes"/>
+    </sequential>
+
+  </target>
+
+	<!--
+		Check the opstate of objects are as required based on a dcm:definition file.
+	-->
+	<target name="object-status" depends="-init-dir, check-access">
+
+		<!-- Validate input parameters -->
+		<fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+		<fail message="The Ant property 'object-status.file' is required but not defined.  This is the file containing the dcm:definition/dcm:object-state-manifest definition(s)." unless="object-status.file"/>
+		<if>
+			<not>
+				<available file="${object-status.file}"/>
+			</not>
+			<then>
+				<fail message="Unable to see the file containing the object definitions : ${object-status.file}"/>
+			</then>
+		</if>
+
+		<sequential>
+
+			<!-- Generate a SOMA object status request xml file -->
+			<property name="object-status-request" value="${work.dir}/object-status-request.xml"/>
+			<nxslt infile="${dcm.dir}/src/dummy-input.xml" outfile="${object-status-request}" xsl="${dcm.dir}/src/object-status-request.xsl">
+				<param xsl="domain" ant="${domain}"/>
+			</nxslt>
+
+			<!-- Do SOMA object status request call -->
+			<property name="object-status-response" value="${work.dir}/object-status-response.xml"/>
+			<rawMgmtCall host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" request="${object-status-request}"
+					response="${object-status-response}" method="${mgmt.method}"/>
+
+			<!-- Process SOMA object status response, cross-checking against required object states, capturing results in tmp property -->
+			<local name="tmp"/>
+			<nxslt infile="${object-status-response}" outprop="tmp" xsl="${dcm.dir}/src/object-status-response.xsl">
+				<param xsl="manifest-file" ant="${object-status.file}"/>
+			</nxslt>
+
+			<!-- Log results to console -->
+			<echo message="${tmp}" />
+
+			<!-- Fail build if any object staus checks failed -->
+			<if>
+			    <contains string="${tmp}" substring="[FAIL]" />
+			    <then>
+					<fail message="Object status check(s) failed (see above output for details)"/>
+			    </then>
+			</if>
+		</sequential>
+
+	</target>
+
+	<!--
+		Reboot appliance request.
+	-->
+	<target name="reboot" depends="-init-dir, check-access">
+
+		<!-- Validate input parameters -->
+		<fail message="The Ant property 'reboot.mode' is required but not defined. Valid options are 'reboot' or 'reload'. The default is 'reboot'." unless="reboot.mode"/>
+
+		<!-- NB: always prefer to use the OLDEST AMP version (1.0) to provide greatest
+			backwards compatibility with older firmware versions unless there is a good
+			reason not to -->
+
+		<!-- Generate an AMP reset request xml file -->
+		<local name="tmp"/>
+		<property name="reboot-request" value="${work.dir}/reboot-request.xml"/>
+		<nxslt infile="${dcm.dir}/src/dummy-input.xml" outfile="${reboot-request}" xsl="${dcm.dir}/src/reboot-request.xsl">
+			<param xsl="mode" ant="reboot.mode"/>
+		</nxslt>
+
+		<!-- Do AMP reboot request -->
+		<property name="reboot-response" value="${work.dir}/reboot-response.xml"/>
+		<rawMgmtCall host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" request="${reboot-request}"
+				response="${reboot-response}" method="/service/mgmt/amp/1.0"/>
+
+		<!-- Process AMP reboot response extracting status for the record -->
+		<local name="tmp"/>
+		<nxslt infile="${reboot-response}" outprop="tmp" xsl="${dcm.dir}/src/reboot-response.xsl">
+		</nxslt>
+
+		<!-- Log results to console -->
+		<echo message="${tmp}" />
+
+		<!-- Fail build if there was a problem -->
+		<if>
+		    <contains string="${tmp}" substring="[FAIL]" />
+		    <then>
+				<fail message="Reboot failed (see above output for details)"/>
+		    </then>
+		</if>
+
+	</target>
+
+  <!--
+    Restore domains from a device or multiple-domains backup.
+  -->
+  <target name="restore-backup" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'backup.file' is required but not defined.  This is the backup file containing multiple domains (see backup-device or backup-domains)." unless="backup.file"/>
+    <property name="dry-run" value="false"/>
+    <if>
+      <not>
+        <available file="${backup.file}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the backup file : ${backup.file}"/>
+      </then>
+    </if>
+
+    <restoreBackup host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
+      domains="${domains}" zipfile="${backup.file}" dry-run="${dry-run}"
+      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+  </target>
+
+
+  <target name="save" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+
+    <!--
+      Saves the domain if it has been changed, printing what it did.
+      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+    -->
+    <sequential>
+      <local name="domainstatus"/>
+      <getDomainStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainsprop="domainstatus" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+      <saveDomainIfChanged host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domainStatusProp="domainstatus" domain="${domain}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+    </sequential>
+
+  </target>
+
+
+  <!--
+    Secure Backup the device.
+  -->
+  <target name="secure-backup-device">
+
+    <fail unless="secure.backup.remote" message="The Ant property 'secure.backup.remote' is required but not defined. This is the remote location for the secure backup. " />
+    <fail unless="secure.backup.objname" message="The Ant property 'secure.backup.objname' is required but not defined. This is the crypto certificate object to be used for the secure backup. " />
+
+    <secureBackup host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" remote="${secure.backup.remote}" objname="${secure.backup.objname}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+  </target>
+
+  <!--
+    Quiesce service.
+  -->
+  <target name="service-quiesce" depends="-init-dir, check-access">
+    <fail message="The Ant property 'domain' is required but not defined. This is the name of a domain on the DataPower device." unless="domain" />
+    <fail message="The Ant property 'service.name' is required but not defined. This is the name of a service to be quiesced on the DataPower device." unless="service.name" />
+    <fail message="The Ant property 'service.type' is required but not defined. This is the type of a service to be quiesced on the DataPower device." unless="service.type" />
+    <!--
+      Quiesces the service printing what it did.
+      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+    -->
+    <quiesceService host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" servicename="${service.name}" servicetype="${service.type}" ignore-errors="${ignoreerrors}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}" />
+
+  </target>
+
+
+  <!--
+    Unquiesce service.
+  -->
+  <target name="service-unquiesce" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined. This is the name of a domain on the DataPower device." unless="domain" />
+    <fail message="The Ant property 'service.name' is required but not defined. This is the name of a service to be quiesced on the DataPower device." unless="service.name" />
+    <fail message="The Ant property 'service.type' is required but not defined. This is the type of a service to be quiesced on the DataPower device." unless="service.type" />
+    <!--
+      Unquiesces the service printing what it did.
+      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+    -->
+    <unquiesceService host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" servicename="${service.name}" servicetype="${service.type}" ignore-errors="${ignoreerrors}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}" />
+
+  </target>
+
+
+  <!--
+    Get service status.
+  -->
+  <target name="service-status">
+
+    <fail message="The Ant property 'domain' is required but not defined. This is the name of a domain on the DataPower device." unless="domain" />
+    <fail message="The Ant property 'service.name' is required but not defined. This is the name of a service to be checked on the DataPower device." unless="service.name" />
+    <fail message="The Ant property 'servicetype.type' is required but not defined. This is the type of a service to be checked on the DataPower device." unless="service.type" />
+    <!--
+      Get opstate for the service printing what it did.
+      In case of an error it throws an exception or prints the SOAP response and terminates Ant.
+    -->
+    <getServiceStatus host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" servicename="${service.name}" servicetype="${service.type}" outputprop="opstateprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}" />
+
+  </target>
+
+
+  <!--
+    Set the default log level in a domain
+  -->
+  <target name="set-log-level" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'log.level' is required but not defined.  This is the log level to set (debug, info, noice, warn, error, critic, alert, emerg)." unless="log.level"/>
+
+    <setLogLevel host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" loglevel="${log.level}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+  </target>
+
+
+  <target name="upload-dir" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'upload-dir.from' is required but not defined.  This is the directory in the local filesystem to upload from (e.g. c:\abc or /home/xxx/abc)." unless="upload-dir.from"/>
+    <fail message="The Ant property 'upload-dir.to' is required but not defined.  This is the fully qualified directory on DataPower to upload to (e.g. cert:/// or local:///abc)." unless="upload-dir.to"/>
+
+    <dpupload dir="${upload-dir.from}" target="${upload-dir.to}" domain="${domain}"
+      host="${host}" port="${port}" uid="${uid}" pwd="${pwd}"
+      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+
+  </target>
+
+
+  <target name="upload-from-def" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'upload.file' is required but not defined.  This is the file containing the dcm:definition/dcm:upload definition(s)." unless="upload.file"/>
+    <if>
+      <not>
+        <available file="${upload.file}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the file containing the upload definition : ${upload.file}"/>
+      </then>
+    </if>
+
+    <sequential>
+      <local name="tmp"/>
+      <local name="tmpl-file"/>
+
+      <!-- Generate an ant script that will do the actual work. -->
+      <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
+      <nxslt infile="${upload.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
+        <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
+      </nxslt>
+      <nxslt inprop="tmp" outfile="${work.dir}/upload.ant.xml" xsl="${dcm.dir}/src/upload-to-ant.xsl">
+        <param ant="tmpl-file" xsl="template-file"/>
+      </nxslt>
+
+      <!-- Run the little darling, inheriting all the currently-defined ant properties. -->
+      <ant antfile="${work.dir}/upload.ant.xml" inheritall="yes"/>
+    </sequential>
+
+  </target>
+
+
+  <target name="valcred-from-def" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'valcred.file' is required but not defined.  This is the file containing the dcm:definition/dcm:valcred definition." unless="valcred.file"/>
+    <if>
+      <not>
+        <available file="${valcred.file}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the file containing the valcred definition : ${valcred.file}"/>
+      </then>
+    </if>
+
+    <sequential>
+      <local name="tmp"/>
+      <local name="tmpl-file"/>
+
+      <!-- Generate an ant script that will do the actual work. -->
+      <property name="tmpl-file" location="${dcm.dir}/src/_quickie.template.ant.xml"/>
+      <nxslt infile="${valcred.file}" outprop="tmp" xsl="${dcm.dir}/src/remove-unwanted-elements.xsl">
+        <param ant="environment" xsl="param1"/>
+        <param ant="device" xsl="param2"/>
+      </nxslt>
+      <nxslt inprop="tmp" outfile="${work.dir}/valcred.ant.xml" xsl="${dcm.dir}/src/valcred-to-ant.xsl">
+        <param ant="tmpl-file" xsl="template-file"/>
+      </nxslt>
+
+      <!-- Run the little darling, inheriting all the currently-defined ant properties. -->
+      <ant antfile="${work.dir}/valcred.ant.xml" inheritall="yes"/>
+    </sequential>
+
+  </target>
+
+
+  <target name="valcred-from-dir" depends="-init-dir, check-access">
+
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'valcred.dir' is required but not defined.  This is the path to the directory containing (only!) the certificate files to include in this valcred." unless="valcred.dir"/>
+    <if>
+      <not>
+        <available file="${valcred.dir}"/>
+      </not>
+      <then>
+        <fail message="Unable to see the directory containing certificate files : ${valcred.dir}"/>
+      </then>
+    </if>
+
+    <fail message="The Ant property 'valcred.objname' is required but not defined.  This is the name for the Validation Credential object to create/overwrite on DataPower." unless="valcred.objname"/>
+    <if>
+      <equals arg1="${valcred.objname}" arg2=""/>
+      <then>
+        <fail message="The Ant property 'valcred.objname', which is the name of the Validation Credential object, is empty!"/>
+      </then>
+    </if>
+
+    <valcredFromFiles host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
+      dcmdir="${dcm.dir}" rootdir="${valcred.dir}" objname="${valcred.objname}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+      <include name="*"/>
+    </valcredFromFiles>
+
+  </target>
+
+	<target name="raw-mgmt-call" depends="-init-dir, -check-std-args">
+		<fail message="The Ant property 'mgmt.request' is required but not defined. This is the raw management request filename." unless="mgmt.request"/>
+		<fail message="The Ant property 'mgmt.response' is required but not defined. This is the raw management response filename." unless="mgmt.response"/>
+		<rawMgmtCall host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" request="${mgmt.request}" response="${mgmt.response}" method="${mgmt.method}"/>
+	</target>
+
+  <target name="-check-std-args">
+
+    <fail message="The Ant property 'host' is required but not defined.  This is the hostname or IP address of a DataPower device." unless="host"/>
+    <fail message="The Ant property 'uid' is required but not defined.  This is the userid on the DataPower device." unless="uid"/>
+
+    <if>
+      <not>
+        <isset property="pwd"/>
+      </not>
+      <then>
+        <input message="What is the password for '${uid}' on ${host}? " addproperty="pwd">
+          <handler type="secure"/>
+        </input>
+      </then>
+    </if>
+
+    <property name="port" value="5550"/> <!-- Provide a default when this property hasn't been defined before. -->
+
+  </target>
+
+
+  <target name="password-alias-create" depends="-init-dir, check-access" description="Create PasswordAlias object">
+	<fail message="The Ant property 'password-alias.name' is required but not defined.  This is the name of a password Alias object." unless="password-alias.name"/>
+	<fail message="The Ant property 'password-alias.password' is required but not defined.  This is the password of a password Alias object." unless="password-alias.password"/>
+	<property name="object.class" value="PasswordAlias"/>
+	<property name="ref.objects" value="false"/>
+	<!-- provide defaults if not specified by user -->
+	<property name="ref.files" value="fasle"/>
+	<wdp operation="AddPasswordMap" dumpinput="true" dumpoutput="true" capturesoma="${capturesoma}">
+		<objects xmlns:soma="http://www.datapower.com/schemas/management">
+			<soma:object class="@{object.class}" name="@{password-alias.name}" ref-objects="@{refobjs}" ref-files="@{reffiles}"/>
+		</objects>
+		<aliasname>${password-alias.name}</aliasname>
+		<password>${password-alias.password}</password>
+		<hostname>${host}</hostname>
+		<uid>${uid}</uid>
+		<pwd>${pwd}</pwd>
+		<domain>${domain}</domain>
+	</wdp>
+  </target>
+
+  <target name="password-alias-update" depends="-init-dir, check-access" description="Update password in PasswordAlias object">
+	<fail message="The Ant property 'password-alias.name' is required but not defined.  This is the name of a PasswordAlias object." unless="password-alias.name"/>
+	<fail message="The Ant property 'password-alias.password' is required but not defined.  This is the new password." unless="password-alias.password"/>
+	<property name="object.class" value="PasswordAlias"/>
+	<property name="ref.objects" value="false"/>
+	<!-- provide defaults if not specified by user -->
+	<property name="ref.files" value="fasle"/>
+	<wdp operation="ChangePasswordMap" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+		<objects xmlns:soma="http://www.datapower.com/schemas/management">
+			<soma:object class="@{object.class}" name="@{password-alias.name}" ref-objects="@{refobjs}" ref-files="@{reffiles}"/>
+		</objects>
+		<aliasname>${password-alias.name}</aliasname>
+		<password>${password-alias.password}</password>
+		<hostname>${host}</hostname>
+		<uid>${uid}</uid>
+		<pwd>${pwd}</pwd>
+		<domain>${domain}</domain>
+	</wdp>
+  </target>
+
+  <target name="-init-dir" depends="clean">
+    <mkdir dir="${work.dir}"/>
+    <mkdir dir="${schema.dir}"/>
+  </target>
+
+</project>

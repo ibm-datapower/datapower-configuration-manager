@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Create a certificate object for doing a secure backup
+-->
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+  
+  <dcm:certificate name="secureBackupCert" file="dummy-one-sscert.pem"/>
+  
+</dcm:definition>

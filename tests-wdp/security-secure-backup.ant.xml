@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<project name="security-secure-backup" basedir="." default="security-secure-backup">
+    
+    <!--
+        Securely backup the device.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="security-secure-backup">
+        
+        <wdp operation="SecureBackup" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <objname>device-id</objname>
+            <remote>export:///secure-backup.zip</remote>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>Successfully created secure backup on ${hostname}</echo>
+        
+    </target>
+    
+</project>

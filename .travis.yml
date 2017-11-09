@@ -1,0 +1,26 @@
+language: groovy
+rvm:
+- 1.8.8
+before_script:
+- export VERSION=${TRAVIS_TAG}.${TRAVIS_COMMIT:0:7}
+script:
+- ant -Dplugin.version=${VERSION}
+jdk:
+- oraclejdk8
+- openjdk7
+notifications:
+  email:
+    on_success: change
+    on_failure: change
+deploy:
+  provider: releases
+  api_key:
+    secure: X0GSYKEvG2rSQTvM7SDlzkfJKMYrpx3Ggm/aQImKidp/R9jyzoFwsevjfDgRf7+4g18b5aF2vTCb/8ybfq7LHOMlYGHC8I6GLPMEz8qDhYnAaHci2FuORV78/zQ/rQCnpdAJgwwXMMBcIHdbv8hKp4C8NaP1itStERHUVzfrVCuFvF3oHaR/vDwgWrEUjJKPx+eVQx7NLF5lv/uYJrqoHSc0XqE0+/kw731HCBp4nCoAgzrtsE99d2JHxQ0sz7kTWZNYScqB+O14Rlv6tnNTwPUQ8NKHWuiwyWmlA7nidevMvmKjhf5RrH9NB8rXavtqHh0YlqoO+XI1uZ33pGf0Jzp7xM1M9bOilVoZI7WA2JZyjo7gA0H+eaJcJ1k7HMA3gZWyohi8O8EjggiqW3tH+Yeg4p2dzAIzHThT+GcT1NsPN9Y/DsApqMJV7tdTxscuarmsU6X3RVMOE2QzZudsJJ9YwZ17RVLJe666GDveHtnnZ+giKdwPAZwY8tYQgpebcTe2VcoDtK/JKbHru8H9P9PyuIf+e8atrWeTw+aN5D8Hh6B0cBbxGSwNdAUZbzi7bTN++5BBw/X2YzSk1L5qOv32c2soRgq6bX1LTZGAHGUP7oyFhL3GIKlRlZWbdehbwablfp9NZOMKRNVIg6Wh1D9XZNNVM48iNtBz2j1FiDc=
+  file_glob: true
+  file:
+      - dist/datapower-v*.zip
+      - dist/dcm.jar
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: ibm-datapower/datapower-configuration-manager

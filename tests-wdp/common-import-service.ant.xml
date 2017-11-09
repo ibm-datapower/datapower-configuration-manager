@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<project name="common-import-service" basedir="." default="common-import-service">
+    
+    <!-- 
+        Import ${zipfile} into domain ${domain} on ${hostname} with ${uid} and ${pwd}.
+    -->
+    
+    <target name="common-import-service">
+        
+        <wdp operation="ImportConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <local>${zipfile}</local>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+    </target>
+    
+</project>

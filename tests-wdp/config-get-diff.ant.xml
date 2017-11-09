@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<project name="config-get-diff" basedir="." default="config-get-diff">
+    
+    <!--
+        Compare the current config to the original config.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+
+    <property name="tmpdir" location="tmp"/>    <!-- temp directory - override from command line. -->
+    <property name="tmpdir.absolute" location="${tmpdir}"/> <!-- Ensure that we know the fully qualified temp directory path.  Don't override. -->
+    
+    <mkdir dir="${tmpdir.absolute}"/> <!-- doesn't care if the directory already exists. -->
+    
+    
+    <target name="config-get-diff">
+        
+        <local name="diffcontent"/>
+        <local name="file.absolute"/>
+        <local name="rawresponse1"/>
+        <local name="rawresponse2"/>
+        
+        <property name="file.absolute" location="../imports/simple-loopback.v1.3.8.1.7.zip"/>
+        
+        <wdp operation="GetDiff" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <from-export>${file.absolute}</from-export>
+            <to-export>${file.absolute}</to-export>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+            <return antprop="rawresponse1" somaprop="rawresponse"/>
+        </wdp>
+        
+        <echo>Diffed import against itself in ${domain} on ${hostname}</echo>
+        <xpath inprop="rawresponse1" outfile="${tmpdir.absolute}/config-get-diff1.xml" xpath="/env:Envelope/env:Body/soma:response/soma:diff" xpathtype="node"/>
+        
+        
+        <wdp operation="GetDiff" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <from-export>${file.absolute}</from-export>
+            <to-class>MultiProtocolGateway</to-class>
+            <to-name>loopback</to-name>
+            <to-recursive>true</to-recursive>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+            <return antprop="rawresponse2" somaprop="rawresponse"/>
+        </wdp>
+        
+        <echo>Diffed loopback service in ${domain} on ${hostname} against the original import file: ${file.absolute}</echo>
+        <xpath inprop="rawresponse2" outfile="${tmpdir.absolute}/config-get-diff2.xml" xpath="/env:Envelope/env:Body/soma:response/soma:diff" xpathtype="node"/>
+        
+    </target>
+    
+</project>

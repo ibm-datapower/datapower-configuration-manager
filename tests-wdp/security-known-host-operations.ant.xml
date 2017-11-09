@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<project name="security-known-host-operations" basedir="." default="security-known-host-operations">
+    
+    <!--
+        Known-host operations.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="security-known-host-operations">
+
+        <!-- Ensure that the SSH Client Profile exists, as a precondition. -->
+        <wdp operation="SetConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+          <config>
+            <SSHClientProfile name="simple">
+              <mAdminState>enabled</mAdminState>
+              <UserName>quisling</UserName>
+              <ProfileUsage>scc</ProfileUsage>
+              <SSHUserAuthentication>
+                <publickey>on</publickey>
+                <password>on</password>
+              </SSHUserAuthentication>
+              <UserPrivateKey class="CryptoKey">iop-mgmt-key</UserPrivateKey>
+              <PersistentConnections>on</PersistentConnections>
+              <PersistentConnectionTimeout>120</PersistentConnectionTimeout>
+              <StrictHostKeyChecking>off</StrictHostKeyChecking>
+            </SSHClientProfile>
+          </config>
+          <hostname>${hostname}</hostname>
+          <uid>${uid}</uid>
+          <pwd>${pwd}</pwd>
+          <domain>default</domain>
+        </wdp>
+      
+        <wdp operation="AddKnownHost" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <clientname>simple</clientname>
+            <knownhost>regroot@oc8206860462.ibm.com</knownhost>
+            <type>ssh-rsa</type>
+            <key>AAAAB3NzaC1yc2EAAAABIwAAAQEAlZHv9xUGYNhe6I4Y3pcTPWS9253wteFuIDW2I4pKcewraRM9x9B/kKTowUmbxN1eflcCINB2CRxPER0AO5dRXWzEQR3nDac3iInDQGNXEpi33q01USWW73apuV1ybCKbtKm0lZCW2V8Niy+rcIudxBy78tB6HhYhLed/IVp2yGTKxU4FZSUrRRebfbU4XmD2P9c7Fbomdmlyq3YSiLCdfe+voNjjfwT2+5h8G/a2CS84k0VC0SMA/fhL8xZXvaDI3fU+qjyHAAvuK0WO/TnnAUTAF2rA1YMIos8tJi8fwx1T5ARCAdtmud8o1FL4sPvE3cftBf+s3rXPVb/aPMeyaw==</key>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>Successfully added a client known host for ${hostname}</echo>
+        
+        
+        <wdp operation="DeleteKnownHost" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <clientname>simple</clientname>
+            <knownhost>regroot@oc8206860462.ibm.com</knownhost>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>Successfully removed a client known host from ${hostname}</echo>
+        
+        
+        <wdp operation="DeleteKnownHostTable" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <clientname>simple</clientname>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>Successfully cleared all client known hosts from ${hostname}</echo>
+        
+    </target>
+    
+</project>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<project name="troubleshooting-send-file" basedir="." default="troubleshooting-send-file">
+    
+    <!--
+        Send some file via email.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="troubleshooting-send-file">
+        
+<!--
+    Would like to test this but don't have an SMTP server to hit.
+    
+        <wdp operation="SendFile" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <host>smtp.server</host>
+            <remote>logtemp:///default-log-xml</remote>
+            <address>me@123.com</address>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully emailed a file from ${hostname}</echo>
+-->
+
+    </target>
+    
+</project>

@@ -1,0 +1,9 @@
+# ignore compilation related directories in the root of the project
+/build
+/dcm-distros
+/dist
+/lib
+/.project
+
+/target/
+/schemas/

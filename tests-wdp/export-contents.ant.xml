@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<project name="export-contents" basedir="." default="export-contents">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="export-contents">
+        
+        <local name="zipfile"/>
+        <local name="rawresponse"/>
+        <local name="errors"/>
+
+        <property name="tmpdir" location="tmp"/>    <!-- temp directory - override from command line. -->
+        <property name="tmpdir.absolute" location="${tmpdir}"/> <!-- Ensure that we know the fully qualified temp directory path.  Don't override. -->
+        
+        <mkdir dir="${tmpdir.absolute}"/>  <!-- no complaint if the directory already exists. -->
+        
+        
+        <property name="zipfile" location="${tmpdir.absolute}/export-contents.zip"/>
+
+        <!-- Export the contents of the default domain. -->
+        <wdp operation="Export" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <format>ZIP</format>
+            <all-files>true</all-files>
+            <local>${zipfile}</local>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>Contents of domain ${domain} successfully exported from on ${hostname} into ${zipfile}.</echo>
+        
+    </target>
+    
+</project>

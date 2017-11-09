@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<project name="config-undo" basedir="." default="config-undo">
+    
+    <!--
+        Undo the modification to the standard loopback service to listen on a different port.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="config-undo">
+        
+        <wdp operation="UndoConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <classname>HTTPSourceProtocolHandler</classname>
+            <objname>loopback-http-fsh</objname>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+            <ignore-errors>true</ignore-errors>
+        </wdp>
+        
+        <echo>Successfully "undo" modified port for loopback service in ${domain} on ${hostname}</echo>
+        
+    </target>
+    
+</project>

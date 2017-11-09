@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<project name="security-trusted-host-operations" basedir="." default="security-trusted-host-operations">
+    
+    <!--
+        Trusted-host operations.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="security-trusted-host-operations">
+        
+        
+        <wdp operation="AddTrustedHost" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <trustedhost>regroot@oc8206860462.ibm.com</trustedhost>
+            <type>ssh-rsa</type>
+            <key>AAAAB3NzaC1yc2EAAAABIwAAAQEAlZHv9xUGYNhe6I4Y3pcTPWS9253wteFuIDW2I4pKcewraRM9x9B/kKTowUmbxN1eflcCINB2CRxPER0AO5dRXWzEQR3nDac3iInDQGNXEpi33q01USWW73apuV1ybCKbtKm0lZCW2V8Niy+rcIudxBy78tB6HhYhLed/IVp2yGTKxU4FZSUrRRebfbU4XmD2P9c7Fbomdmlyq3YSiLCdfe+voNjjfwT2+5h8G/a2CS84k0VC0SMA/fhL8xZXvaDI3fU+qjyHAAvuK0WO/TnnAUTAF2rA1YMIos8tJi8fwx1T5ARCAdtmud8o1FL4sPvE3cftBf+s3rXPVb/aPMeyaw==</key>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>Successfully added a trusted host for ${hostname}</echo>
+        
+        
+        <wdp operation="DeleteTrustedHost" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <trustedhost>regroot@oc8206860462.ibm.com</trustedhost>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+        <echo>Successfully removed a trusted host from ${hostname}</echo>
+        
+    </target>
+    
+</project>

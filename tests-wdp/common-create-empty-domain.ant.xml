@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<project name="common-create-empty-domain" basedir="." default="common-create-empty-domain">
+    
+    <!-- 
+        Create domain ${domain} (delete it first if it already exists) on ${hostname} with ${uid} and ${pwd}.
+    -->
+    
+    <target name="common-create-empty-domain">
+        
+        <!-- Delete the domain if it exists. -->
+        <ant antfile="common-delete-domain.ant.xml"/>
+        
+        <!-- Create a plain-vanilla domain. -->
+        <wdp operation="SetConfig" successprop="common-create-empty-domain-create-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <config>
+              <Domain name="${domain}">
+                <mAdminState>enabled</mAdminState>
+                <NeighborDomain class="Domain">default</NeighborDomain>
+                <ConfigMode>local</ConfigMode>
+              </Domain>  
+            </config>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+        
+    </target>
+    
+</project>

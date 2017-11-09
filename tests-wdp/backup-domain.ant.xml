@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<project name="backup-domain" basedir="." default="backup-domain">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="backup-domain">
+        
+        <local name="zipfile"/>
+
+        <property name="tmpdir" location="tmp"/>    <!-- temp directory - override from command line. -->
+        <property name="tmpdir.absolute" location="${tmpdir}"/> <!-- Ensure that we know the fully qualified temp directory path.  Don't override. -->
+        
+        <mkdir dir="${tmpdir.absolute}"/>  <!-- no complaint if the directory already exists. -->
+
+
+        <property name="zipfile" location="${tmpdir.absolute}/backup-domain.zip"/>
+        
+        <!-- Export the domain. -->
+        <wdp operation="Backup" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <local>${zipfile}</local>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Backup of domain ${domain} successfully made on ${hostname} into ${zipfile}.</echo>
+        
+    </target>
+    
+</project>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<project name="misc-disconnect-user" basedir="." default="misc-disconnect-user">
+    
+    <!--
+        Disconnect some user.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="misc-disconnect-user">
+        
+        <local name="sessionid"/>
+        
+        <input addproperty="sessionid" message="Please enter a session id for some active user currently logged into ${hostname}:"/>
+        
+        <wdp operation="DisconnectUser" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <sessionid>${sessionid}</sessionid>
+            <host>${hostname}</host>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully disconnected someone on ${hostname}</echo>
+        
+    </target>
+    
+</project>

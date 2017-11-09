@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<project name="import-service" basedir="." default="import-service">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="import-service">
+
+        <!-- Ensure the domain exists and is empty. -->
+        <ant antfile="${basedir}/common-create-empty-domain.ant.xml"/>
+        
+        <!-- Import the specified zipfile into the specified ${domain}. -->
+        <property name="zipfile" location="../imports/simple-loopback.v1.3.8.1.7.zip"/>
+        
+        <wdp operation="ImportConfig" successprop="import-service-import-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <local>${zipfile}</local>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${import-service-import-successprop}" arg2="true"/>
+            <then>
+                <echo>${zipfile} successfully imported into ${domain} on ${hostname}.</echo>
+            </then>
+            <else>
+                <echo>FAILED to import ${zipfile} into ${domain} on ${hostname}.</echo>
+            </else>
+        </if>
+        
+        <!-- Save the configuration of the 'default' and ${domain} domains. -->
+        <ant antfile="${basedir}/common-save-default-and-domain.ant.xml"/>
+        
+    </target>
+    
+</project>

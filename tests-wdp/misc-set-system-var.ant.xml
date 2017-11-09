@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<project name="misc-set-system-var" basedir="." default="misc-set-system-var">
+    
+    <!--
+        Set a system variable.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="misc-set-system-var">
+        
+        
+        <wdp operation="SetSystemVar" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <name>var://system/amp/debug</name>
+            <value>0</value>
+            <host>${hostname}</host>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully set a system variable on ${hostname}</echo>
+        
+    </target>
+    
+</project>

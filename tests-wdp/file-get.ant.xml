@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<project name="file-get" basedir="." default="file-get">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="file-get">
+        
+        <local name="file"/>
+        <local name="file.absolute"/>
+        
+        <property name="tmpdir" location="tmp"/>    <!-- temp directory - override from command line. -->
+        <property name="tmpdir.absolute" location="${tmpdir}"/> <!-- Ensure that we know the fully qualified temp directory path.  Don't override. -->
+        
+        <mkdir dir="${tmpdir.absolute}"/> <!-- doesn't care if the directory already exists. -->
+        
+        <property name="file" value="xml-mgmt-ops.xsd"/>
+        <property name="file.absolute" value="${tmpdir.absolute}/${file}"/>
+        
+        <wdp operation="GetFile" successprop="file-get-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <local>${file.absolute}</local>
+            <remote>store:///${file}</remote>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${file-get-successprop}" arg2="true"/>
+            <then>
+                <echo>${file} successfully fetched from ${domain} on ${hostname}</echo>
+            </then>
+            <else>
+                <echo>Failed to fetch ${file} from ${domain} on ${hostname}</echo>
+            </else>
+        </if>
+        
+    </target>
+    
+</project>

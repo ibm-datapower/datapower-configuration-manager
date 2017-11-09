@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="common-definitions">
+
+    <!-- First things first, have to be able to find the jar file. -->
+    <property name="dcm.jar.name" value="dcm.jar"/>
+    <property name="dcm.jar" location="../dist/${dcm.jar.name}"/>
+    <taskdef name="dpdownload" classname="com.ibm.dcm.taskDpdownload" classpath="${dcm.jar}"/>
+    <taskdef name="dpupload" classname="com.ibm.dcm.taskDpupload" classpath="${dcm.jar}"/>
+    <taskdef name="frombase64" classname="com.ibm.dcm.taskFrombase64" classpath="${dcm.jar}"/>
+    <taskdef name="getservercerts" classname="com.ibm.dcm.taskGetServerCerts" classpath="${dcm.jar}"/>
+    <taskdef name="if" classname="com.ibm.dcm.taskIf" classpath="${dcm.jar}"/>
+    <taskdef name="nxslt" classname="com.ibm.dcm.taskNxslt" classpath="${dcm.jar}"/>
+    <taskdef name="storexml" classname="com.ibm.dcm.taskStorexml" classpath="${dcm.jar}"/>
+    <taskdef name="tobase64" classname="com.ibm.dcm.taskTobase64" classpath="${dcm.jar}"/>
+    <taskdef name="wdp" classname="com.ibm.dcm.taskWdp" classpath="${dcm.jar}"/>
+    <taskdef name="xpath" classname="com.ibm.dcm.taskXpath" classpath="${dcm.jar}"/>
+    <taskdef name="forxpath" classname="com.ibm.dcm.taskForXpath" classpath="${dcm.jar}"/>
+  
+</project>

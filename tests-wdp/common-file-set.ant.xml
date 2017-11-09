@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<project name="common-file-set" basedir="." default="common-file-set">
+    
+    <!-- 
+        Put file ${local} in ${remote} in domain ${domain} on ${hostname} with ${uid} and ${pwd}.
+        Note that ${local} is expected to be a fully qualified path name,
+        ${remote} is a full DP path name.  For example:
+        
+          <ant antfile="common-file-set.ant.xml">
+            <property name="local" value="c:\\abc\\def.xml"/>
+            <property name="remote" value="local:///def.xml"/>
+          </ant>
+    -->
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="common-file-set">
+        
+        <local name="successprop"/>
+        
+        <wdp operation="SetFile" successprop="successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <local>${local}</local>
+            <remote>${remote}</remote>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${successprop}" arg2="true"/>
+            <then>
+                <echo>${local} successfully stored in ${remote} in ${domain} on ${hostname}</echo>
+            </then>
+            <else>
+                <echo>Failed to store ${local} in ${remote} in ${domain} on ${hostname}</echo>
+            </else>
+        </if>
+        
+    </target>
+    
+</project>

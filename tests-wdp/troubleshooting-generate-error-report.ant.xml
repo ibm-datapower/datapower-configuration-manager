@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<project name="troubleshooting-generate-error-report" basedir="." default="troubleshooting-generate-error-report">
+    
+    <!--
+        Generate an error report.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="troubleshooting-generate-error-report">
+        
+        
+        <wdp operation="GenerateErrorReport" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully generated an error report on ${hostname}</echo>
+        
+    </target>
+    
+</project>

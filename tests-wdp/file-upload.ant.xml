@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<project name="file-upload" basedir="." default="file-upload">
+    
+    <!--
+        Upload some files and directories to DP.
+    -->
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="file-upload">
+        
+        <local name="local"/>
+        <local name="remote"/>
+        <local name="pattern"/>
+
+        <property name="local" location=".."/>
+        <property name="remote" value="local:///"/>
+        <property name="pattern" value=".*\.java"/> <!-- PCRE to accept only Java files, ignoring files with other extensions. -->
+        
+        <wdp operation="Upload" successprop="file-upload-successprop" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <local>${local}</local>
+            <pattern>${pattern}</pattern>
+            <remote>${remote}</remote>
+            <recurse>true</recurse>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <if>
+            <equals arg1="${file-upload-successprop}" arg2="true"/>
+            <then>
+                <echo>${local}(pattern=${pattern}) successfully uploaded to ${remote} in ${domain} on ${hostname}</echo>
+            </then>
+            <else>
+                <echo>Failed to upload ${local}(pattern=${pattern}) to ${remote} in ${domain} on ${hostname}</echo>
+            </else>
+        </if>
+        
+    </target>
+    
+</project>

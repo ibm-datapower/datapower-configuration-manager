@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<project name="crypto-keygen" basedir="." default="crypto-keygen">
+    
+    <!--
+        Generate a key/cert pair.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="crypto-keygen">
+        
+        <!-- Ensure that the output files and objects do not exist. -->
+        <ant antfile="common-file-delete.ant.xml">
+            <property name="remote" value="temporary:///keygen-privkey.pem"/>
+        </ant>
+        <ant antfile="common-file-delete.ant.xml">
+            <property name="remote" value="temporary:///keygen-sscert.pem"/>
+        </ant>
+        <ant antfile="common-file-delete.ant.xml">
+            <property name="remote" value="temporary:///keygen.csr"/>
+        </ant>
+        
+        <wdp operation="DeleteConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <classname>CryptoCertificate</classname>
+            <objname>keygen</objname>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+            <ignore-errors>true</ignore-errors>
+        </wdp>
+        
+        <wdp operation="DeleteConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <classname>CryptoKey</classname>
+            <objname>keygen</objname>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+            <ignore-errors>true</ignore-errors>
+        </wdp>
+        
+        <!-- Generate the key/cert pair. -->
+        <wdp operation="Keygen" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <c>US</c>
+            <st>NY</st>
+            <l>Armonk</l>
+            <o>IBM</o>
+            <ou>SWG</ou>
+            <ou1>AIM</ou1>
+            <ou2>ISSW</ou2>
+            <cn>something</cn>
+            <days>365</days>
+            <exportkey>on</exportkey>
+            <gensscert>on</gensscert>
+            <exportsscert>on</exportsscert>
+            <genobject>on</genobject>
+            <objectname>keygen</objectname>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Successfully generated a key/cert pair in ${domain} on ${hostname}</echo>
+        
+    </target>
+    
+</project>

@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<project name="common-delete-domain" basedir="." default="common-delete-domain">
+    
+    <!-- 
+        Delete domain ${domain} on ${hostname} with ${uid} and ${pwd}, if it exists.
+    -->
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+    
+    <target name="common-delete-domain">
+        
+        <local name="status"/>
+        <local name="domainFlag"/>
+        
+        <!-- Get the list of domains into an ant property whose lifetime expires with the end of this target. -->
+        <wdp operation="GetStatuses" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+            <statuses>DomainStatus</statuses>
+            <return antprop="status" somaprop="status"/>
+        </wdp>
+
+        <!-- Extract the status of the specified domain, or end up with an empty string. -->
+        <xpath inprop="status" outprop="domainFlag" xpath="/status/DomainStatus[Domain='${domain}']"/>
+        
+        <if>
+            <length length="0" when="greater" string="${domainFlag}"/>
+            <then>
+                <wdp operation="DeleteConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+                    <classname>Domain</classname>
+                    <objname>${domain}</objname>
+                    <hostname>${hostname}</hostname>
+                    <uid>${uid}</uid>
+                    <pwd>${pwd}</pwd>
+                    <domain>default</domain>
+                </wdp>
+                <echo>Deleted domain ${domain}.</echo>
+            </then>
+            <else>
+                <echo>Domain ${domain} does not exist, so no need to delete it.</echo>
+            </else>
+        </if>
+
+    </target>
+    
+</project>

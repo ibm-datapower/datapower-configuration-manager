@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<project name="security-userid-operations" basedir="." default="security-userid-operations">
+
+    <!--
+        Userid operations.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+
+    <target name="security-userid-operations">
+
+        <!-- Ensure that we have the necessary user account. -->
+        <wdp operation="SetConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <config>
+                <User name="dcm-test">
+                    <Password>A123456a</Password>
+                    <AccessLevel>privileged</AccessLevel>
+                </User>
+            </config>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+
+        <echo>Successfully created user 'dcm-test' on ${hostname}</echo>
+
+
+        <wdp operation="ChangePassword" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <newpwd>A123456b</newpwd>
+            <hostname>${hostname}</hostname>
+            <uid>dcm-test</uid>
+            <pwd>A123456a</pwd>
+        </wdp>
+
+        <echo>Successfully changed password for user 'dcm-test' on ${hostname}</echo>
+
+
+        <wdp operation="UserResetPassword" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <dpuid>dcm-test</dpuid>
+            <dppwd>A13456a</dppwd>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+
+        <echo>Successfully reset password for user 'dcm-test' on ${hostname}</echo>
+
+
+        <wdp operation="UserForcePasswordChange" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <dpuid>dcm-test</dpuid>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+
+        <echo>Successfully forced password change for user 'dcm-test' at next login on ${hostname}</echo>
+
+
+        <wdp operation="UserResetFailedLogin" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <dpuid>dcm-test</dpuid>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+
+        <echo>Successfully reset the 'failed login' flag for user 'dcm-test' on ${hostname}</echo>
+
+
+        <!-- Dispose of the test user account. -->
+        <wdp operation="DeleteConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <classname>User</classname>
+            <objname>dcm-test</objname>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+            <domain>default</domain>
+        </wdp>
+
+        <echo>Successfully deleted user 'dcm-test' on ${hostname}</echo>
+
+    </target>
+
+</project>

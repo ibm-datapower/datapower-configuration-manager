@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<project name="troubleshooting-file-capture" basedir="." default="troubleshooting-file-capture">
+    
+    <!--
+        Control file capture.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="troubleshooting-file-capture">
+        
+        
+        <wdp operation="FileCapture" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <tracingmode>always</tracingmode>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully turned on file capture for ${hostname}</echo>
+        
+        
+        <wdp operation="FileCapture" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <tracingmode>off</tracingmode>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully turned off file capture for ${hostname}</echo>
+        
+    </target>
+    
+</project>

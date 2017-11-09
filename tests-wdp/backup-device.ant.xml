@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<project name="backup-device" basedir="." default="backup-device">
+    
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="backup-device">
+        
+        <local name="zipfile"/>
+
+        <property name="tmpdir" location="tmp"/>    <!-- temp directory - override from command line. -->
+        <property name="tmpdir.absolute" location="${tmpdir}"/> <!-- Ensure that we know the fully qualified temp directory path.  Don't override. -->
+        
+        <mkdir dir="${tmpdir.absolute}"/>  <!-- no complaint if the directory already exists. -->
+
+
+        <property name="zipfile" location="${tmpdir.absolute}/backup-device.zip"/>
+        
+        <!-- Export the device. -->
+        <wdp operation="BackupDevice" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <local>${zipfile}</local>
+        	<hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Backup of device ${hostname} successfully made into ${zipfile}.</echo>
+        
+    </target>
+    
+</project>

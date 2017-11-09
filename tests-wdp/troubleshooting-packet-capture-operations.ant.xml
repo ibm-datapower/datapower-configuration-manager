@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<project name="troubleshooting-packet-capture-operations" basedir="." default="troubleshooting-packet-capture-operations">
+    
+    <!--
+        Turn packet capture on and off.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="troubleshooting-packet-capture-operations">
+        
+        
+        <wdp operation="UniversalPacketCaptureDebug" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <type>Ethernet</type>
+            <ethernet-int>eth0</ethernet-int>
+            <mode>timed</mode>
+            <maxtime>30</maxtime>
+            <maxsize>10000</maxsize>
+            <maxpacketsize>9000</maxpacketsize>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully started packet capture on ${hostname}</echo>
+        
+        
+        <wdp operation="UniversalStopPacketCapture" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <type>Ethernet</type>
+            <ethernet-int>eth0</ethernet-int>
+            <port>5550</port>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully stopped packet capture on ${hostname}</echo>
+        
+    </target>
+    
+</project>

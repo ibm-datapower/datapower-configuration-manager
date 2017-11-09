@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<project name="firmware-operations" basedir="." default="firmware-operations">
+    
+    <!--
+        Firmware-related operations.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="firmware-operations">
+<!-- 
+        I don't have a device that I can do all these operations on.
+        
+        <local name="name-of-image"/>
+        <local name="some-file-in-config-filestore"/>
+        
+        <property name="name-of-image" value="abc.scrypt2"/>
+        <property name="some-file-in-config-filestore" value="config:///somefile.cfg"/>
+        
+        
+        <wdp operation="BootDelete" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully deleted the version that you COULD have rolled back to on ${hostname}</echo>
+        
+
+        <wdp operation="BootUpdate" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <name>${name-of-image}</name>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully updated firmware to ${name-of-image} on ${hostname}</echo>
+        
+        
+        <wdp operation="BootSwitch" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully rolled back to the previous firmware version on ${hostname}</echo>
+        
+        
+        <wdp operation="SelectConfig" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <remote>${some-file-in-config-filestore}</remote>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully selected config file to use on next reboot of ${hostname}</echo>
+-->        
+        
+        <wdp operation="Shutdown" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <mode>reboot</mode> <!-- reboot, reload, or halt -->
+            <delay>1</delay>
+            <hostname>${hostname}</hostname>
+            <uid>${uid}</uid>
+            <pwd>${pwd}</pwd>
+        </wdp>
+        
+        <echo>Successfully rebooted ${hostname}</echo>
+        
+    </target>
+    
+</project>

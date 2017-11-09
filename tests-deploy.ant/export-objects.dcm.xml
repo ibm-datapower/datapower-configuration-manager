@@ -1,0 +1,10 @@
+<dcm:definition xmlns:dcm="urn:datapower:configuration:manager">
+	<!-- export object(s) -->
+	<dcm:export-manifest>
+		<!-- TODO: add test objects that reference other objects and files -->
+		<export-object name="default" class="HTTPUserAgent"
+			ref-objects="true" ref-files="true" />
+		<export-object name="default-accept-service-providers"
+			class="StylePolicy" ref-objects="true" ref-files="true" />
+	</dcm:export-manifest>
+</dcm:definition>

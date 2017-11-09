@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<project name="config-test-url-rewrite" basedir="." default="config-test-url-rewrite">
+    
+    <!--
+        Test a simple URL Rewrite policy by appending "/amended" to the URL.  Kind of silly 
+        because the the output goes to the log and is not returned to <wdp>.
+    -->
+    <import file="common-definitions.ant.xml" optional="no"/>
+	
+    <target name="config-test-url-rewrite">
+        
+        <!-- Ensure the URLRewrite policy is present. -->
+        <ant antfile="common-import-service.ant.xml">
+            <property name="zipfile" location="../imports/simple-urlrewrite.4.0.2.4.zip"/>
+        </ant>
+        
+        <wdp operation="TestURLRewrite" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+            <name>simple</name>
+            <url>http://1.2.3.4/abc</url>
+            <hostname>${hostname}</hostname>
+        	<uid>${uid}</uid>
+        	<pwd>${pwd}</pwd>
+            <domain>${domain}</domain>
+        </wdp>
+        
+        <echo>Tested a simple URL Rewrite policy in ${domain} on ${hostname}</echo>
+        
+    </target>
+    
+</project>
