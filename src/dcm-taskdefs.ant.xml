@@ -1702,6 +1702,7 @@
         <local>@{workdir}/${import_basename}</local>
         <deployment-policy-file>@{workdir}/4_gathered-deployment-policies.xml</deployment-policy-file>
         <hostname>@{host}</hostname>
+        <port>@{port}</port>
         <uid>@{uid}</uid>
         <pwd>@{pwd}</pwd>
         <ignore-errors>@{ignore-errors}</ignore-errors>
@@ -1785,6 +1786,7 @@
         <local>@{inputfile}</local>
         <deployment-policy>@{dpo}</deployment-policy>
         <hostname>@{host}</hostname>
+        <port>@{port}</port>
         <uid>@{uid}</uid>
         <pwd>@{pwd}</pwd>
         <ignore-errors>@{ignore-errors}</ignore-errors>

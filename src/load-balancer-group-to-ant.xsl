@@ -41,7 +41,7 @@
         <dcm:health-checks [ enabled="true|false" ] 
           [ uri="..." ] 
           [ port="n" ]  
-          [ ssl="Standard, LDAP, IMSConnect, on, off" ] 
+          [ ssl="Standard, LDAP, IMSConnect, TCPConnectionType, on, off" ] 
           [ post="true|false" ]
           [ input="..." ]
           [ timeout="n" ]
@@ -50,7 +50,8 @@
           [ filter = "..." ]
           [ ssl-proxy-profile = "..." ]
           [ enforce-timeout = "true|false" ] 
-          [ independent-checks = "true|false" ] />
+          [ independent-checks = "true|false" ]
+		  [ ssl-client = "..." ]/>
       ]
       [
         <dcm:affinity [ enabled="true|false" ]
@@ -162,7 +163,9 @@
             
             <!-- Show the errors and terminate. -->
             <xsl:for-each select="$results//dcm:error">
-              <xsl:message>   <xsl:value-of select="."/></xsl:message>
+		<xsl:message>
+		    <xsl:value-of select="."/>
+		</xsl:message>
             </xsl:for-each>
             <xsl:message terminate="yes">Failed to generate internal template due to errors listed above.</xsl:message>
             
@@ -553,10 +556,13 @@
             <xsl:element name="SSLClientConfigType">
               <xsl:value-of select="'client'"/>
             </xsl:element>
-            <xsl:element name="SSLClient"/>
-            
-          </xsl:if>
-          
+	    <!-- <xsl:element name="SSLClient"/> -->
+	    <xsl:element name="SSLClient">
+		<xsl:if test="$checks/@ssl-client != ''">      
+	             <xsl:value-of select="$checks/@ssl-client"/>
+                </xsl:if>
+	    </xsl:element>
+	   </xsl:if>
         </xsl:element>
         
         <xsl:element name="MasqueradeMember">
