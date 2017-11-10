@@ -164,8 +164,8 @@
         Improve Invoke any deploy.ant.xml target step's Additional Properties decription. Property names and values are now trimmed.
     </release-note>
     <release-note plugin-version="17">
+        Issue #81 - Added format argument to the export-object and export-objects DCM targets to define export type. Possible values: XML or ZIP. Default is ZIP.
         Issue #82 - Added missing port property in the importConfig and importConfigDPO macrodefs used by import-from-def and import-dpo DCM tasks.
     </release-note>
-
   </release-notes>
 </pluginInfo>

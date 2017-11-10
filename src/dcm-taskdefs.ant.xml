@@ -97,6 +97,7 @@
     <attribute name="port" default="5550"/>
     <attribute name="uid"/>
     <attribute name="pwd"/>
+    <attribute name="format" default="ZIP"/>
     <attribute name="dumpinput" default="false"/>
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
@@ -122,6 +123,7 @@
           <port>@{port}</port>
           <uid>@{uid}</uid>
           <pwd>@{pwd}</pwd>
+          <format>@{format}</format>
           <ignore-errors>@{ignore-errors}</ignore-errors>
           <domain>@{domain}</domain>
           <all-files>@{allfiles}</all-files>
@@ -131,7 +133,7 @@
         <equals arg1="${export_success}" arg2="true"/>
         <then>
           <echo>Exported object @{objname} into @{local} where</echo>
-          <echo>class=@{objclass} ref-objects=@{refobjs} ref-files=@{reffiles} domain=@{domain} hostname=@{host}.</echo>
+          <echo>class=@{objclass} ref-objects=@{refobjs} ref-files=@{reffiles} domain=@{domain} hostname=@{host} format=@{format}.</echo>
         </then>
         <else>
           <echo>Raw response for export: ${export_response}</echo>
@@ -166,6 +168,7 @@
 	    <attribute name="port" default="5550"/>
 	    <attribute name="uid"/>
 	    <attribute name="pwd"/>
+	    <attribute name="format" default="ZIP"/>
 	    <attribute name="dumpinput" default="false"/>
 	    <attribute name="dumpoutput" default="false"/>
 	    <attribute name="capturesoma" default=""/>
@@ -187,6 +190,7 @@
 	          <port>@{port}</port>
 	          <uid>@{uid}</uid>
 	          <pwd>@{pwd}</pwd>
+              <format>@{format}</format>
 	          <ignore-errors>@{ignore-errors}</ignore-errors>
 	          <domain>@{domain}</domain>
 	      </wdp>
@@ -195,7 +199,7 @@
 	        <equals arg1="${export_success}" arg2="true"/>
 	        <then>
 	          <echo>Exported object @{objname} into @{local} where</echo>
-	          <echo>class=@{objclass} ref-objects=@{refobjs} ref-files=@{reffiles} domain=@{domain} hostname=@{host}.</echo>
+	          <echo>class=@{objclass} ref-objects=@{refobjs} ref-files=@{reffiles} domain=@{domain} hostname=@{host} format=@{format}.</echo>
 	        </then>
 	        <else>
 	          <echo>Raw response for export: ${export_response}</echo>
