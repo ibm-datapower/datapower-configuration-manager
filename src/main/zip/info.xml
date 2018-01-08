@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 /**
- * Copyright 2014, 2017 IBM Corp.
+ * Copyright 2014, 2018 IBM Corp.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -167,6 +167,9 @@
         Issue #81 - Added format argument to the export-object and export-objects DCM targets to define export type. Possible values: XML or ZIP. Default is ZIP.
         Issue #82 - Added missing port property in the importConfig and importConfigDPO macrodefs used by import-from-def and import-dpo DCM tasks.
         PR #85 - Set SSLClientProfile for Load Balancer Groups and update health check comments to include TCPConnectionType check.
+    </release-note>
+    <release-note plugin-version="18">
+        Fixes APAR PI92154 - Missing default format property value in export-object and export-objects targets.
     </release-note>
   </release-notes>
 </pluginInfo>
