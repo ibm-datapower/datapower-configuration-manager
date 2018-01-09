@@ -1834,6 +1834,77 @@
 
   <!--
 
+    Generate a private key, an optional SScert and a CSR.
+
+    Required parameters:
+      host - hostname or IP address of DataPower device
+      uid - userid
+      pwd - password
+      domain - name of domain for which the key(s)&csr are created
+      cn - Common Name property for the key(-pair)&csr
+
+    Optional parameters:
+      port - XML Management Interface port on device (defaults to 5550)
+      ignore-errors = true() or false()
+      exportkey = on / off(=default), whether to export the private key or not
+      gensscert = on / off(=default), whether to generate a SS-certificate or not
+      expsscert = on / off(=default), whether to export the SS-certificate or not
+
+  -->
+  <macrodef name="keyGen">
+    <attribute name="host"/>
+    <attribute name="port" default="5550"/>
+    <attribute name="uid" default="admin"/>
+    <attribute name="pwd" default="admin"/>
+    <attribute name="domain"/>
+    <attribute name="cn"/>
+    <attribute name="exportkey"/>
+    <attribute name="gensscert"/>
+    <attribute name="expsscert"/>
+    <attribute name="dumpinput" default="false"/>
+    <attribute name="dumpoutput" default="false"/>
+    <attribute name="capturesoma" default=""/>
+    <attribute name="ignore-errors" default="false"/>
+
+    <sequential>
+      <local name="generate_okay"/>
+      <local name="generate_response"/>
+      <local name="generate_success"/>
+
+      <wdp operation="Keygen" successprop="generate_success" responseprop="generate_response" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
+           xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="generate_okay">
+        <hostname>@{host}</hostname>
+        <domain>@{domain}</domain>
+        <port>@{port}</port>
+        <uid>@{uid}</uid>
+        <pwd>@{pwd}</pwd>
+        <cn>@{cn}</cn>
+        <exportkey>@{exportkey}</exportkey>
+        <gensscert>@{gensscert}</gensscert>
+        <exportsscert>@{expsscert}</exportsscert>
+      </wdp>
+
+      <if>
+        <and>
+          <istrue value="${generate_success}"/>
+          <equals arg1="${generate_okay}" arg2="OK"/>
+        </and>
+        <then>
+          <echo>key @{cn} generated on @{domain}@@@{host}.</echo>
+        </then>
+        <else>
+          <echo>Raw response for macrodef doKeygen: ${generate_response}; dumpoutput="${dumpoutput}"</echo>
+          <fail message="Failed to generate @{cn} key at @{domain}@@@{host}."/>
+        </else>
+      </if>
+
+    </sequential>
+
+  </macrodef>
+
+
+  <!--
+
     Listing of a filestore
 
     Required parameters:
