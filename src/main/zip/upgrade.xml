@@ -559,4 +559,7 @@
   <migrate to-version="18">
   </migrate>
 
+  <migrate to-version="19">
+  </migrate>
+
 </plugin-upgrade>

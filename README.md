@@ -86,6 +86,7 @@ Complete list of current DCM target commands. (* = matching plug-in step)
 - __import-dpo__*      - import a specified .zip or .xcfg file into the domain, making changes along the way
 
 - __key-from-def__ - upload a key (or multiple keys) based on a dcm:definition (with Crypto Key objects, of course)
+- __key-create__   - generate a private key, a public key and a self-signed certificate
 
 - __load-balancer-group-from-def__* - create/overwrite a load balancer group object
 

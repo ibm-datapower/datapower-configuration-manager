@@ -171,5 +171,9 @@
     <release-note plugin-version="18">
         Fixes APAR PI92154 - Missing default format property value in export-object and export-objects targets.
     </release-note>
+    <release-note plugin-version="19">
+        PR #87 - New key-create target to generate a private key, a public key, and a self-signed certificate.
+            - Updated the default spelling of the ref.files property in password-alias-create and password-alias-update targets.
+    </release-note>
   </release-notes>
 </pluginInfo>
