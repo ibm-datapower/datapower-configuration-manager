@@ -63,6 +63,7 @@
   import-dpo*      - import a specified .zip or .xcfg file into the domain, making changes along the way
 
   key-from-def - upload a key (or multiple keys) based on a dcm:definition (with Crypto Key objects, of course)
+  key-create - generate a private key, a public key and a self-signed certificate
 
   load-balancer-group-from-def* - create/overwrite a load balancer group object
 
@@ -1065,6 +1066,23 @@
   </target>
 
 
+  <!--
+      Generate a private key, an optional Self-Signed certificate and a CSR.
+  -->
+  <target name="key-create" depends="-init-dir, check-access">
+    <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
+    <fail message="The Ant property 'cn' is required but not defined.  This is the Common Name property of the key." unless="cn"/>
+    <property name="exportkey" value='off'/>
+    <property name="gensscert" value='off'/>
+    <property name="expsscert" value='off'/>
+
+    <keyGen host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" cn="${cn}" domain="${domain}" exportkey="${exportkey}" gensscert="${gensscert}" expsscert="${expsscert}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+    <echo>Generated key successfully</echo>
+
+  </target>
+
+
+
   <target name="load-balancer-group-from-def" depends="-init-dir, check-access">
 
     <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
@@ -1507,7 +1525,7 @@
 	<property name="object.class" value="PasswordAlias"/>
 	<property name="ref.objects" value="false"/>
 	<!-- provide defaults if not specified by user -->
-	<property name="ref.files" value="fasle"/>
+	<property name="ref.files" value="false"/>
 	<wdp operation="AddPasswordMap" dumpinput="true" dumpoutput="true" capturesoma="${capturesoma}">
 		<objects xmlns:soma="http://www.datapower.com/schemas/management">
 			<soma:object class="@{object.class}" name="@{password-alias.name}" ref-objects="@{refobjs}" ref-files="@{reffiles}"/>
@@ -1527,7 +1545,7 @@
 	<property name="object.class" value="PasswordAlias"/>
 	<property name="ref.objects" value="false"/>
 	<!-- provide defaults if not specified by user -->
-	<property name="ref.files" value="fasle"/>
+	<property name="ref.files" value="false"/>
 	<wdp operation="ChangePasswordMap" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
 		<objects xmlns:soma="http://www.datapower.com/schemas/management">
 			<soma:object class="@{object.class}" name="@{password-alias.name}" ref-objects="@{refobjs}" ref-files="@{reffiles}"/>
