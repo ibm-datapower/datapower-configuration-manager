@@ -74,6 +74,9 @@ Complete list of current DCM target commands. (* = matching plug-in step)
 - __firmware-rollback__ - Rollback to the previous firmware (and filesystem contents!)
 - __firmware-update__   - Update to a new level of firmware
 
+- __flush-document-cache__*   - Flush a domain's document cache
+- __flush-stylesheet-cache__*   - Flush a domain's stylesheet cache
+
 - __host-alias-remove__* - remove a specific host alias
 - __host-alias-set__*    - create/overwrite a host alias
 

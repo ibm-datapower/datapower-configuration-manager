@@ -3860,5 +3860,109 @@
     </sequential>
   </macrodef>
 
+  <!--
+    Flush Document Cache
+  -->
+
+  <macrodef name="flushDocumentCache">
+    <attribute name="host"/>
+    <attribute name="port" default="5550"/>
+    <attribute name="uid"/>
+    <attribute name="pwd"/>
+    <attribute name="domain"/>
+    <attribute name="xmlmanager" default=""/>
+    <attribute name="dumpinput" default="false"/>
+    <attribute name="dumpoutput" default="false"/>
+    <attribute name="capturesoma" default=""/>
+
+    <sequential>
+      <local name="flush_okay"/>
+      <local name="flush_response"/>
+      <local name="flush_success"/>
+
+ <!-- Disable the objects, ignoring some errors for the moment. -->
+      <wdp operation="FlushDocumentCache" successprop="flush_success" responseprop="flush_response"
+           dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
+           xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="flush_okay" >
+        <domain>@{domain}</domain>
+        <host>@{host}</host>
+        <port>@{port}</port>
+        <uid>@{uid}</uid>
+        <pwd>@{pwd}</pwd>
+        <xmlmanager>@{xmlmanager}</xmlmanager>
+        <ignore-errors>false</ignore-errors>
+      </wdp>
+
+      <if>
+        <and>
+            <istrue value="${flush_success}"/>
+            <equals arg1="${flush_okay}" arg2="OK"/>
+        </and>
+        <then>
+          <echo>Successfully flushed document cache from domain @{domain} on @{host}.</echo>
+        </then>
+        <else>
+          <echo>Raw response for flush document cache: ${flush_response}</echo>
+          <echo>If specified, ensure the xmlmanager value exists.</echo>
+          <fail message="Failed to flush document cache from domain @{domain} on @{host}."/>
+        </else>
+      </if>
+
+    </sequential>
+
+  </macrodef>
+
+  <!--
+    Flush Stylesheet Cache
+  -->
+
+  <macrodef name="flushStylesheetCache">
+    <attribute name="host"/>
+    <attribute name="port" default="5550"/>
+    <attribute name="uid"/>
+    <attribute name="pwd"/>
+    <attribute name="domain"/>
+    <attribute name="xmlmanager" default=""/>
+    <attribute name="dumpinput" default="false"/>
+    <attribute name="dumpoutput" default="false"/>
+    <attribute name="capturesoma" default=""/>
+
+    <sequential>
+      <local name="flush_okay"/>
+      <local name="flush_response"/>
+      <local name="flush_success"/>
+
+ <!-- Disable the objects, ignoring some errors for the moment. -->
+      <wdp operation="FlushStylesheetCache" successprop="flush_success" responseprop="flush_response"
+           dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}"
+           xpath="normalize-space(/env:Envelope/env:Body/soma:response/soma:result)" xpathprop="flush_okay" >
+        <domain>@{domain}</domain>
+        <host>@{host}</host>
+        <port>@{port}</port>
+        <uid>@{uid}</uid>
+        <pwd>@{pwd}</pwd>
+        <xmlmanager>@{xmlmanager}</xmlmanager>
+        <ignore-errors>false</ignore-errors>
+      </wdp>
+
+      <if>
+        <and>
+            <istrue value="${flush_success}"/>
+            <equals arg1="${flush_okay}" arg2="OK"/>
+        </and>
+        <then>
+          <echo>Successfully flushed stylesheet cache from domain @{domain} on @{host}.</echo>
+        </then>
+        <else>
+          <echo>Raw response for flush stylesheet cache: ${flush_response}</echo>
+          <echo>If specified, ensure the xmlmanager value exists.</echo>
+          <fail message="Failed to flush stylesheet cache from domain @{domain} on @{host}."/>
+        </else>
+      </if>
+
+    </sequential>
+
+  </macrodef>
+
 
 </project>
