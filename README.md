@@ -57,6 +57,9 @@ Complete list of current DCM target commands. (* = matching plug-in step)
 
 - __clean__ - delete any temp files created by this ant script
 
+- __delete-file__   - delete file in the datapower domain
+- __delete-folder__ - delete folder in the datapower domain
+
 - __domain-create__*    - ensure the domain exists
 - __domain-delete__*    - delete the domain
 - __domain-init__       - delete and recreate the domain, then upload the standard files

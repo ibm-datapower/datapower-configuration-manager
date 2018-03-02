@@ -4,6 +4,6 @@
 /dist
 /lib
 /.project
-
+/tmp
 /target/
 /schemas/

@@ -3860,5 +3860,38 @@
     </sequential>
   </macrodef>
 
+  <macrodef name="deleteFile">
+    <!-- <import file="common-definitions.ant.xml" optional="no"/> -->
+
+    <property name="file" value="file-delete.ant.xml"/>
+    <!-- <property name="file.absolute" location="${file}"/> -->
+    <property name="remote" value="temporary:///${file}"/>
+
+    <!-- Ensure the file exists on DP so that it can be deleted. -->
+    <!-- <ant antfile="common-file-set.ant.xml">
+        <property name="local" value="${file.absolute}"/>
+        <property name="remote" value="${remote}"/>
+    </ant> -->
+
+    <wdp operation="DeleteFile" successprop="success" dumpinput="${dumpinput}"
+         dumpoutput="${dumpoutput}" capturesoma="${capturesoma}">
+        <remote>${remote}</remote>
+    	<hostname>${hostname}</hostname>
+    	<uid>${uid}</uid>
+    	<pwd>${pwd}</pwd>
+        <domain>${domain}</domain>
+    </wdp>
+
+    <if>
+        <equals arg1="${success}" arg2="true"/>
+        <then>
+            <echo>${remote} successfully deleted from ${domain} on ${hostname}</echo>
+        </then>
+        <else>
+            <echo>Failed to delete ${remote} from ${domain} on ${hostname}</echo>
+        </else>
+    </if>
+  </macrodef>
+
 
 </project>

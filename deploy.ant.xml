@@ -34,6 +34,9 @@
 
   clean - delete any temp files created by this ant script
 
+  delete-file   - delete file in the datapower domain
+  delete-folder - delete folder in the datapower domain
+
   domain-create*    - ensure the domain exists
   domain-delete*    - delete the domain
   domain-init       - delete and recreate the domain, then upload the standard files
@@ -1558,6 +1561,20 @@
 		<domain>${domain}</domain>
 	</wdp>
   </target>
+
+  <target name="delete-file" depends="-init-dir, check-access" description="Delete a file from storage.">
+  	<fail message="The Ant property 'domain' is required but not defined. " unless="domain"/>
+	<fail message="The Ant property 'file' is required but not defined. " unless="file"/>
+
+    <deleteFile host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" file="${file}" domain="${domain}" />
+  </target>
+
+  <!-- <target name="delete-folder" depends="-init-dir, check-access" description="Delete a folder from storage.">
+  	<fail message="The Ant property 'domain' is required but not defined. " unless="domain"/>
+    <fail message="The Ant property 'folder' is required but not defined. " unless="folder"/>
+
+    <deleteFolder host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" folder="${folder}" domain="${domain}" />
+  </target> -->
 
   <target name="-init-dir" depends="clean">
     <mkdir dir="${work.dir}"/>
