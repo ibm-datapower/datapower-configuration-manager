@@ -1559,6 +1559,18 @@
 	</wdp>
   </target>
 
+  <target name="flush-document-cache" depends="-init-dir, check-access" description="Flush the domain's document cache.">
+	<fail message="The Ant property 'domain' is required but not defined. " unless="domain"/>
+	<property name="xmlmanager" value=""/>
+    <flushDocumentCache host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" xmlmanager="${xmlmanager}" />
+  </target>
+
+  <target name="flush-stylesheet-cache" depends="-init-dir, check-access" description="Flush the domain's document cache.">
+	<fail message="The Ant property 'domain' is required but not defined. " unless="domain"/>
+	<property name="xmlmanager" value=""/>
+    <flushStylesheetCache host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}" xmlmanager="${xmlmanager}" />
+  </target>
+
   <target name="-init-dir" depends="clean">
     <mkdir dir="${work.dir}"/>
     <mkdir dir="${schema.dir}"/>

@@ -175,5 +175,8 @@
         PR #87 - New key-create target to generate a private key, a public key, and a self-signed certificate.
             - Updated the default spelling of the ref.files property in password-alias-create and password-alias-update targets.
     </release-note>
+    <release-note plugin-version="20">
+        RFE 115259 - Added the Flush Document Cache and Flush Stylesheet Cache steps and their associated flush-document-cache and flush-stylesheet-cache targets. 
+    </release-note>
   </release-notes>
 </pluginInfo>

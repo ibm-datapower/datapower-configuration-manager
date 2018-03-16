@@ -562,4 +562,7 @@
   <migrate to-version="19">
   </migrate>
 
+  <migrate to-version="20">
+  </migrate>
+
 </plugin-upgrade>
