@@ -3181,6 +3181,7 @@ public class Soma {
       }
     }
 
+    System.out.println("Soma Results: " + Arrays.toString(result.toStringArray()));
     return result;
   }
 
