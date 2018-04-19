@@ -20,6 +20,8 @@ package com.ibm.dcm;
 import java.io.*;
 import java.util.*;
 import java.util.regex.*;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.*;
 import org.w3c.dom.*;
 
 
@@ -3182,9 +3184,33 @@ public class Soma {
     }
 
     System.out.println("Soma Results: " + Arrays.toString(result.toStringArray()));
+
+    System.out.println("======= Import Response =======");
+    System.out.println(prettyFormat(result.get("rawresponse")));
+    System.out.println("===============================");
     return result;
   }
 
+  public String prettyFormat(String input, String indent) {
+      try {
+          Source xmlInput = new StreamSource(new StringReader(input));
+          StringWriter stringWriter = new StringWriter();
+          StreamResult xmlOutput = new StreamResult(stringWriter);
+          TransformerFactory transformerFactory = TransformerFactory.newInstance();
+          Transformer transformer = transformerFactory.newTransformer();
+          transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+          transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", indent);
+          transformer.transform(xmlInput, xmlOutput);
+          return xmlOutput.getWriter().toString();
+      } catch (Exception e) {
+          System.out.println("[Warning] Unable to format the DataPower XML response.");
+          return input;
+      }
+  }
+
+  public String prettyFormat(String input) {
+      return prettyFormat(input, "2");
+  }
 
   /**
    * This method implements the ImportExecute operation.
