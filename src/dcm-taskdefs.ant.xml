@@ -2938,6 +2938,7 @@
     <attribute name="dumpoutput" default="false"/>
     <attribute name="capturesoma" default=""/>
     <attribute name="ignore-errors" default="false"/>
+    <attribute name="reset-domain" default="true"/>
 
     <sequential>
       <local name="success-update"/>
@@ -2951,6 +2952,7 @@
         <hostname>@{host}</hostname>
         <uid>@{uid}</uid>
         <pwd>@{pwd}</pwd>
+        <reset-domain>@{reset-domain}</reset-domain>
       </wdp>
 
       <if>
