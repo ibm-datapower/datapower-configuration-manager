@@ -1437,6 +1437,11 @@
       <property name="environment">
         <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true"/>
       </property>
+      <property name="resetDomains">
+        <property-ui type="selectBox" default-value="true" label="Reset Domains" description="Reset domain being restored." hidden="true"/>
+          <value label="True">true</value>
+          <value label="False">false</value>
+      </property>
       <property name="addlProperties">
         <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
       </property>
@@ -1470,6 +1475,7 @@
       <arg value="-Ddomains=@domainNames@"/>
       <arg value="-Denvironment=@environment@"/>
       <arg value="-Dbackup.file=@backupFile@"/>
+      <arg value="-Dreset-domain=@resetDomains@"/>
       <arg value="restore-backup"/>
     </command>
   </step-type>

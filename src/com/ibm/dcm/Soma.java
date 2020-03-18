@@ -4239,7 +4239,7 @@ public class Soma {
 
     body.append("<soma:input-file>" + Base64.base64FromBinaryFile(params.get("local")) + "</soma:input-file>");
 
-    body.append("<soma:domain name=\"" + params.get("domain") + "\" import-domain=\"true\" reset-domain=\"true\"/>");
+    body.append("<soma:domain name=\"" + params.get("domain") + "\" import-domain=\"true\" reset-domain=\"" + params.get("reset-domain") + "\"/>");
     if (params.get("domains") != null) {
 
       // Parse the list of domain names, which are merely whitespace separated.
@@ -4249,7 +4249,7 @@ public class Soma {
       for (int i = 0; i < names.length; i += 1) {
         if (names[i].equals(params.get("domain")) == false) {
           // Not the primary domain so add this to the list.
-          body.append("<soma:domain name=\"" + names[i] + "\"/>");
+          body.append("<soma:domain name=\"" + names[i] + "\" import-domain=\"true\" reset-domain=\"" + params.get("reset-domain") + "\"/>");
         }
       }
     }

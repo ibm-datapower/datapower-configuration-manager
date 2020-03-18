@@ -1286,7 +1286,7 @@
 
     <restoreBackup host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
       domains="${domains}" zipfile="${backup.file}" dry-run="${dry-run}"
-      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
+      dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}" reset-domain="${reset-domain}"/>
 
   </target>
 
