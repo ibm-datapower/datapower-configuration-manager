@@ -564,5 +564,13 @@
 
   <migrate to-version="20">
   </migrate>
+        
+  <migrate to-version="21">
+    <migrate-command  name="Restore Backup">
+      <migrate-properties>
+        <migrate-property name="resetDomains" default="true"/>
+      </migrate-properties>
+    </migrate-command>
+  </migrate>      
 
 </plugin-upgrade>
