@@ -3078,6 +3078,7 @@ public class Soma {
    * The params may contain:
    *
    * deployment-policy= name of a ConfigDeploymentPolicy object already present in the domain prior to this operation
+   * deployment-policy-variables= name of a ConfigDeploymentPolicy object variables already present in the domain prior to this operation
    * deployment-policy-file= ... local file containing a ConfigDeploymentPolicy object in XML ...
    * overwrite-files=true/false defaults to true
    * overwrite-objects=true/false default to true
@@ -3090,7 +3091,6 @@ public class Soma {
    */
   public NamedParams doImportConfig (NamedParams params) throws Exception {
     params.insistOn (new String[] {"domain", "local"});
-
     // Construct the XML request.
     String body = "<soma:do-import";
     if (params.get("source-type") != null)
@@ -3116,8 +3116,13 @@ public class Soma {
       body += " deployment-policy=\"" + params.get("deployment-policy") + "\"";
     else
       body += " deployment-policy=\"\"";
+    if (params.get("deployment-policy-variables") != null)
+        body += " deployment-policy-variables=\"" + params.get("deployment-policy-variables") + "\"";
+    else
+        body += " deployment-policy-variables=\"\"";
     body += ">";
     body += "<soma:input-file>" + Base64.base64FromBinaryFile(params.get("local")) + "</soma:input-file>";
+    
     if (params.get("deployment-policy-file") != null) {
       try {
         String filename = params.get("deployment-policy-file");
@@ -3168,8 +3173,9 @@ public class Soma {
         throw new RuntimeException (e);
       }
     }
+    
     body += "</soma:do-import>";
-
+    
     // Make the request of the XML Management Interface.
     String request = SomaUtils.getGeneralEnvelope (params.get("domain"), body);
     NamedParams result = params;

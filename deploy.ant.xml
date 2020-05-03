@@ -1009,7 +1009,8 @@
     <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
     <fail message="The Ant property 'import.file' is required but not defined.  This is the .zip or .xcfg file to import into the domain." unless="import.file"/>
     <fail message="The Ant property 'deployment.policy.object' is required but not defined.  This name of a deployment policy object to apply during the import." unless="deployment.policy.object"/>
-    <if>
+  	<fail message="The Ant property 'deployment.policy.object.variables' is required but not defined.  This name of a deployment policy object variables to apply during the import." unless="deployment.policy.object.variables"/>
+  	<if>
       <not>
         <available file="${import.file}"/>
       </not>
@@ -1025,7 +1026,7 @@
         In case of an error it throws an exception or prints the SOAP response and terminates Ant.
       -->
       <importConfigDPO host="${host}" port="${port}" uid="${uid}" pwd="${pwd}" domain="${domain}"
-        inputfile="${import.file}" dpo="${deployment.policy.object}" ignoreError="${ignore.error}"
+        inputfile="${import.file}" dpo="${deployment.policy.object}" dpov="${deployment.policy.object.variables}" ignoreError="${ignore.error}"
         dcmdir="${dcm.dir}" workdir="${work.dir}" dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
 
     </sequential>
