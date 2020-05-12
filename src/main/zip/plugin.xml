@@ -1109,6 +1109,9 @@
       <property name="deploymentPolicyObject">
         <property-ui type="textBox" default-value="" label="Deployment policy object name" description="Deployment policy object (already present in the domain) to be applied during import"/>
       </property>
+      <property name="deploymentPolicyObjectVariables">
+        <property-ui type="textBox" default-value="" label="Deployment policy object variable name" description="Deployment policy object variable (already present in the domain) to be applied during import"/>
+      </property>
       <property name="domainName">
         <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the target domain"/>
       </property>
@@ -1163,6 +1166,7 @@
       <arg value="-Denvironment=@environment@"/>
       <arg value="-Dimport.file=@fileImport@"/>
       <arg value="-Ddeployment.policy.object=@deploymentPolicyObject@"/>
+      <arg value="-Ddeployment.policy.object.variables=@deploymentPolicyObjectVariables@"/>
       <arg value="import-dpo"/>
     </command>
   </step-type>

@@ -571,6 +571,14 @@
         <migrate-property name="resetDomains" default="true"/>
       </migrate-properties>
     </migrate-command>
-  </migrate>      
+  </migrate>     
+  
+  <migrate to-version="22">
+    <migrate-command  name="Import (Deployment Policy Object)">
+      <migrate-properties>
+        <migrate-property name="deploymentPolicyObjectVariables" />
+      </migrate-properties>
+    </migrate-command>
+  </migrate>    
 
 </plugin-upgrade>
