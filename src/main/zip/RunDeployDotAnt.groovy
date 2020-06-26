@@ -144,7 +144,7 @@ try
       if (debug) {
         println '%%% arg[' + i + ']=' + arg
       }
-      antargs += arg
+      antargs += arg.trim()
     } else {
       if (debug) {
         println '%%% ignoring arg[' + i + ']=' + arg
