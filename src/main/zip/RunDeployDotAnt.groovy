@@ -40,10 +40,10 @@ try
     def tmpargs = []
     for (int i = 0; i < args.size(); i += 1) {
       if (args[i] == '-D') {
-        tmpargs.add(args[i] + args[i+1])
+        tmpargs.add(args[i]?.trim() + args[i+1]?.trim())
         i += 1
       } else {
-        tmpargs.add(args[i])
+        tmpargs.add(args[i]?.trim())
       }
     }
     args = tmpargs
@@ -62,7 +62,7 @@ try
   def antOpts = envVars['ANT_OPTS']?:""
 
   // Add -Xmx###m if specified
-  def memorySize = props['memorySize']
+  def memorySize = props['memorySize']?.trim()
   if (memorySize != "default") {
       antOpts = antOpts.trim() ? antOpts.trim() + " " : ""
       antOpts += memorySize
@@ -84,14 +84,14 @@ try
   def antargs = [anthome + "bin/" + antexe,
                  '-f', dcmDir + '/deploy.ant.xml',
                  '-Ddcm.dir=' + dcmDir,
-                 '-Dhost=' + props['hostname'],
-                 '-Dport=' + props['portXMI'],
-                 '-Duid=' + props['uid'],
+                 '-Dhost=' + props['hostname']?.trim(),
+                 '-Dport=' + props['portXMI']?.trim(),
+                 '-Duid=' + props['uid']?.trim(),
                  '-Dpwd=' + props['pwd'],
                  '-Dwork.dir=' + ch.getProcessBuilder().directory().getAbsolutePath() + '/tmp']
 
   // Add -Dignore.error if specified
-  def ignoreError = props['ignoreError']
+  def ignoreError = props['ignoreError'].trim()
   if (ignoreError) {
       antargs << "-Dignore.error=" + ignoreError
   }
@@ -99,7 +99,7 @@ try
   // When addlProperties != '' then we pick out one or more mappings from UCD properties
   // to additional ant properties.  For example, crypto.dir=${p:resource/work.dir}${p:component.name}/ucdDemo/crypto
   // will pass -Dcrypto.dir=... to deploy.ant.xml. Multiple properties may be defined, separated by '~' characters.
-  def addlProps = props['addlProperties']
+  def addlProps = props['addlProperties']?.trim()
   if (addlProps.size() > 0) {
     def definitions = addlProps.tokenize('~')
     definitions.each{
@@ -111,7 +111,7 @@ try
         if (debug) {
           println '###   property ' + property[0] + '=' + property[1]
         }
-        antargs += '-D' + property[0] + '=' + property[1]
+        antargs += '-D' + property[0]?.trim() + '=' + property[1]?.trim()
       } else {
         println '!!! Ignoring malformed additional property: ' + it
       }
@@ -144,7 +144,7 @@ try
       if (debug) {
         println '%%% arg[' + i + ']=' + arg
       }
-      antargs += arg.trim()
+      antargs += arg?.trim()
     } else {
       if (debug) {
         println '%%% ignoring arg[' + i + ']=' + arg
