@@ -19,7 +19,7 @@
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <header>
-    <identifier version="22" id="com.ibm.datapower" name="DataPower"/>
+    <identifier version="23" id="com.ibm.datapower" name="DataPower"/>
     <description>The IBM WebSphere DataPower plugin deploys DataPower services.</description>
     <tag>Infrastructure/WebSphere DataPower</tag>
   </header>
@@ -1672,11 +1672,24 @@
 
 
 
-  <step-type name="Upload Directory">
-    <description>Upload a directory</description>
+  <step-type name="Upload Files">
+    <description>Upload files</description>
     <properties>
       <property name="fromDir">
         <property-ui type="textBox" default-value="" label="From directory" description="Source directory"/>
+      </property>
+      <property name="includes" required="true">
+          <property-ui type="textAreaBox"
+                       label="Include Files"
+                       default-value="**/*"
+                       description="A list of patterns, separated by newline characters, that describe the files to upload. The
+                                    default, **/*, includes all files."/>
+      </property>
+      <property name="excludes">
+          <property-ui type="textAreaBox"
+                       label="Exclude Files"
+                       description="A list of patterns, separated by newline characters, that describe the files to skip. For
+                                    example, if you specify **/*.zip, all .zip files in all subdirectories are excluded."/>
       </property>
       <property name="domainName">
         <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the target domain"/>
@@ -1731,6 +1744,8 @@
       <arg value="-Ddomain=@domainName@"/>
       <arg value="-Denvironment=@environment@"/>
       <arg value="-Dupload-dir.from=@fromDir@"/>
+      <arg value="-Dincludes=@includes@"/>
+      <arg value="-Dexcludes=@excludes@"/>
       <arg value="-Dupload-dir.to=@toDir@"/>
       <arg value="upload-dir"/>
     </command>
