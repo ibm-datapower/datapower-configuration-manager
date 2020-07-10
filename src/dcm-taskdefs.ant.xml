@@ -1786,7 +1786,7 @@
         <domain>@{domain}</domain>
         <local>@{inputfile}</local>
         <deployment-policy>@{dpo}</deployment-policy>
-    <deployment-policy-variables>@{dpov}</deployment-policy-variables>
+	<deployment-policy-variables>@{dpov}</deployment-policy-variables>
         <hostname>@{host}</hostname>
         <port>@{port}</port>
         <uid>@{uid}</uid>
