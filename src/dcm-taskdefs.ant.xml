@@ -1760,7 +1760,7 @@
     <attribute name="inputfile"/> <!-- name of DataPower export file -->
     <attribute name="ignoreError" default=""/> <!-- SOMA error to ignore - Note: Can't be empty -->
     <attribute name="dpo"/> <!-- name of deployment policy object -->
-  	<attribute name="dpov"/> <!-- name of deployment policy object variables -->
+    <attribute name="dpov"/> <!-- name of deployment policy object variables -->
     <attribute name="dcmdir"/> <!-- directory where DCM is found -->
     <attribute name="workdir"/> <!-- tmpdir where a directory can be created, if necessary -->
     <attribute name="dumpinput" default="false"/>
