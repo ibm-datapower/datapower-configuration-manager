@@ -69,7 +69,7 @@ Complete list of current DCM target commands. (* = matching plug-in step)
 - __download-files__* - Download target files or all files from a filestore
 
 - __export-object__* - export an object i.e. service
-- __export-objects__ - export objects based on a dcm:definition file
+- __export-objects__* - export objects based on a dcm:definition file
 
 - __firmware-rollback__ - Rollback to the previous firmware (and filesystem contents!)
 - __firmware-update__   - Update to a new level of firmware
