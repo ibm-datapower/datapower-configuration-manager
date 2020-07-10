@@ -579,6 +579,26 @@
         <migrate-property name="deploymentPolicyObjectVariables" />
       </migrate-properties>
     </migrate-command>
-  </migrate>    
+  </migrate>
+  
+  <migrate to-version="23">
+    <migrate-command  name="Export Objects">
+      <migrate-properties>
+        <migrate-property name="domainName" default="${p:dpDomainName}"/>
+        <migrate-property name="definitionFile" default=""/>
+        <migrate-property name="refObjects" default=""/>
+        <migrate-property name="refFiles" default=""/>
+        <migrate-property name="allFiles" default=""/>
+        <migrate-property name="exportFile" default=""/>
+        <migrate-property name="hostname" default="${p:dpHostname}"/>
+        <migrate-property name="uid" default="${p:dpUserid}"/>
+        <migrate-property name="pwd" default="${p:dpPassword}"/>
+        <migrate-property name="portXMI" default="${p:dpXMIPort}"/>
+        <migrate-property name="addlProperties" default=""/>
+        <migrate-property name="memorySize" default="default"/>
+      </migrate-properties>
+    </migrate-command>
+  </migrate>
+  
 
 </plugin-upgrade>
