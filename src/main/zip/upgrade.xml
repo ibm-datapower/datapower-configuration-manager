@@ -584,7 +584,7 @@
     <migrate to-version="23">
     <migrate-command  name="Upload Files">
       <migrate-properties>
-        <migrate-property name="includes" />
+        <migrate-property name="includes" default="**/*"/>
         <migrate-property name="excludes" />
       </migrate-properties>
     </migrate-command>
