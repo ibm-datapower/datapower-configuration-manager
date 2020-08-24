@@ -809,8 +809,8 @@
 
       <forxpath inprop="files" xpath="/downloadFiles/file" propname="filename">
         <sequential>
-          <dirname property="dirpath" file="@{local}@{filename}"/>
-          <mkdir dir="${dirpath}"/>
+          <dirname property="dirpath@{filename}" file="@{local}@{filename}"/>
+          <mkdir dir="${dirpath@{filename}}"/>
 
           <echo>Downloading @{filestore}@{filename} to @{local}@{filename}</echo>
           <wdp operation="GetFile" dumpinput="@{dumpinput}" dumpoutput="@{dumpoutput}" capturesoma="@{capturesoma}">
