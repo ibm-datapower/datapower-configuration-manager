@@ -18,6 +18,7 @@
 package com.ibm.dcm;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Vector;
@@ -280,7 +281,13 @@ public class taskDpupload extends MatchingTask {
     }
 
 //    System.out.println();
-
+    
+    String[] includes = findArg("includes").trim().split(",|\n");
+    String[] excludes = findArg("excludes").trim().split(",|\n");
+    
+    dirScanner.setIncludes(includes);
+    dirScanner.setExcludes(excludes);
+    
     // Upload the files in the FileSet.
     String[] files = dirScanner.getIncludedFiles();
     String path = dirScanner.getBasedir().getAbsolutePath();

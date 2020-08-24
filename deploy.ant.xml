@@ -1389,8 +1389,9 @@
     <fail message="The Ant property 'domain' is required but not defined.  This is the name of a domain on the DataPower device." unless="domain"/>
     <fail message="The Ant property 'upload-dir.from' is required but not defined.  This is the directory in the local filesystem to upload from (e.g. c:\abc or /home/xxx/abc)." unless="upload-dir.from"/>
     <fail message="The Ant property 'upload-dir.to' is required but not defined.  This is the fully qualified directory on DataPower to upload to (e.g. cert:/// or local:///abc)." unless="upload-dir.to"/>
-
-    <dpupload dir="${upload-dir.from}" target="${upload-dir.to}" domain="${domain}"
+  	<fail message="The Ant property 'includes' is required but not defined.  A list of patterns, separated by newline characters, that describe the files to upload. The default, **/*, includes all files." unless="includes"/>
+  	
+    <dpupload dir="${upload-dir.from}" includes="${includes}" excludes="${excludes}" target="${upload-dir.to}" domain="${domain}"
       host="${host}" port="${port}" uid="${uid}" pwd="${pwd}"
       dumpinput="${dumpinput}" dumpoutput="${dumpoutput}" capturesoma="${capturesoma}"/>
 
