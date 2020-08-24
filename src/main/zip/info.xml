@@ -185,7 +185,7 @@
         RFE 142129 - Added Deployment-Policy-variables field to the Import (Deployment Policy Object) step.
     </release-note>
     <release-note plugin-version="23">
-        RFE 143590  - The Download Files step now supports downloading files from multiple directories.
+        RFE 143590  - The "Download Files" step now supports downloading files from multiple directories.
     </release-note>    
   </release-notes>
 </pluginInfo>
