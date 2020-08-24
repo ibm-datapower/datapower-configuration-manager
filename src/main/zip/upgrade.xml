@@ -581,13 +581,13 @@
     </migrate-command>
   </migrate>
   
-    <migrate to-version="23">
+  <migrate to-version="23">
     <migrate-command  name="Upload Files">
       <migrate-properties>
         <migrate-property name="includes" default="**/*"/>
         <migrate-property name="excludes" />
       </migrate-properties>
     </migrate-command>
+    <migrate-command  name="Export Objects"/>
   </migrate>
-
 </plugin-upgrade>

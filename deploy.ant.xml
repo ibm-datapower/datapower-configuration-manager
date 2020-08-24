@@ -46,7 +46,7 @@
   download-files* - Download target files or all files from a filestore
 
   export-object* - export an object i.e. service
-  export-objects - export objects based on a dcm:definition file
+  export-objects* - export objects based on a dcm:definition file
 
   firmware-rollback - Rollback to the previous firmware (and filesystem contents!)
   firmware-update   - Update to a new level of firmware
