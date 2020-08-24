@@ -579,7 +579,7 @@
         <migrate-property name="deploymentPolicyObjectVariables" />
       </migrate-properties>
     </migrate-command>
-  </migrate>
+  </migrate> 
   
   <migrate to-version="23">
     <migrate-command  name="Upload Files">

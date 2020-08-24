@@ -185,9 +185,10 @@
         RFE 142129 - Added Deployment-Policy-variables field to the Import (Deployment Policy Object) step.
     </release-note>
     <release-note plugin-version="23">
+        Fixes APAR PH26875 - Removing spaces around the plugin property values.
         RFE 143590 - The "Download Files" step now supports downloading files from multiple directories.
         RFE 142311 - Modified "Upload Directory" to support file Include and Exclude options.
         RFE 142314 - Added new Export Objects steps that enables the export of one or more objects.
-    </release-note>    
+    </release-note>
   </release-notes>
 </pluginInfo>
