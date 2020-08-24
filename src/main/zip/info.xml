@@ -184,5 +184,8 @@
     <release-note plugin-version="22">
         RFE 142129 - Added Deployment-Policy-variables field to the Import (Deployment Policy Object) step.
     </release-note>
+    <release-note plugin-version="23">
+        RFE-142311 - Modified "Upload Directory" to support upload selected files also.
+    </release-note>   
   </release-notes>
 </pluginInfo>
