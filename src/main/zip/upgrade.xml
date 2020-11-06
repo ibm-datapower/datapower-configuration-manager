@@ -590,4 +590,8 @@
     </migrate-command>
     <migrate-command  name="Export Objects"/>
   </migrate>
+        
+  <migrate to-version="24">
+  </migrate>
+        
 </plugin-upgrade>
