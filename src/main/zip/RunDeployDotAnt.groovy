@@ -91,7 +91,7 @@ try
                  '-Dwork.dir=' + ch.getProcessBuilder().directory().getAbsolutePath() + '/tmp']
 
   // Add -Dignore.error if specified
-  def ignoreError = props['ignoreError'].trim()
+  def ignoreError = props['ignoreError']?.trim()
   if (ignoreError) {
       antargs << "-Dignore.error=" + ignoreError
   }
