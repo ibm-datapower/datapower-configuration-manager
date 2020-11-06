@@ -190,5 +190,8 @@
         RFE 142311 - Modified "Upload Directory" to support file Include and Exclude options.
         RFE 142314 - Added new Export Objects steps that enables the export of one or more objects.
     </release-note>
+    <release-note plugin-version="24">
+        PR #109 - Steps fail with null pointer exception!
+    </release-note>
   </release-notes>
 </pluginInfo>
