@@ -554,7 +554,17 @@
               <xsl:value-of select="'Full'"/>
             </xsl:element>
             <xsl:element name="SSLClientConfigType">
-              <xsl:value-of select="'client'"/>
+              <xsl:choose>
+                <xsl:when test="$checks/@ssl-client != ''">
+                   <xsl:value-of select="'client'"/>
+                </xsl:when>
+                <xsl:when test="$checks/@ssl-proxy-profile != ''">
+                   <xsl:value-of select="'proxy'"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="'client'"/>
+                </xsl:otherwise>
+              </xsl:choose>
             </xsl:element>
     	    <xsl:element name="SSLClient">
               <xsl:if test="$checks/@ssl-client != ''">
