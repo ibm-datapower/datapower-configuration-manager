@@ -1240,7 +1240,7 @@
       <arg value="-Denvironment=@environment@"/>
       <arg value="-Dimport.file=@fileImport@"/>
       <arg value="-Ddeployment.policy.object=@deploymentPolicyObject@"/>
-      <arg value="-Ddeployment.policy.object.variables=@deploymentPolicyObjectVariables@"/>
+      <!-- <arg value="-Ddeployment.policy.object.variables=@deploymentPolicyObjectVariables@"/> -->
       <arg value="import-dpo"/>
     </command>
   </step-type>
