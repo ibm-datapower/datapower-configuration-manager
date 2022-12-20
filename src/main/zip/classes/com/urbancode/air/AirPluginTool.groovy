@@ -25,7 +25,7 @@ public class AirPluginTool {
     // INSTANCE
     //**************************************************************************
     
-    final public def isWindows = (System.getProperty('os.name') =~ /(?i)windows/).find()
+    public def isWindows = (System.getProperty('os.name') =~ /(?i)windows/).find()
 
     def out = System.out;
     def err = System.err;
@@ -43,8 +43,8 @@ public class AirPluginTool {
 
     public Properties getStepProperties() {
         def props = new Properties();
-        final def inputPropsFile = this.inPropsFile;
-        final def inputPropsStream = null;
+        def inputPropsFile = this.inPropsFile;
+        def inputPropsStream = null;
         try {
             inputPropsStream = new FileInputStream(inputPropsFile);
             props.load(inputPropsStream);
@@ -63,7 +63,7 @@ public class AirPluginTool {
     }
 
     public void setOutputProperties() {
-        final OutputStream outputPropsStream = null;
+        OutputStream outputPropsStream = null;
         try {
             outputPropsStream = new FileOutputStream(this.outPropsFile);
             outProps.store(outputPropsStream, "");
