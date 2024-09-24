@@ -18,7 +18,7 @@ jobs:
       - name: Set up JDK 8
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin' # Can be changed to a different JDK distribution
+          distribution: 'temurin' # You can change this to another JDK distribution if needed
           java-version: '8'
 
       - name: Install Apache Ant 1.9.9
@@ -26,7 +26,7 @@ jobs:
           wget https://archive.apache.org/dist/ant/binaries/apache-ant-1.9.9-bin.zip
           unzip apache-ant-1.9.9-bin.zip
           sudo mv apache-ant-1.9.9 /usr/local/ant
-          echo "export PATH=$PATH:/usr/local/ant/bin" >> $GITHUB_ENV
+          echo "export PATH=\$PATH:/usr/local/ant/bin" >> $GITHUB_ENV
 
       - name: Verify Ant installation
         run: ant -version
@@ -47,32 +47,33 @@ jobs:
             dist/datapower-v*.zip
             dist/dcm.jar
 
-release:
-  runs-on: ubuntu-20.04
-  needs: build
+  release:
+    runs-on: ubuntu-20.04
+    needs: build # Release job depends on successful completion of build job
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Create GitHub release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref_name }} # Use the tag name directly
-        release_name: "Release ${{ github.ref_name }}" # Use the tag name for the release
-        body: |
-          Release notes for ${{ github.ref_name }}.
-          - Plugin version: ${{ env.VERSION }}
-        draft: false
-        prerelease: false
+      - name: Create GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }} # Use the tag name directly
+          release_name: "Release ${{ github.ref_name }}" # Use the tag name for the release
+          body: |
+            Release notes for ${{ github.ref_name }}.
+            - Plugin version: ${{ env.VERSION }}
+          draft: false
+          prerelease: false
 
-    - name: Upload release assets
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: dist/datapower-v${{ env.VERSION }}.zip
-        asset
+      - name: Upload release assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: dist/datapower-v${{ env.VERSION }}.zip
+          asset_name: datapower-v${{ env.VERSION }}.zip
+          asset_content_type: application/zip
