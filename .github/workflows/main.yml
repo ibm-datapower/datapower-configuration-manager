@@ -25,9 +25,13 @@ jobs:
           distribution: 'temurin'  # Use Eclipse Temurin distribution
           java-version: ${{ matrix.jdk }} # Set Java version (8 or 7)
       
-      - name: Set up Ant
-        run: |
-          sudo apt-get install ant
+      - name: Update system packages
+        run: sudo apt-get update
+
+      # Remove the Ant installation step because Ant is already installed
+      
+      - name: Verify Ant installation (optional)
+        run: ant -version
       
       - name: Build the project
         env:
