@@ -12,17 +12,18 @@ jobs:
     strategy:
       matrix:
         jdk: 
-          - oraclejdk8
-          - openjdk7
-    
+          - 8   # Use JDK 8
+          - 7   # Use JDK 7
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
       
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
-          java-version: ${{ matrix.jdk }}
+          distribution: 'temurin'  # Use Eclipse Temurin distribution
+          java-version: ${{ matrix.jdk }} # Set Java version (8 or 7)
       
       - name: Set up Ant
         run: |
@@ -35,7 +36,7 @@ jobs:
           ant -Dplugin.version=${VERSION}
           
       - name: Archive artifacts
-        uses: actions/upload-artifact@v3  # Updated to v3
+        uses: actions/upload-artifact@v3
         with:
           name: artifacts
           path: |
@@ -49,7 +50,7 @@ jobs:
 
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v3  # Updated to v3
+        uses: actions/download-artifact@v3
         with:
           name: artifacts
           
