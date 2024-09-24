@@ -1,20 +1,7 @@
-name: CI
-
-on:
-  push:
-    branches:
-      - actions   # Trigger only when pushing to the 'actions' branch
-
 jobs:
   build:
-    runs-on: ubuntu-20.04 # Use the Ubuntu 20.04 runner
+    runs-on: ubuntu-20.04
     
-    strategy:
-      matrix:
-        jdk: 
-          - 8   # Use JDK 8
-          - 7   # Use JDK 7
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -22,21 +9,21 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'  # Use Eclipse Temurin distribution
-          java-version: ${{ matrix.jdk }} # Set Java version (8 or 7)
-      
+          distribution: 'temurin'
+          java-version: '8'
 
-      # Remove the Ant installation step because Ant is already installed
-      
-      - name: Verify Ant installation (optional)
-        run: ant -version
+      - name: Install Apache Ant 1.9.9
+        run: |
+          wget https://archive.apache.org/dist/ant/binaries/apache-ant-1.9.9-bin.zip
+          unzip apache-ant-1.9.9-bin.zip
+          sudo mv apache-ant-1.9.9 /usr/local/ant
+          export PATH=$PATH:/usr/local/ant/bin
       
       - name: Build the project
         env:
           VERSION: ${{ github.ref }}.${{ github.sha }}
-        run: |
-          ant -Dplugin.version=${VERSION}
-          
+        run: ant -Dplugin.version=${VERSION}
+
       - name: Archive artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -44,24 +31,3 @@ jobs:
           path: |
             dist/datapower-v*.zip
             dist/dcm.jar
-
-  deploy:
-    runs-on: ubuntu-20.04
-    needs: build
-    if: github.ref_type == 'tag' # Only deploy on tag push
-
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: artifacts
-          
-      - name: Deploy to GitHub Releases
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ github.ref }}
-          files: |
-            dist/datapower-v*.zip
-            dist/dcm.jar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
