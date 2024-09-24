@@ -50,8 +50,10 @@ jobs:
           for file in dist/*.{zip,jar}; do
             if [ -f "$file" ]; then
               echo "Uploading $file"
-              # Correct the upload URL formatting
+              # Correctly format the upload URL
               upload_url="${{ steps.create_release.outputs.upload_url }}?name=$(basename "$file")"
+              
+              # Upload the file using curl
               curl -X POST \
                 -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
                 -H "Content-Type: application/octet-stream" \
