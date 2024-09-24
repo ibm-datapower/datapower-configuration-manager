@@ -43,18 +43,17 @@ jobs:
 
       - name: Upload release assets
         run: |
-          for file in dist/*.zip; do
+          echo "Listing files in the dist directory:"
+          ls -l dist # List files to be uploaded
+          
+          # Loop through each ZIP and JAR file in the dist directory and upload them
+          for file in dist/*.{zip,jar}; do
             if [ -f "$file" ]; then
               echo "Uploading $file"
               curl -X POST \
                 -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                -H "Content-Type: application/zip" \
+                -H "Content-Type: application/octet-stream" \
                 --data-binary @"$file" \
-                "${{ steps.create_release.outputs.upload_url }}&name=$(basename "$file")"
-              
-              # Check if upload was successful
-              if [ $? -ne 0 ]; then
-                echo "Failed to upload $file"
-              fi
+                "${{ steps.create_release.outputs.upload_url }}?name=$(basename "$file")" || echo "Failed to upload $file"
             fi
           done
