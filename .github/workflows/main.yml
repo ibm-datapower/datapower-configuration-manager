@@ -28,8 +28,13 @@ jobs:
       - name: Archive artifacts
         run: |
           mkdir -p dist
-          cp dist/datapower-v*.zip dist/
-          cp dist/dcm.jar dist/
+          # Check if the file exists before copying
+          if [ -f dist/datapower-v*.zip ]; then
+            cp dist/datapower-v*.zip dist/
+          fi
+          if [ -f dist/dcm.jar ]; then
+            cp dist/dcm.jar dist/
+          fi
 
       - name: Extract Plugin Version
         id: extract_version
