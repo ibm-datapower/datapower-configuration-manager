@@ -3118,8 +3118,8 @@ public class Soma {
       body += " deployment-policy=\"\"";
     if (params.get("deployment-policy-variables") != null)
         body += " deployment-policy-variables=\"" + params.get("deployment-policy-variables") + "\"";
-    else
-        body += " deployment-policy-variables=\"\"";
+    // else
+    //     body += " deployment-policy-variables=\"\"";
     body += ">";
     body += "<soma:input-file>" + Base64.base64FromBinaryFile(params.get("local")) + "</soma:input-file>";
     

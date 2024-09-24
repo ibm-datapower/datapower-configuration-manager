@@ -19,7 +19,7 @@
 <plugin xmlns="http://www.urbancode.com/PluginXMLSchema_v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <header>
-    <identifier version="24" id="com.ibm.datapower" name="DataPower"/>
+    <identifier version="26" id="com.ibm.datapower" name="DataPower"/>
     <description>The IBM WebSphere DataPower plugin deploys DataPower services.</description>
     <tag>Infrastructure/WebSphere DataPower</tag>
   </header>
@@ -1240,7 +1240,7 @@
       <arg value="-Denvironment=@environment@"/>
       <arg value="-Dimport.file=@fileImport@"/>
       <arg value="-Ddeployment.policy.object=@deploymentPolicyObject@"/>
-      <arg value="-Ddeployment.policy.object.variables=@deploymentPolicyObjectVariables@"/>
+      <!-- <arg value="-Ddeployment.policy.object.variables=@deploymentPolicyObjectVariables@"/> -->
       <arg value="import-dpo"/>
     </command>
   </step-type>
@@ -1825,7 +1825,84 @@
     </command>
   </step-type>
 
-
+  <step-type name="Upload Diectory">
+    <description>Upload directories</description>
+    <properties>
+      <property name="fromDir">
+        <property-ui type="textBox" default-value="" label="From directory" description="Source directory"/>
+      </property>
+      <property name="includes" required="true">
+          <property-ui type="textAreaBox"
+                       label="Include Files"
+                       default-value="**/*"
+                       description="A list of patterns, separated by newline characters, that describe the files to upload. The
+                                    default, **/*, includes all files."/>
+      </property>
+      <property name="excludes">
+          <property-ui type="textAreaBox"
+                       label="Exclude Files"
+                       description="A list of patterns, separated by newline characters, that describe the files to skip. For
+                                    example, if you specify **/*.zip, all .zip files in all subdirectories are excluded."/>
+      </property>
+      <property name="domainName">
+        <property-ui type="textBox" default-value="${p:dpDomainName}" label="Domain name" description="Name of the target domain"/>
+      </property>
+      <property name="toDir">
+        <property-ui type="textBox" default-value="local:///" label="To directory" description="Target directory"/>
+      </property>
+      <property name="hostname">
+        <property-ui type="textBox" default-value="${p:dpHostname}" label="DataPower hostname/IP" description="Hostname or IP address of DataPower appliance" hidden="true"/>
+      </property>
+      <property name="uid">
+        <property-ui type="textBox" default-value="${p:dpUserid}" label="DataPower userid" description="Userid on DataPower appliance" hidden="true"/>
+      </property>
+      <property name="pwd">
+        <property-ui type="secureBox" default-value="${p:dpPassword}" label="DataPower password" description="Password for userid on DataPower appliance" hidden="true"/>
+      </property>
+      <property name="portXMI">
+        <property-ui type="textBox" default-value="${p:dpXMIPort}" label="DataPower XMI port" description="XML Management Interface port on DataPower appliance (usually 5550)" hidden="true"/>
+      </property>
+      <property name="environment">
+        <property-ui type="textBox" default-value="${p:environment.name}" label="Target Environment" description="Target environment (e.g. dev, sit, uat, prod)" hidden="true"/>
+      </property>
+      <property name="addlProperties">
+        <property-ui type="textBox" default-value="" label="Additional Properties" description="Additional property mappings - antpropname=...[ '~' more definitions ]" hidden="true"/>
+      </property>
+      <property name="memorySize">
+        <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
+          <value label="Default">default</value>
+          <value label="-Xmx256m">-Xmx256m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx1024m">-Xmx1024m</value>
+          <value label="-Xmx2048m">-Xmx2048m</value>
+          <value label="-Xmx4096m">-Xmx4096m</value>
+          <value label="${p?:environment/memorySize}">${p?:environment/memorySize}</value>
+          <value label="${p?:resource/memorySize}">${p?:resource/memorySize}</value>
+      </property>
+    </properties>
+    <post-processing><![CDATA[
+    if (properties.get("exitCode") != 0) {
+            properties.put(new java.lang.String("Status"), new java.lang.String("Failure"));
+        }
+        else {
+            properties.put("Status", "Success");
+        }
+     ]]></post-processing>
+    <command program="${GROOVY_HOME}/bin/groovy">
+      <arg value="-cp"/>
+      <arg file="classes"/>
+      <arg file="RunDeployDotAnt.groovy"/>
+      <arg file="${PLUGIN_INPUT_PROPS}"/>
+      <arg file="${PLUGIN_OUTPUT_PROPS}"/>
+      <arg value="-Ddomain=@domainName@"/>
+      <arg value="-Denvironment=@environment@"/>
+      <arg value="-Dupload-dir.from=@fromDir@"/>
+      <arg value="-Dincludes=@includes@"/>
+      <arg value="-Dexcludes=@excludes@"/>
+      <arg value="-Dupload-dir.to=@toDir@"/>
+      <arg value="upload-dir"/>
+    </command>
+  </step-type>
 
   <step-type name="Upload from Definition">
     <description>Create/overwrite files/directories based on a definition file</description>

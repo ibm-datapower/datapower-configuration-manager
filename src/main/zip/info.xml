@@ -193,5 +193,12 @@
     <release-note plugin-version="24">
         PR #109 - Steps fail with null pointer exception!
     </release-note>
+    <release-note plugin-version="25">
+        Fixed groovy3 compatibility issue.
+        Property “Deployment policy object variable name” made optional as some users face issue due to this.
+    </release-note>
+    <release-note plugin-version="26">
+        Added "upload directory" step a a duplicate step to "upload files" to avoid confusion for a users.
+    </release-note>
   </release-notes>
 </pluginInfo>
