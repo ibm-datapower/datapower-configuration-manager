@@ -47,33 +47,32 @@ jobs:
             dist/datapower-v*.zip
             dist/dcm.jar
 
-  release:
-    runs-on: ubuntu-20.04
-    needs: build # Release job depends on successful completion of build job
+release:
+  runs-on: ubuntu-20.04
+  needs: build
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Create GitHub release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }} # Uses the tag that triggered the workflow
-          release_name: "Release ${{ github.ref }}" # Give the release a name based on the tag
-          body: |
-            Release notes for ${{ github.ref }}.
-            - Plugin version: ${{ env.VERSION }}
-          draft: false
-          prerelease: false
+    - name: Create GitHub release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }} # Use the tag name directly
+        release_name: "Release ${{ github.ref_name }}" # Use the tag name for the release
+        body: |
+          Release notes for ${{ github.ref_name }}.
+          - Plugin version: ${{ env.VERSION }}
+        draft: false
+        prerelease: false
 
-      - name: Upload release assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: dist/datapower-v${{ env.VERSION }}.zip
-          asset_name: datapower-v${{ env.VERSION }}.zip
-          asset_content_type: application/zip
+    - name: Upload release assets
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        asset_path: dist/datapower-v${{ env.VERSION }}.zip
+        asset
