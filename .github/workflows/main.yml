@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - actions # This workflow will be triggered only for pushes to the "actions" branch
+      - actions # Trigger on pushes to the "actions" branch
 
 jobs:
   build:
@@ -16,7 +16,8 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          java-version: '8' # Use the appropriate JDK version
+          java-version: '8' # JDK version
+          distribution: 'adopt' # Set the Java distribution
 
       - name: Install Ant
         run: sudo apt-get install -y ant
