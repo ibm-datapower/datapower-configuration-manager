@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - actions # Trigger this workflow on pushes to the "actions" branch
+      - master # Trigger this workflow on pushes to the "master" branch
 
 jobs:
   build_and_release:
