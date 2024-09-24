@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - actions # Trigger this workflow on pushes to the "actions" branch
+
+jobs:
+  build_and_release:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8' # Use the appropriate JDK version
+          distribution: 'adopt' # Set the Java distribution
+
+      - name: Install Ant
+        run: sudo apt-get install -y ant
+
+      - name: Build the project
+        run: ant -Dskip.chkpii=y # Run the specified Ant command
+
+      - name: List files in dist directory
+        run: ls -l dist # Debugging step to list files
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: Datapower25
+          files: |
+            dist/*.zip
+            dist/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
