@@ -28,15 +28,6 @@ jobs:
       - name: List files in dist directory
         run: ls -l dist # Debugging step to list files
 
-      - name: Extract Plugin Version from ZIP
-        id: extract_version
-        run: |
-          # Unzip the plugin ZIP file to a temporary directory
-          unzip dist/datapower-v*.zip -d temp_dir
-          # Extract version from the filename or content
-          VERSION=$(basename dist/datapower-v*.zip | sed 's/datapower-v-\(.*\)\.zip/\1/')
-          echo "PLUGIN_VERSION=$VERSION" >> $GITHUB_ENV # Set the version as an environment variable
-
       - name: Create GitHub release
         id: create_release
         uses: actions/create-release@v1
@@ -44,19 +35,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: "actions-${{ github.sha }}" # Tag name format
-          release_name: "Plugin version: ${{ env.PLUGIN_VERSION }}" # Release name format
+          release_name: "Release for actions-${{ github.sha }}" # Release name format
           body: |
             Release notes for actions-${{ github.sha }}.
-            - Plugin version: ${{ env.PLUGIN_VERSION }}
           draft: false
           prerelease: false
 
       - name: Upload release assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/datapower-v-${{ env.PLUGIN_VERSION }}.zip # Use the versioned file
-          asset_name: datapower-v.zip # Name of the asset
-          asset_content_type: application/zip
+        run: |
+          for file in dist/*.zip; do
+            if [ -f "$file" ]; then
+              echo "Uploading $file"
+              curl -X POST \
+                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Content-Type: application/zip" \
+                --data-binary @"$file" \
+                "${{ steps.create_release.outputs.upload_url }}&name=$(basename "$file")"
+            fi
+          done
