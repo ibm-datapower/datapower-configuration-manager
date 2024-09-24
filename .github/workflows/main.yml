@@ -25,12 +25,12 @@ jobs:
       - name: Build the project
         run: ant -Dskip.chkpii=y # Run the specified Ant command
 
-      - name: Extract Plugin Version
+      - name: Extract Plugin Version from ZIP
         id: extract_version
         run: |
-          PLUGIN_VERSION=$(grep -oPm1 "(?<=<version>)[^<]+" src/main/plugin.xml)
-          echo "PLUGIN_VERSION=${PLUGIN_VERSION}" >> $GITHUB_ENV
-
+          # Unzip the plugin ZIP file to a temporary directory
+          unzip dist/datapower-v*.zip -d temp_dir
+  
   release:
     runs-on: ubuntu-20.04
     needs: build # Release job depends on the successful completion of the build job
