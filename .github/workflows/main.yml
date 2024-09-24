@@ -1,15 +1,24 @@
+name: Build DCM Project and Create Release
+
+on:
+  push:
+    branches:
+      - actions # Triggers on push to the 'actions' branch
+    tags:
+      - '*' # Triggers on any tag creation (for release)
+
 jobs:
   build:
     runs-on: ubuntu-20.04
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
-      - name: Set up JDK
+
+      - name: Set up JDK 8
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
+          distribution: 'temurin' # Can be changed to a different JDK distribution
           java-version: '8'
 
       - name: Install Apache Ant 1.9.9
@@ -17,12 +26,18 @@ jobs:
           wget https://archive.apache.org/dist/ant/binaries/apache-ant-1.9.9-bin.zip
           unzip apache-ant-1.9.9-bin.zip
           sudo mv apache-ant-1.9.9 /usr/local/ant
-          export PATH=$PATH:/usr/local/ant/bin
-      
+          echo "export PATH=$PATH:/usr/local/ant/bin" >> $GITHUB_ENV
+
+      - name: Verify Ant installation
+        run: ant -version
+
+      - name: Set build version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}.${GITHUB_SHA:0:7}" >> $GITHUB_ENV
+
       - name: Build the project
         env:
-          VERSION: ${{ github.ref }}.${{ github.sha }}
-        run: ant -Dplugin.version=${VERSION}
+          VERSION: ${{ env.VERSION }}
+        run: ant -Dplugin.version=${{ env.VERSION }}
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v3
@@ -31,3 +46,34 @@ jobs:
           path: |
             dist/datapower-v*.zip
             dist/dcm.jar
+
+  release:
+    runs-on: ubuntu-20.04
+    needs: build # Release job depends on successful completion of build job
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create GitHub release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }} # Uses the tag that triggered the workflow
+          release_name: "Release ${{ github.ref }}" # Give the release a name based on the tag
+          body: |
+            Release notes for ${{ github.ref }}.
+            - Plugin version: ${{ env.VERSION }}
+          draft: false
+          prerelease: false
+
+      - name: Upload release assets
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: dist/datapower-v${{ env.VERSION }}.zip
+          asset_name: datapower-v${{ env.VERSION }}.zip
+          asset_content_type: application/zip
