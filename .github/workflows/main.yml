@@ -1,11 +1,9 @@
-name: Build DCM Project and Create Release
+name: CI
 
 on:
   push:
     branches:
-      - actions # Triggers on push to the 'actions' branch
-    tags:
-      - '*' # Triggers on any tag creation (for release)
+      - actions # Trigger this workflow on pushes to the "actions" branch
 
 jobs:
   build:
@@ -15,40 +13,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up JDK 8
+      - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin' # You can change this to another JDK distribution if needed
-          java-version: '8'
+          java-version: '8' # Use the appropriate JDK version
+          distribution: 'adopt' # Set the Java distribution
 
-      - name: Install Apache Ant 1.9.9
-        run: |
-          wget https://archive.apache.org/dist/ant/binaries/apache-ant-1.9.9-bin.zip
-          unzip apache-ant-1.9.9-bin.zip
-          sudo mv apache-ant-1.9.9 /usr/local/ant
-          echo "export PATH=\$PATH:/usr/local/ant/bin" >> $GITHUB_ENV
-      - name: Verify Ant installation
-        run: ant -version
-
-      - name: Set build version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}.${GITHUB_SHA:0:7}" >> $GITHUB_ENV
+      - name: Install Ant
+        run: sudo apt-get install -y ant
 
       - name: Build the project
-        env:
-          VERSION: ${{ env.VERSION }}
-        run: ant -Dplugin.version=${{ env.VERSION }}
+        run: ant -Dskip.chkpii=y # Run the specified Ant command
 
       - name: Archive artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: artifacts
-          path: |
-            dist/datapower-v*.zip
-            dist/dcm.jar
+        run: |
+          mkdir -p dist
+          cp dist/datapower-v*.zip dist/
+          cp dist/dcm.jar dist/
+
+      - name: Extract Plugin Version
+        id: extract_version
+        run: |
+          PLUGIN_VERSION=$(grep -oPm1 "(?<=<version>)[^<]+" src/main/plugin.xml)
+          echo "PLUGIN_VERSION=${PLUGIN_VERSION}" >> $GITHUB_ENV
 
   release:
     runs-on: ubuntu-20.04
-    needs: build # Release job depends on successful completion of the build job
+    needs: build # Release job depends on the successful completion of the build job
 
     steps:
       - name: Checkout code
@@ -61,10 +52,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: "actions-${{ github.sha }}" # Tag name format
-          release_name: "Plugin version: ${{ github.sha }}" # Release name format
+          release_name: "Plugin version: ${{ env.PLUGIN_VERSION }}" # Release name format
           body: |
             Release notes for actions-${{ github.sha }}.
-            - Plugin version: ${{ github.sha }}
+            - Plugin version: ${{ env.PLUGIN_VERSION }}
           draft: false
           prerelease: false
 
