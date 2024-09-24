@@ -50,10 +50,12 @@ jobs:
           for file in dist/*.{zip,jar}; do
             if [ -f "$file" ]; then
               echo "Uploading $file"
+              # Correct the upload URL formatting
+              upload_url="${{ steps.create_release.outputs.upload_url }}?name=$(basename "$file")"
               curl -X POST \
                 -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
                 -H "Content-Type: application/octet-stream" \
                 --data-binary @"$file" \
-                "${{ steps.create_release.outputs.upload_url }}?name=$(basename "$file")" || echo "Failed to upload $file"
+                "$upload_url" || echo "Failed to upload $file"
             fi
           done
