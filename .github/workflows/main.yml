@@ -31,7 +31,10 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: myTag
-          files: "dist/*.zip"
+          tag_name: Datapower25
+          files: |
+            dist/*.zip
+            dist/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
