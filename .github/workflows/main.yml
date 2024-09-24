@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - actions   # Trigger only when pushing to the 'actions' branch
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04 # Use the Ubuntu 20.04 runner
+    
+    strategy:
+      matrix:
+        jdk: 
+          - oraclejdk8
+          - openjdk7
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: ${{ matrix.jdk }}
+      
+      - name: Set up Ant
+        run: |
+          sudo apt-get install ant
+      
+      - name: Build the project
+        env:
+          VERSION: ${{ github.ref }}.${{ github.sha }}
+        run: |
+          ant -Dplugin.version=${VERSION}
+          
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifacts
+          path: |
+            dist/datapower-v*.zip
+            dist/dcm.jar
+
+  deploy:
+    runs-on: ubuntu-20.04
+    needs: build
+    if: github.ref_type == 'tag' # Only deploy on tag push
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: artifacts
+          
+      - name: Deploy to GitHub Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          files: |
+            dist/datapower-v*.zip
+            dist/dcm.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
