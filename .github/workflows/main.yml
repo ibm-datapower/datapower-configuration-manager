@@ -35,7 +35,7 @@ jobs:
           ant -Dplugin.version=${VERSION}
           
       - name: Archive artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3  # Updated to v3
         with:
           name: artifacts
           path: |
@@ -49,7 +49,7 @@ jobs:
 
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3  # Updated to v3
         with:
           name: artifacts
           
