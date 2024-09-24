@@ -28,36 +28,10 @@ jobs:
       - name: List files in dist directory
         run: ls -l dist # Debugging step to list files
 
-      - name: Create GitHub release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: myTag
+          files: "dist/*.zip"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: "actions-${{ github.sha }}" # Tag name format
-          release_name: "Release for actions-${{ github.sha }}" # Release name format
-          body: |
-            Release notes for actions-${{ github.sha }}.
-          draft: false
-          prerelease: false
-
-      - name: Upload release assets
-        run: |
-          echo "Listing files in the dist directory:"
-          ls -l dist # List files to be uploaded
-          
-          # Loop through each ZIP and JAR file in the dist directory and upload them
-          for file in dist/*.{zip,jar}; do
-            if [ -f "$file" ]; then
-              echo "Uploading $file"
-              # Correctly format the upload URL
-              upload_url="${{ steps.create_release.outputs.upload_url }}?name=$(basename "$file")"
-              
-              # Upload the file using curl
-              curl -X POST \
-                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                -H "Content-Type: application/octet-stream" \
-                --data-binary @"$file" \
-                "$upload_url" || echo "Failed to upload $file"
-            fi
-          done
