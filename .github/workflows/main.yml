@@ -50,6 +50,7 @@ jobs:
                 -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
                 -H "Content-Type: application/zip" \
                 --data-binary @"$file" \
-                "${{ steps.create_release.outputs.upload_url }}&name=$(basename "$file")"
+                "${{ steps.create_release.outputs.upload_url }}&name=$(basename "$file")" \
+                || echo "Failed to upload $file" # Added error handling
             fi
           done
