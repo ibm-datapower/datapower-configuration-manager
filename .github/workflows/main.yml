@@ -6,7 +6,7 @@ on:
       - actions # Trigger this workflow on pushes to the "actions" branch
 
 jobs:
-  build:
+  build_and_release:
     runs-on: ubuntu-20.04
 
     steps:
@@ -25,19 +25,17 @@ jobs:
       - name: Build the project
         run: ant -Dskip.chkpii=y # Run the specified Ant command
 
+      - name: List files in dist directory
+        run: ls -l dist # Debugging step to list files
+
       - name: Extract Plugin Version from ZIP
         id: extract_version
         run: |
           # Unzip the plugin ZIP file to a temporary directory
           unzip dist/datapower-v*.zip -d temp_dir
-  
-  release:
-    runs-on: ubuntu-20.04
-    needs: build # Release job depends on the successful completion of the build job
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+          # Extract version from the filename or content
+          VERSION=$(basename dist/datapower-v*.zip | sed 's/datapower-v-\(.*\)\.zip/\1/')
+          echo "PLUGIN_VERSION=$VERSION" >> $GITHUB_ENV # Set the version as an environment variable
 
       - name: Create GitHub release
         id: create_release
@@ -59,6 +57,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/datapower-v*.zip # Path to your zip file
+          asset_path: dist/datapower-v-${{ env.PLUGIN_VERSION }}.zip # Use the versioned file
           asset_name: datapower-v.zip # Name of the asset
           asset_content_type: application/zip
