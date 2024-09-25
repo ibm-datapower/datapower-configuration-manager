@@ -54,8 +54,7 @@
         <property-ui type="selectBox" default-value="default" label="Java Max Memory Size" description="Set the max Java Heap Memory size for the DCM's Ant call. " hidden="true"/>
           <value label="Default">default</value>
           <value label="-Xmx256m">-Xmx256m</value>
-          <value 
-           label="-Xmx512m">-Xmx512m</value>
+          <value label="-Xmx512m">-Xmx512m</value>
           <value label="-Xmx1024m">-Xmx1024m</value>
           <value label="-Xmx2048m">-Xmx2048m</value>
           <value label="-Xmx4096m">-Xmx4096m</value>
