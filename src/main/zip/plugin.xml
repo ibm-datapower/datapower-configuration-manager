@@ -1825,7 +1825,7 @@
     </command>
   </step-type>
 
-  <step-type name="Upload Diectory">
+  <step-type name="Upload Directory">
     <description>Upload a directory</description>
     <properties>
       <property name="fromDir">
