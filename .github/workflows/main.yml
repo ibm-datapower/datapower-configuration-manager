@@ -3,7 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - master # Trigger this workflow on pushes to the "master" branch
+      - Amiya-873-patch-1 # Trigger this workflow on pushes to the "master" branch
 
 jobs:
   build_and_release:
