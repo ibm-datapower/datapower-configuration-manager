@@ -50,7 +50,7 @@
   <property name="needed.ant.version" value="1.9.15"/>
 
   <!-- Plugin version during build time -->
-  <property name="plugin.version" value="26"/>
+  <property name="plugin.version" value="27"/>
 
   <target name="distro" description="Produce a new distribution" depends="clean,plugin">
 
