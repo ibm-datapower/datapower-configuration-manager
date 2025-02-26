@@ -7,3 +7,7 @@
 
 /target/
 /schemas/
+.DS_Store
+.idea/
+src/datapower-configuration-manager.iml
+src/main/main.iml

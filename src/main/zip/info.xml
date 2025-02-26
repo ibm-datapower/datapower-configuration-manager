@@ -200,5 +200,13 @@
     <release-note plugin-version="26">
         Added "upload directory" step a a duplicate step to "upload files" to avoid confusion for a users.
     </release-note>
+    <release-note plugin-version="27">
+        DataPower plugin is now bundled with Ant v1.9.15due to CVEs.
+        Removed vulnerability: CVE-2022-34169
+        Removed vulnerability: sonatype-2018-0330
+        Removed vulnerability: CVE-2020-1945
+        Removed vulnerability: CVE-2021-36373
+        Removed vulnerability: CVE-2022-34169
+    </release-note>
   </release-notes>
 </pluginInfo>

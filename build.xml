@@ -41,13 +41,13 @@
 
   <!-- Java-related defaults -->
   <property name="java.debug" value="true"/>
-  <property name="needed.java.version" value="1.7"/>
+  <property name="needed.java.version" value="1.8"/>
 
   <!-- Which Xalan version to include -->
-  <property name="needed.xalan.version" value="2.7.2"/>
+  <property name="needed.xalan.version" value="2.7.3"/>
 
   <!-- Which Ant version to include -->
-  <property name="needed.ant.version" value="1.9.9"/>
+  <property name="needed.ant.version" value="1.9.15"/>
 
   <!-- Plugin version during build time -->
   <property name="plugin.version" value="26"/>
